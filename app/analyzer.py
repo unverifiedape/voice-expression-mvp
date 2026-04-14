@@ -1,263 +1,216 @@
-from __future__ import annotations
-
-import io
-import math
+import os
+import shutil
+import subprocess
 import tempfile
+import wave
 from dataclasses import dataclass
-from pathlib import Path
-from typing import Dict, List, Tuple
+from typing import Dict, Any
 
-import librosa
 import numpy as np
-import soundfile as sf
-from pydub import AudioSegment, silence
-
-TARGET_SR = 16000
-MAX_DURATION_SECONDS = 8.0
-MIN_DURATION_SECONDS = 1.2
+from pydub import AudioSegment
+from pydub.silence import split_on_silence
 
 
-@dataclass
-class FeatureSet:
-    duration_sec: float
-    rms_mean: float
-    rms_std: float
-    pitch_mean: float
-    pitch_std: float
-    voiced_ratio: float
-    pause_ratio: float
-    tempo_proxy: float
-    end_drop: float
-    zcr_mean: float
+FFMPEG_BIN = shutil.which("ffmpeg") or "/usr/bin/ffmpeg"
+FFPROBE_BIN = shutil.which("ffprobe") or "/usr/bin/ffprobe"
 
 
-TYPE_LIBRARY: Dict[str, Dict[str, object]] = {
-    "calm_controller": {
-        "emoji": "🧊",
-        "title": "冷静控制型",
-        "summary": "表达很稳，情绪释放偏低，容易给人克制和收着的感觉。",
-        "traits": [
-            "情绪压得比较低",
-            "不容易被人一下看透",
-            "容易被误解为冷淡或距离感强",
-        ],
-    },
-    "warm_expressive": {
-        "emoji": "🔥",
-        "title": "热情外放型",
-        "summary": "声音起伏更明显，表达比较外显，容易让人感到直接和有存在感。",
-        "traits": [
-            "情绪更容易被听出来",
-            "表达感染力比较强",
-            "有时会被理解成太直接或太满",
-        ],
-    },
-    "hesitant_tester": {
-        "emoji": "🌫️",
-        "title": "试探犹豫型",
-        "summary": "停顿和迟疑感更明显，像是在边想边说，容易带出不确定感。",
-        "traits": [
-            "说话时会边想边试探",
-            "容易让人感觉没那么笃定",
-            "在关系里常被听成拿不准或想保留空间",
-        ],
-    },
-    "direct_assertive": {
-        "emoji": "⚡",
-        "title": "直接强势型",
-        "summary": "声能更集中，句子收得更快，更容易让人感到明确和不拖泥带水。",
-        "traits": [
-            "表达目标感比较强",
-            "说话更像在下判断",
-            "有时会被误听成强势或不给余地",
-        ],
-    },
-}
-
-
-class AudioAnalysisError(Exception):
+class AudioProcessingError(Exception):
     pass
 
 
-def _load_audio_from_upload(raw_bytes: bytes, filename: str) -> Tuple[np.ndarray, int]:
-    suffix = Path(filename or "upload.webm").suffix or ".webm"
-
-    with tempfile.NamedTemporaryFile(suffix=suffix, delete=True) as src_file:
-        src_file.write(raw_bytes)
-        src_file.flush()
-
-        audio = AudioSegment.from_file(src_file.name)
-        audio = audio.set_channels(1).set_frame_rate(TARGET_SR)
-
-        trimmed = silence.strip_silence(
-            audio,
-            silence_len=180,
-            silence_thresh=audio.dBFS - 18 if math.isfinite(audio.dBFS) else -38,
-            padding=80,
-        )
-        if len(trimmed) == 0:
-            trimmed = audio
-
-        peak = trimmed.max_dBFS
-        if math.isfinite(peak):
-            target_peak = -3.0
-            trimmed = trimmed.apply_gain(target_peak - peak)
-
-        samples = np.array(trimmed.get_array_of_samples()).astype(np.float32)
-        if trimmed.sample_width == 2:
-            samples /= 32768.0
-        elif trimmed.sample_width == 4:
-            samples /= 2147483648.0
-        else:
-            max_val = float(2 ** (8 * trimmed.sample_width - 1))
-            samples /= max_val
-
-        return samples, TARGET_SR
+@dataclass
+class AudioFeatures:
+    duration_sec: float
+    rms_mean: float
+    rms_std: float
+    zcr_mean: float
+    silent_ratio: float
+    peak: float
 
 
-def extract_features(raw_bytes: bytes, filename: str) -> FeatureSet:
-    y, sr = _load_audio_from_upload(raw_bytes, filename)
+def ensure_binary_exists(path: str, name: str) -> None:
+    if not path or not os.path.exists(path):
+        raise AudioProcessingError(f"{name} 不存在，请确认系统已安装 {name}")
 
-    duration = len(y) / float(sr)
-    if duration < MIN_DURATION_SECONDS:
-        raise AudioAnalysisError("录音太短了，请至少录 1.2 秒。")
-    if duration > MAX_DURATION_SECONDS:
-        y = y[: int(MAX_DURATION_SECONDS * sr)]
-        duration = MAX_DURATION_SECONDS
 
-    y = librosa.util.normalize(y)
+def convert_to_wav(input_path: str, output_path: str) -> None:
+    ensure_binary_exists(FFMPEG_BIN, "ffmpeg")
+    cmd = [
+        FFMPEG_BIN, "-y", "-i", input_path,
+        "-ac", "1", "-ar", "16000", "-f", "wav", output_path,
+    ]
+    try:
+        subprocess.run(cmd, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    except subprocess.CalledProcessError as e:
+        raise AudioProcessingError(f"音频转 wav 失败: {e.stderr.decode(errors='ignore')}")
 
-    rms = librosa.feature.rms(y=y, frame_length=1024, hop_length=256)[0]
-    zcr = librosa.feature.zero_crossing_rate(y=y, frame_length=1024, hop_length=256)[0]
 
-    f0, voiced_flag, _ = librosa.pyin(
-        y,
-        sr=sr,
-        fmin=librosa.note_to_hz("C2"),
-        fmax=librosa.note_to_hz("C6"),
-        frame_length=1024,
-        hop_length=256,
+def trim_silence(input_wav: str, output_wav: str) -> None:
+    try:
+        sound = AudioSegment.from_wav(input_wav)
+    except Exception as e:
+        raise AudioProcessingError(f"读取 wav 失败: {e}")
+
+    if len(sound) == 0:
+        raise AudioProcessingError("音频为空")
+
+    silence_thresh = max(sound.dBFS - 14, -50)
+    chunks = split_on_silence(
+        sound,
+        min_silence_len=300,
+        silence_thresh=silence_thresh,
+        keep_silence=120,
     )
-    voiced_f0 = f0[~np.isnan(f0)] if f0 is not None else np.array([])
 
-    rms_mean = float(np.mean(rms)) if len(rms) else 0.0
-    rms_std = float(np.std(rms)) if len(rms) else 0.0
-    pitch_mean = float(np.mean(voiced_f0)) if len(voiced_f0) else 0.0
-    pitch_std = float(np.std(voiced_f0)) if len(voiced_f0) else 0.0
-    voiced_ratio = float(np.mean(voiced_flag)) if voiced_flag is not None else 0.0
+    if not chunks:
+        sound.export(output_wav, format="wav")
+        return
 
-    pause_threshold = max(rms_mean * 0.45, 0.015)
-    pause_ratio = float(np.mean(rms < pause_threshold)) if len(rms) else 0.0
+    combined = chunks[0]
+    for chunk in chunks[1:]:
+        combined += chunk
 
-    onset_env = librosa.onset.onset_strength(y=y, sr=sr, hop_length=256)
-    tempo_proxy = float(np.mean(onset_env)) if len(onset_env) else 0.0
+    combined.export(output_wav, format="wav")
 
-    end_window = y[int(len(y) * 0.75) :]
-    if len(end_window) > 512:
-        end_rms = librosa.feature.rms(y=end_window, frame_length=512, hop_length=128)[0]
-        end_drop = float(end_rms[0] - end_rms[-1]) if len(end_rms) > 1 else 0.0
+
+def load_wav_as_float32(wav_path: str) -> tuple[np.ndarray, int]:
+    try:
+        with wave.open(wav_path, "rb") as wf:
+            channels = wf.getnchannels()
+            sampwidth = wf.getsampwidth()
+            framerate = wf.getframerate()
+            nframes = wf.getnframes()
+            raw = wf.readframes(nframes)
+    except Exception as e:
+        raise AudioProcessingError(f"读取 wav 数据失败: {e}")
+
+    if sampwidth != 2:
+        raise AudioProcessingError("当前仅支持 16-bit wav")
+
+    audio = np.frombuffer(raw, dtype=np.int16).astype(np.float32) / 32768.0
+
+    if channels > 1:
+        audio = audio.reshape(-1, channels).mean(axis=1)
+
+    return audio, framerate
+
+
+def frame_signal(signal: np.ndarray, frame_size: int, hop_size: int) -> np.ndarray:
+    if len(signal) < frame_size:
+        pad = np.zeros(frame_size - len(signal), dtype=np.float32)
+        signal = np.concatenate([signal, pad])
+
+    frames = []
+    for start in range(0, len(signal) - frame_size + 1, hop_size):
+        frames.append(signal[start:start + frame_size])
+
+    if not frames:
+        frames.append(signal[:frame_size])
+
+    return np.stack(frames)
+
+
+def extract_features(wav_path: str) -> AudioFeatures:
+    signal, sr = load_wav_as_float32(wav_path)
+
+    if len(signal) == 0:
+        raise AudioProcessingError("音频为空")
+
+    duration_sec = len(signal) / float(sr)
+    frame_size = int(sr * 0.03)
+    hop_size = int(sr * 0.01)
+    frames = frame_signal(signal, frame_size, hop_size)
+
+    rms = np.sqrt(np.mean(np.square(frames), axis=1) + 1e-10)
+    zcr = np.mean(np.abs(np.diff(np.sign(frames), axis=1)), axis=1) / 2.0
+
+    silence_threshold = 0.015
+    silent_ratio = float(np.mean(rms < silence_threshold))
+    peak = float(np.max(np.abs(signal)))
+
+    return AudioFeatures(
+        duration_sec=float(duration_sec),
+        rms_mean=float(np.mean(rms)),
+        rms_std=float(np.std(rms)),
+        zcr_mean=float(np.mean(zcr)),
+        silent_ratio=silent_ratio,
+        peak=peak,
+    )
+
+
+def classify_expression(features: AudioFeatures) -> Dict[str, Any]:
+    energy = features.rms_mean
+    energy_var = features.rms_std
+    silence = features.silent_ratio
+    zcr = features.zcr_mean
+    duration = features.duration_sec
+
+    if silence > 0.45:
+        label = "试探犹豫型"
+        traits = [
+            "停顿偏多，表达略显犹豫",
+            "情绪释放不算强",
+            "容易给人保留、拿不准的感觉",
+        ]
+    elif energy < 0.035 and energy_var < 0.02:
+        label = "冷静控制型"
+        traits = [
+            "情绪压得比较低",
+            "表达更稳，不容易被看透",
+            "有时会被误解为冷淡或距离感强",
+        ]
+    elif energy > 0.08 or energy_var > 0.04:
+        label = "热情外放型"
+        traits = [
+            "声音能量更高，起伏更明显",
+            "表达更外露，更容易被感知到情绪",
+            "通常给人直接、热烈的感觉",
+        ]
+    elif zcr > 0.12:
+        label = "直接强势型"
+        traits = [
+            "语气更利落，边界感更强",
+            "表达倾向于直接推进",
+            "有时会显得不太留余地",
+        ]
     else:
-        end_drop = 0.0
-
-    return FeatureSet(
-        duration_sec=duration,
-        rms_mean=rms_mean,
-        rms_std=rms_std,
-        pitch_mean=pitch_mean,
-        pitch_std=pitch_std,
-        voiced_ratio=voiced_ratio,
-        pause_ratio=pause_ratio,
-        tempo_proxy=tempo_proxy,
-        end_drop=end_drop,
-        zcr_mean=float(np.mean(zcr)) if len(zcr) else 0.0,
-    )
-
-
-def _score_axes(features: FeatureSet) -> Dict[str, float]:
-    emotional_energy = clamp01(
-        0.40 * scale(features.rms_std, 0.02, 0.09)
-        + 0.35 * scale(features.pitch_std, 12.0, 55.0)
-        + 0.25 * scale(features.tempo_proxy, 0.5, 6.0)
-    )
-    control_index = clamp01(
-        0.45 * (1.0 - scale(features.pause_ratio, 0.08, 0.45))
-        + 0.30 * (1.0 - scale(features.pitch_std, 12.0, 60.0))
-        + 0.25 * scale(features.end_drop, -0.01, 0.06)
-    )
-    hesitation_index = clamp01(
-        0.55 * scale(features.pause_ratio, 0.10, 0.50)
-        + 0.25 * (1.0 - scale(features.voiced_ratio, 0.55, 0.95))
-        + 0.20 * (1.0 - scale(features.tempo_proxy, 0.5, 5.0))
-    )
-    distance_index = clamp01(
-        0.40 * (1.0 - emotional_energy)
-        + 0.35 * scale(features.end_drop, 0.0, 0.08)
-        + 0.25 * (1.0 - scale(features.rms_mean, 0.04, 0.18))
-    )
-    return {
-        "emotional_energy": emotional_energy,
-        "control_index": control_index,
-        "hesitation_index": hesitation_index,
-        "distance_index": distance_index,
-    }
-
-
-def classify_expression(features: FeatureSet) -> Dict[str, object]:
-    axes = _score_axes(features)
-    e = axes["emotional_energy"]
-    c = axes["control_index"]
-    h = axes["hesitation_index"]
-    d = axes["distance_index"]
-
-    if h >= 0.58:
-        type_key = "hesitant_tester"
-        confidence = int(68 + 20 * h - 8 * e)
-    elif e >= 0.58 and c < 0.62:
-        type_key = "warm_expressive"
-        confidence = int(66 + 18 * e)
-    elif c >= 0.62 and d >= 0.54:
-        type_key = "calm_controller"
-        confidence = int(70 + 15 * c + 8 * d - 8 * h)
-    else:
-        type_key = "direct_assertive"
-        confidence = int(65 + 12 * c + 10 * e)
-
-    confidence = max(61, min(92, confidence))
-    type_info = TYPE_LIBRARY[type_key]
+        label = "平稳克制型"
+        traits = [
+            "整体表达比较平稳",
+            "有控制感，但不算太疏离",
+            "通常给人理性、收着说的感觉",
+        ]
 
     return {
-        "type_key": type_key,
-        "emoji": type_info["emoji"],
-        "title": type_info["title"],
-        "summary": type_info["summary"],
-        "traits": type_info["traits"],
-        "confidence": confidence,
-        "axes": {k: round(v * 100, 1) for k, v in axes.items()},
-        "raw_features": {
-            "duration_sec": round(features.duration_sec, 3),
-            "rms_mean": round(features.rms_mean, 5),
-            "rms_std": round(features.rms_std, 5),
-            "pitch_mean": round(features.pitch_mean, 2),
-            "pitch_std": round(features.pitch_std, 2),
-            "voiced_ratio": round(features.voiced_ratio, 3),
-            "pause_ratio": round(features.pause_ratio, 3),
-            "tempo_proxy": round(features.tempo_proxy, 3),
-            "end_drop": round(features.end_drop, 5),
-            "zcr_mean": round(features.zcr_mean, 5),
+        "label": label,
+        "traits": traits,
+        "scores": {
+            "energy": round(min(max(energy * 1200, 0), 100), 1),
+            "variation": round(min(max(energy_var * 2000, 0), 100), 1),
+            "pause": round(min(max(silence * 100, 0), 100), 1),
+            "sharpness": round(min(max(zcr * 800, 0), 100), 1),
         },
+        "debug": {
+            "duration_sec": round(duration, 3),
+            "rms_mean": round(energy, 5),
+            "rms_std": round(energy_var, 5),
+            "zcr_mean": round(zcr, 5),
+            "silent_ratio": round(silence, 5),
+            "peak": round(features.peak, 5),
+        }
     }
 
 
-def analyze_voice(raw_bytes: bytes, filename: str) -> Dict[str, object]:
-    features = extract_features(raw_bytes, filename)
-    return classify_expression(features)
+def analyze_audio_file(input_path: str) -> Dict[str, Any]:
+    ensure_binary_exists(FFMPEG_BIN, "ffmpeg")
+    ensure_binary_exists(FFPROBE_BIN, "ffprobe")
 
+    with tempfile.TemporaryDirectory() as tmpdir:
+        raw_wav = os.path.join(tmpdir, "raw.wav")
+        clean_wav = os.path.join(tmpdir, "clean.wav")
 
-def scale(value: float, lo: float, hi: float) -> float:
-    if hi <= lo:
-        return 0.0
-    return (value - lo) / (hi - lo)
-
-
-def clamp01(value: float) -> float:
-    return max(0.0, min(1.0, value))
+        convert_to_wav(input_path, raw_wav)
+        trim_silence(raw_wav, clean_wav)
+        features = extract_features(clean_wav)
+        return classify_expression(features)
