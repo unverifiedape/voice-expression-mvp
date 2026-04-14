@@ -1,0 +1,15 @@
+[Unit]
+Description=Voice Expression MVP API
+After=network.target
+
+[Service]
+User=ubuntu
+Group=ubuntu
+WorkingDirectory=/opt/voice-expression-mvp
+Environment="PATH=/opt/voice-expression-mvp/venv/bin"
+ExecStart=/opt/voice-expression-mvp/venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 8010
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

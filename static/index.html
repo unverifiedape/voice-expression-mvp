@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Voice Expression MVP</title>
+    <style>
+      :root {
+        --bg: #f6f7f5;
+        --card: #ffffff;
+        --text: #1f2a23;
+        --muted: #68746d;
+        --line: #dce5df;
+        --accent: #375d49;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: var(--bg);
+        color: var(--text);
+      }
+      .wrap {
+        max-width: 760px;
+        margin: 0 auto;
+        padding: 24px 16px 48px;
+      }
+      .card {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        padding: 18px;
+        margin-bottom: 16px;
+      }
+      h1, h2, p { margin: 0; }
+      h1 { font-size: 28px; margin-bottom: 10px; }
+      .muted { color: var(--muted); line-height: 1.6; }
+      .quote {
+        background: #f4f7f4;
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 16px;
+        margin-top: 12px;
+        font-size: 22px;
+        text-align: center;
+      }
+      .row { display: flex; gap: 12px; flex-wrap: wrap; }
+      button {
+        border: none;
+        border-radius: 14px;
+        padding: 14px 16px;
+        background: var(--accent);
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+      }
+      button.secondary {
+        background: white;
+        color: var(--text);
+        border: 1px solid var(--line);
+      }
+      button:disabled { opacity: 0.55; cursor: not-allowed; }
+      .pill {
+        display: inline-block;
+        border-radius: 999px;
+        padding: 8px 12px;
+        border: 1px solid var(--line);
+        margin: 6px 6px 0 0;
+        font-size: 14px;
+        cursor: pointer;
+        background: white;
+      }
+      .pill.active { border-color: var(--accent); color: var(--accent); }
+      .result-title { font-size: 30px; margin: 8px 0; }
+      ul { margin: 12px 0 0 18px; color: var(--muted); line-height: 1.7; }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 12px;
+        margin-top: 14px;
+      }
+      .axis {
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 12px;
+        background: #fbfcfb;
+      }
+      .axis strong { font-size: 22px; display: block; margin-top: 6px; }
+      .hint {
+        margin-top: 12px;
+        padding: 12px 14px;
+        border-radius: 14px;
+        background: #f4f7f4;
+        border: 1px dashed var(--line);
+      }
+      audio { width: 100%; margin-top: 12px; }
+      .hidden { display: none; }
+      .error { color: #b12727; margin-top: 12px; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="card">
+        <h1>语音表达测试 MVP</h1>
+        <p class="muted">读一条固定句子，我们不判断你说了什么内容，只判断你是怎么说出来的。</p>
+        <div id="quoteBox" class="quote">“没关系，你忙你的。”</div>
+        <div style="margin-top: 12px;">
+          <span class="pill active" data-quote="没关系，你忙你的。">没关系，你忙你的。</span>
+          <span class="pill" data-quote="都行，我无所谓。">都行，我无所谓。</span>
+          <span class="pill" data-quote="你开心就好。">你开心就好。</span>
+        </div>
+        <div class="hint">建议在安静环境下录音，时长 2–6 秒，完整读出这句话。</div>
+      </div>
+
+      <div class="card">
+        <h2 style="margin-bottom: 12px;">录音</h2>
+        <div class="row">
+          <button id="recordBtn">开始录音</button>
+          <button id="stopBtn" class="secondary" disabled>停止并分析</button>
+        </div>
+        <p id="status" class="muted" style="margin-top: 12px;">等待录音</p>
+        <audio id="preview" class="hidden" controls></audio>
+        <div id="error" class="error hidden"></div>
+      </div>
+
+      <div id="resultCard" class="card hidden">
+        <p class="muted">你的表达类型</p>
+        <h2 id="typeTitle" class="result-title"></h2>
+        <p id="summary" class="muted"></p>
+        <div class="grid" id="axesGrid"></div>
+        <ul id="traits"></ul>
+      </div>
+    </div>
+
+    <script>
+      let mediaRecorder;
+      let chunks = [];
+      let currentQuote = '没关系，你忙你的。';
+
+      const quoteBox = document.getElementById('quoteBox');
+      const pills = document.querySelectorAll('.pill');
+      const recordBtn = document.getElementById('recordBtn');
+      const stopBtn = document.getElementById('stopBtn');
+      const statusEl = document.getElementById('status');
+      const previewEl = document.getElementById('preview');
+      const resultCard = document.getElementById('resultCard');
+      const typeTitle = document.getElementById('typeTitle');
+      const summary = document.getElementById('summary');
+      const traits = document.getElementById('traits');
+      const axesGrid = document.getElementById('axesGrid');
+      const errorEl = document.getElementById('error');
+
+      pills.forEach((pill) => {
+        pill.addEventListener('click', () => {
+          pills.forEach((p) => p.classList.remove('active'));
+          pill.classList.add('active');
+          currentQuote = pill.dataset.quote;
+          quoteBox.textContent = `“${currentQuote}”`;
+        });
+      });
+
+      recordBtn.addEventListener('click', async () => {
+        try {
+          hideError();
+          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          chunks = [];
+          mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
+          mediaRecorder.ondataavailable = (event) => {
+            if (event.data.size > 0) chunks.push(event.data);
+          };
+          mediaRecorder.onstop = async () => {
+            const blob = new Blob(chunks, { type: 'audio/webm' });
+            previewEl.src = URL.createObjectURL(blob);
+            previewEl.classList.remove('hidden');
+            await uploadAudio(blob);
+            stream.getTracks().forEach((track) => track.stop());
+          };
+          mediaRecorder.start();
+          statusEl.textContent = `录音中，请读：${currentQuote}`;
+          recordBtn.disabled = true;
+          stopBtn.disabled = false;
+        } catch (err) {
+          showError('无法打开麦克风，请检查浏览器权限。');
+        }
+      });
+
+      stopBtn.addEventListener('click', () => {
+        if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+          mediaRecorder.stop();
+          statusEl.textContent = '音频上传中...';
+          stopBtn.disabled = true;
+        }
+      });
+
+      async function uploadAudio(blob) {
+        try {
+          const formData = new FormData();
+          formData.append('audio', blob, 'voice.webm');
+
+          const res = await fetch('/api/analyze-voice', { method: 'POST', body: formData });
+          const data = await res.json();
+          if (!res.ok || !data.ok) {
+            throw new Error(data.detail || '分析失败');
+          }
+          renderResult(data.result);
+          statusEl.textContent = '分析完成';
+        } catch (err) {
+          showError(err.message || '上传或分析失败');
+          statusEl.textContent = '分析失败';
+        } finally {
+          recordBtn.disabled = false;
+        }
+      }
+
+      function renderResult(result) {
+        resultCard.classList.remove('hidden');
+        typeTitle.textContent = `${result.emoji} ${result.title} · 匹配度 ${result.confidence}%`;
+        summary.textContent = result.summary;
+        traits.innerHTML = '';
+        result.traits.forEach((item) => {
+          const li = document.createElement('li');
+          li.textContent = item;
+          traits.appendChild(li);
+        });
+
+        const axisLabels = {
+          emotional_energy: '情绪外显度',
+          control_index: '控制感',
+          hesitation_index: '犹豫感',
+          distance_index: '距离感',
+        };
+        axesGrid.innerHTML = '';
+        Object.entries(result.axes).forEach(([key, value]) => {
+          const div = document.createElement('div');
+          div.className = 'axis';
+          div.innerHTML = `<span class="muted">${axisLabels[key] || key}</span><strong>${value}</strong>`;
+          axesGrid.appendChild(div);
+        });
+      }
+
+      function showError(message) {
+        errorEl.textContent = message;
+        errorEl.classList.remove('hidden');
+      }
+      function hideError() {
+        errorEl.classList.add('hidden');
+        errorEl.textContent = '';
+      }
+    </script>
+  </body>
+</html>
