@@ -3,74 +3,107 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>语音表达测试 MVP</title>
+  <title>一句话语音判词</title>
   <style>
-    :root { --bg:#f6f7f5; --card:#fff; --text:#1f2a23; --muted:#6b746d; --line:#dce5de; --accent:#4e6e58; --accent-soft:#eff5f0; --danger:#b54434; }
-    * { box-sizing:border-box; }
-    body { margin:0; background:var(--bg); color:var(--text); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang SC","Noto Sans SC",sans-serif; }
-    .wrap { max-width:760px; margin:0 auto; padding:24px 16px 48px; }
-    .card { background:var(--card); border:1px solid var(--line); border-radius:24px; padding:24px; margin-bottom:20px; }
-    h1 { margin:0 0 14px; font-size:28px; line-height:1.2; }
-    .desc { color:var(--muted); font-size:15px; line-height:1.8; margin-bottom:20px; }
-    .sentence-box { border:1px solid var(--line); border-radius:24px; background:#f7faf7; padding:22px 18px; text-align:center; font-size:28px; margin-bottom:18px; }
-    .chips { display:flex; flex-wrap:wrap; gap:12px; margin-bottom:18px; }
-    .chip { padding:12px 18px; border:1px solid var(--line); border-radius:999px; background:white; cursor:pointer; font-size:15px; }
-    .chip.active { border-color:var(--accent); color:var(--accent); box-shadow:inset 0 0 0 1px var(--accent); }
-    .tips { border:1px dashed var(--line); border-radius:18px; padding:16px; color:var(--muted); line-height:1.8; background:#fafcfb; }
-    .section-title { font-size:22px; font-weight:700; margin:0 0 18px; }
-    .controls { display:flex; gap:14px; flex-wrap:wrap; margin-bottom:14px; }
-    button { border:none; border-radius:18px; padding:18px 28px; font-size:16px; cursor:pointer; }
-    .btn-primary { background:var(--accent); color:white; }
-    .btn-secondary { background:#f4f4f4; color:#888; }
-    .status { font-size:15px; color:var(--muted); margin-bottom:12px; min-height:24px; }
-    .error { color:var(--danger); font-size:15px; line-height:1.6; margin-top:12px; white-space:pre-wrap; }
-    .result { margin-top:18px; border-top:1px solid var(--line); padding-top:18px; }
-    .label { font-size:28px; font-weight:800; margin-bottom:14px; }
-    .traits { margin:0; padding-left:20px; line-height:1.9; color:var(--text); }
-    .scores { display:grid; grid-template-columns:repeat(2, 1fr); gap:12px; margin-top:18px; }
-    .score-card { border:1px solid var(--line); border-radius:16px; padding:14px; background:var(--accent-soft); }
-    .score-title { font-size:13px; color:var(--muted); margin-bottom:8px; }
-    .score-value { font-size:24px; font-weight:800; }
-    audio { width:100%; margin-top:12px; }
+    :root {
+      --bg: #f4f4f2;
+      --card: #ffffff;
+      --text: #141414;
+      --muted: #6d6d6d;
+      --line: #e6e6e2;
+      --accent: #111111;
+      --danger: #d22d1f;
+      --soft: #f7f7f5;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang SC","Noto Sans SC",sans-serif; }
+    .wrap { max-width: 760px; margin: 0 auto; padding: 20px 16px 44px; }
+    .card { background: var(--card); border: 1px solid var(--line); border-radius: 24px; padding: 22px 18px; margin-bottom: 18px; }
+    h1 { margin: 0 0 10px; font-size: 30px; line-height: 1.15; letter-spacing: -0.02em; }
+    .desc { color: var(--muted); line-height: 1.75; font-size: 15px; margin-bottom: 16px; }
+    .sentence-box { background: var(--soft); border: 1px solid var(--line); border-radius: 22px; padding: 20px 16px; text-align: center; font-size: 28px; line-height: 1.25; margin-bottom: 14px; }
+    .chips { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 14px; }
+    .chip { border: 1px solid var(--line); background: white; border-radius: 999px; padding: 11px 15px; font-size: 14px; cursor: pointer; }
+    .chip.active { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+    .tips { border: 1px dashed var(--line); border-radius: 18px; padding: 14px; color: var(--muted); line-height: 1.75; background: #fafaf8; font-size: 14px; }
+    .section-title { margin: 0 0 14px; font-size: 22px; font-weight: 800; }
+    .controls { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+    button { border: none; border-radius: 18px; padding: 16px 22px; font-size: 15px; cursor: pointer; }
+    .btn-primary { background: var(--accent); color: white; }
+    .btn-secondary { background: #ececea; color: #555; }
+    .btn-danger { background: var(--danger); color: white; }
+    .status { min-height: 22px; color: var(--muted); font-size: 14px; margin-bottom: 10px; }
+    .error { color: var(--danger); line-height: 1.7; white-space: pre-wrap; font-size: 14px; margin-top: 10px; }
+    .result { margin-top: 18px; border-top: 1px solid var(--line); padding-top: 18px; }
+    .badge { display: inline-block; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--danger); background: rgba(210,45,31,0.08); border: 1px solid rgba(210,45,31,0.14); border-radius: 999px; padding: 7px 10px; margin-bottom: 12px; font-weight: 700; }
+    .result-title { font-size: 30px; line-height: 1.18; font-weight: 900; margin: 0 0 14px; letter-spacing: -0.03em; }
+    .result-sub { font-size: 16px; line-height: 1.8; color: #333; margin-bottom: 14px; }
+    .list-title { font-size: 13px; color: var(--muted); margin: 0 0 8px; text-transform: uppercase; letter-spacing: 0.08em; }
+    .consequences { background: #faf9f7; border: 1px solid var(--line); border-radius: 18px; padding: 14px 16px; margin-bottom: 14px; }
+    .consequences ul { margin: 0; padding-left: 20px; line-height: 1.9; }
+    .challenge-box { background: #121212; color: white; border-radius: 18px; padding: 18px 16px; margin-bottom: 14px; }
+    .challenge-label { font-size: 12px; letter-spacing: 0.08em; opacity: 0.7; margin-bottom: 8px; text-transform: uppercase; }
+    .challenge-text { font-size: 24px; line-height: 1.3; font-weight: 900; letter-spacing: -0.02em; margin-bottom: 10px; }
+    .challenge-sub { font-size: 14px; line-height: 1.7; color: rgba(255,255,255,0.78); }
+    .share-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px; }
+    audio { width: 100%; margin-top: 10px; }
+    .hidden-canvas { display: none; }
+    .small-note { color: var(--muted); font-size: 13px; line-height: 1.7; margin-top: 10px; }
   </style>
 </head>
 <body>
   <div class="wrap">
     <div class="card">
-      <h1>语音表达测试 MVP</h1>
-      <div class="desc">读一条固定句子，我们不判断你说了什么内容，只判断你是怎么说出来的。</div>
-      <div id="sentenceBox" class="sentence-box">“没关系，你忙你的。”</div>
+      <h1>一句话语音判词</h1>
+      <div class="desc">读同一句话。我们不判断内容真假，只判断你说出来时，像在把什么情绪丢给别人。</div>
+      <div id="sentenceBox" class="sentence-box">“你开心就好。”</div>
       <div class="chips">
-        <button class="chip active" data-sentence="没关系，你忙你的。">没关系，你忙你的。</button>
+        <button class="chip active" data-sentence="你开心就好。">你开心就好。</button>
+        <button class="chip" data-sentence="没关系，你忙你的。">没关系，你忙你的。</button>
         <button class="chip" data-sentence="都行，我无所谓。">都行，我无所谓。</button>
-        <button class="chip" data-sentence="你开心就好。">你开心就好。</button>
+        <button class="chip" data-sentence="好的，我知道了。">好的，我知道了。</button>
+        <button class="chip" data-sentence="行啊，随你。">行啊，随你。</button>
       </div>
-      <div class="tips">建议在安静环境下录音，时长 2–6 秒，完整读出这句话。</div>
+      <div class="tips">建议在安静环境录音，完整读出一句。重点不是“准”，而是系统会把你定义成什么样。</div>
     </div>
 
     <div class="card">
-      <div class="section-title">录音</div>
+      <div class="section-title">开始录音</div>
       <div class="controls">
         <button id="startBtn" class="btn-primary">开始录音</button>
         <button id="stopBtn" class="btn-secondary" disabled>停止并分析</button>
       </div>
-
       <div id="status" class="status">等待录音</div>
       <audio id="audioPlayer" controls style="display:none;"></audio>
       <div id="error" class="error"></div>
 
       <div id="result" class="result" style="display:none;">
-        <div id="resultLabel" class="label"></div>
-        <ul id="traits" class="traits"></ul>
-        <div class="scores">
-          <div class="score-card"><div class="score-title">能量感</div><div id="scoreEnergy" class="score-value">-</div></div>
-          <div class="score-card"><div class="score-title">起伏感</div><div id="scoreVariation" class="score-value">-</div></div>
-          <div class="score-card"><div class="score-title">停顿感</div><div id="scorePause" class="score-value">-</div></div>
-          <div class="score-card"><div class="score-title">锋利感</div><div id="scoreSharpness" class="score-value">-</div></div>
+        <div class="badge">system verdict</div>
+        <div id="resultTitle" class="result-title"></div>
+        <div id="resultSub" class="result-sub"></div>
+
+        <div class="consequences">
+          <div class="list-title">别人可能会怎么感受</div>
+          <ul id="consequenceList"></ul>
         </div>
+
+        <div class="challenge-box">
+          <div class="challenge-label">拿去问别人</div>
+          <div id="challengeText" class="challenge-text"></div>
+          <div class="challenge-sub">把这张判决卡发出去，不是让别人看结果，是让别人给你一个说法。</div>
+        </div>
+
+        <div class="share-actions">
+          <button id="generateCardBtn" class="btn-danger">生成判决卡</button>
+          <button id="copyLinkBtn" class="btn-secondary">复制测试链接</button>
+        </div>
+
+        <div class="small-note">不要解释太多，直接把图发出去，问一句“你认吗？”效果最好。</div>
       </div>
     </div>
   </div>
+
+  <canvas id="shareCanvas" class="hidden-canvas" width="1080" height="1350"></canvas>
 
   <script>
     const sentenceBox = document.getElementById("sentenceBox");
@@ -81,17 +114,84 @@
     const errorEl = document.getElementById("error");
     const audioPlayer = document.getElementById("audioPlayer");
     const resultEl = document.getElementById("result");
-    const resultLabelEl = document.getElementById("resultLabel");
-    const traitsEl = document.getElementById("traits");
-    const scoreEnergyEl = document.getElementById("scoreEnergy");
-    const scoreVariationEl = document.getElementById("scoreVariation");
-    const scorePauseEl = document.getElementById("scorePause");
-    const scoreSharpnessEl = document.getElementById("scoreSharpness");
+    const resultTitleEl = document.getElementById("resultTitle");
+    const resultSubEl = document.getElementById("resultSub");
+    const consequenceListEl = document.getElementById("consequenceList");
+    const challengeTextEl = document.getElementById("challengeText");
+    const generateCardBtn = document.getElementById("generateCardBtn");
+    const copyLinkBtn = document.getElementById("copyLinkBtn");
 
     let mediaRecorder = null;
     let mediaStream = null;
     let chunks = [];
-    let selectedSentence = "没关系，你忙你的。";
+    let selectedSentence = "你开心就好。";
+    let latestCardData = null;
+
+    const verdictMap = {
+      "热情外放型": {
+        title: "你不是在表达，你是在把情绪直接推给别人。",
+        sub: "系统没有把你判成“热情”，而是更像一种会逼别人马上接住你状态的说法。你自己听可能觉得自然，别人未必会这么轻松。",
+        consequences: [
+          "别人可能会觉得你希望TA立刻给反应",
+          "会被误听成：你不是在说话，你是在推动对方表态",
+          "情绪存在感太强时，容易让人先防御，再沟通"
+        ],
+        challenge: "它说我总是用力过猛，你怎么说？"
+      },
+      "冷静控制型": {
+        title: "你不是冷静，你是在把情绪藏起来控制场面。",
+        sub: "系统更像在说：你表面不吵不闹，但你说话的方式会让别人下意识收住真实反应，因为节奏已经被你拿走了。",
+        consequences: [
+          "别人可能会觉得你不是真的在讨论，而是在控场",
+          "你越稳，越容易被误读成：已经有结论了",
+          "这种表达最容易让人觉得自己没有太多空间"
+        ],
+        challenge: "它说我说话很像在控场，你认吗？"
+      },
+      "试探犹豫型": {
+        title: "你不是在试探，你是在把不确定甩给别人消化。",
+        sub: "系统会把这类说法理解成：你没有明说，但你把情绪停顿和犹豫感交给对方去猜。这种感觉很容易让人累。",
+        consequences: [
+          "别人可能会觉得要不停猜你到底是什么意思",
+          "停顿太多时，会被误听成你在等别人先让步",
+          "模糊表达本身就是一种压力"
+        ],
+        challenge: "它说我总把不确定丢给别人，你认不认？"
+      },
+      "直接强势型": {
+        title: "你不是直接，你是让人很难不顺着你说。",
+        sub: "系统不会把这类语气听成爽快，反而更像一种边界太硬、让别人很难轻松回应的推进方式。",
+        consequences: [
+          "别人可能会觉得你不是在沟通，而是在定方向",
+          "语气太利落时，容易让人下意识先退一步",
+          "这种说法最容易被听成“我最好别反着来”"
+        ],
+        challenge: "它说我一开口就给人压力，你敢说不像？"
+      },
+      "平稳克制型": {
+        title: "你不是平和，你是在把情绪压得太干净了。",
+        sub: "系统给你的不是“成熟”，而更像一种压得太平、平到别人不知道你真正站在哪边的表达方式。",
+        consequences: [
+          "别人可能会觉得你看似好说话，其实很难判断真实态度",
+          "太平的说法容易被听成疏离，或者根本不想聊",
+          "没有波动并不等于没有压迫感"
+        ],
+        challenge: "它说我说话有点太收着了，你觉得离谱吗？"
+      }
+    };
+
+    function getVerdict(label) {
+      return verdictMap[label] || {
+        title: "你说出来的感觉，和你以为的不太一样。",
+        sub: "系统觉得你这句话里带着一点你自己未必会承认的推动感，所以这个结果更适合拿去问别人，而不是自己闷着看。",
+        consequences: [
+          "别人不一定按你的自我理解来接收",
+          "你以为自然的地方，别人可能会觉得不太舒服",
+          "这种偏差本身就值得拿去问熟人"
+        ],
+        challenge: "它说我说话让人不太舒服，你怎么说？"
+      };
+    }
 
     chips.forEach((chip) => {
       chip.addEventListener("click", () => {
@@ -109,13 +209,14 @@
         mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
         chunks = [];
         mediaRecorder = new MediaRecorder(mediaStream);
+
         mediaRecorder.ondataavailable = (event) => {
           if (event.data && event.data.size > 0) chunks.push(event.data);
         };
 
         mediaRecorder.onstop = async () => {
           try {
-            statusEl.textContent = "正在上传并分析...";
+            statusEl.textContent = "正在生成判词...";
             const blob = new Blob(chunks, { type: "audio/webm" });
             const url = URL.createObjectURL(blob);
             audioPlayer.src = url;
@@ -125,32 +226,42 @@
             formData.append("file", blob, "recording.webm");
             formData.append("sentence", selectedSentence);
 
-            const resp = await fetch("/api/analyze", { method: "POST", body: formData });
-            const data = await resp.json();
-
-            if (!data.ok) throw new Error(data.error || "分析失败");
-
-            const result = data.result;
-            resultLabelEl.textContent = result.label;
-            traitsEl.innerHTML = "";
-            result.traits.forEach((trait) => {
-              const li = document.createElement("li");
-              li.textContent = trait;
-              traitsEl.appendChild(li);
+            const resp = await fetch("/api/analyze", {
+              method: "POST",
+              body: formData
             });
 
-            scoreEnergyEl.textContent = result.scores.energy;
-            scoreVariationEl.textContent = result.scores.variation;
-            scorePauseEl.textContent = result.scores.pause;
-            scoreSharpnessEl.textContent = result.scores.sharpness;
+            const data = await resp.json();
+            if (!data.ok) throw new Error(data.error || "分析失败");
 
+            const label = data.result.label;
+            const verdict = getVerdict(label);
+
+            latestCardData = {
+              sentence: selectedSentence,
+              title: verdict.title,
+              sub: verdict.sub,
+              consequences: verdict.consequences,
+              challenge: verdict.challenge,
+              url: window.location.origin
+            };
+
+            resultTitleEl.textContent = verdict.title;
+            resultSubEl.textContent = verdict.sub;
+            consequenceListEl.innerHTML = "";
+            verdict.consequences.forEach((text) => {
+              const li = document.createElement("li");
+              li.textContent = text;
+              consequenceListEl.appendChild(li);
+            });
+            challengeTextEl.textContent = verdict.challenge;
             resultEl.style.display = "block";
-            statusEl.textContent = "分析完成";
+            statusEl.textContent = "判词已生成";
           } catch (err) {
             statusEl.textContent = "分析失败";
             errorEl.textContent = String(err.message || err);
           } finally {
-            if (mediaStream) mediaStream.getTracks().forEach(t => t.stop());
+            if (mediaStream) mediaStream.getTracks().forEach((t) => t.stop());
             startBtn.disabled = false;
             stopBtn.disabled = true;
           }
@@ -167,8 +278,114 @@
 
     stopBtn.addEventListener("click", () => {
       if (mediaRecorder && mediaRecorder.state !== "inactive") mediaRecorder.stop();
-      statusEl.textContent = "录音结束，准备分析...";
+      statusEl.textContent = "录音结束，正在分析...";
     });
+
+    copyLinkBtn.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(window.location.origin);
+        alert("链接已复制");
+      } catch (e) {
+        alert("复制失败，请手动复制地址");
+      }
+    });
+
+    generateCardBtn.addEventListener("click", () => {
+      if (!latestCardData) return;
+
+      const canvas = document.getElementById("shareCanvas");
+      const ctx = canvas.getContext("2d");
+      const w = canvas.width;
+      const h = canvas.height;
+
+      ctx.fillStyle = "#f4f4f2";
+      ctx.fillRect(0, 0, w, h);
+
+      ctx.fillStyle = "#ffffff";
+      roundRect(ctx, 54, 54, w - 108, h - 108, 36);
+      ctx.fill();
+
+      ctx.fillStyle = "#d22d1f";
+      ctx.font = "bold 26px sans-serif";
+      ctx.fillText("SYSTEM VERDICT", 96, 128);
+
+      ctx.fillStyle = "#111111";
+      ctx.font = "bold 54px sans-serif";
+      wrapText(ctx, `“${latestCardData.sentence}”`, 96, 210, w - 192, 68);
+
+      ctx.fillStyle = "#111111";
+      ctx.font = "bold 58px sans-serif";
+      wrapText(ctx, latestCardData.title, 96, 380, w - 192, 74);
+
+      ctx.fillStyle = "#444444";
+      ctx.font = "30px sans-serif";
+      wrapText(ctx, latestCardData.sub, 96, 640, w - 192, 46);
+
+      ctx.fillStyle = "#111111";
+      ctx.font = "bold 24px sans-serif";
+      ctx.fillText("别人可能会怎么感受", 96, 840);
+
+      ctx.fillStyle = "#333333";
+      ctx.font = "28px sans-serif";
+      let y = 900;
+      latestCardData.consequences.forEach((item) => {
+        wrapText(ctx, `• ${item}`, 110, y, w - 220, 42);
+        y += 74;
+      });
+
+      ctx.fillStyle = "#111111";
+      roundRect(ctx, 78, 1080, w - 156, 168, 26);
+      ctx.fill();
+
+      ctx.fillStyle = "#ffffff";
+      ctx.font = "bold 44px sans-serif";
+      wrapText(ctx, latestCardData.challenge, 110, 1145, w - 220, 56);
+
+      ctx.fillStyle = "#ffffff";
+      ctx.font = "24px sans-serif";
+      ctx.fillText("扫码或打开链接测同一句话", 110, 1220);
+
+      ctx.fillStyle = "#e9e9e6";
+      ctx.fillRect(w - 290, 1108, 150, 150);
+      ctx.fillStyle = "#999999";
+      ctx.font = "24px sans-serif";
+      ctx.fillText("QR", w - 237, 1195);
+
+      ctx.fillStyle = "#111111";
+      ctx.font = "24px sans-serif";
+      wrapText(ctx, latestCardData.url, 96, 1300, w - 192, 34);
+
+      const link = document.createElement("a");
+      link.download = "verdict-card.png";
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+    });
+
+    function roundRect(ctx, x, y, width, height, radius) {
+      ctx.beginPath();
+      ctx.moveTo(x + radius, y);
+      ctx.arcTo(x + width, y, x + width, y + height, radius);
+      ctx.arcTo(x + width, y + height, x, y + height, radius);
+      ctx.arcTo(x, y + height, x, y, radius);
+      ctx.arcTo(x, y, x + width, y, radius);
+      ctx.closePath();
+    }
+
+    function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
+      const chars = text.split("");
+      let line = "";
+      for (let i = 0; i < chars.length; i++) {
+        const testLine = line + chars[i];
+        if (ctx.measureText(testLine).width > maxWidth && line) {
+          ctx.fillText(line, x, y);
+          line = chars[i];
+          y += lineHeight;
+        } else {
+          line = testLine;
+        }
+      }
+      if (line) ctx.fillText(line, x, y);
+    }
   </script>
 </body>
 </html>
