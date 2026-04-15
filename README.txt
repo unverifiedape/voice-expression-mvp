@@ -1,18 +1,3 @@
-覆盖以下文件：
-1. app/main.py
-2. static/index.html
-3. requirements.txt
-
-本地执行：
-git add .
-git commit -m "feat: challenge qr verdict card"
-git push
-
-AWS执行：
-cd /opt/voice-expression-mvp
-git pull
-source venv/bin/activate
-pip install -r requirements.txt
-deactivate
-sudo systemctl restart voice-expression
-sudo systemctl restart nginx
+覆盖文件：static/index.html
+这是前端可直接覆盖版，加入结果页播放条、挑战页播放区和先听再挑战的结构。
+注意：当前 audio 参数仍是 blob 地址，只能验证结构，跨设备真实播放需要后端保存录音。
