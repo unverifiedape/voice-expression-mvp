@@ -1,16 +1,25 @@
-import tempfile
 from pathlib import Path
+import io
 
 from fastapi import FastAPI, File, Form, UploadFile
-from fastapi.responses import FileResponse, JSONResponse
-from fastapi.staticfiles import StaticFiles
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse, JSONResponse, StreamingResponse
+import qrcode
 
-from app.analyzer import analyze_audio_file, AudioProcessingError
+from app.analyzer import analyze_audio
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 STATIC_DIR = BASE_DIR / "static"
 
-app = FastAPI(title="Voice Expression MVP")
+app = FastAPI(title="Voice Expression MVP API")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.get("/health")
@@ -24,26 +33,36 @@ def index():
 
 
 @app.post("/api/analyze")
-async def analyze_audio(file: UploadFile = File(...), sentence: str = Form(...)):
-    suffix = Path(file.filename or "audio.webm").suffix or ".webm"
+async def api_analyze(
+    file: UploadFile = File(...),
+    sentence: str = Form(default="")
+):
+    try:
+        raw = await file.read()
+        if not raw:
+            return JSONResponse(
+                status_code=400,
+                content={"ok": False, "error": "空音频，未读取到录音内容。"},
+            )
 
-    with tempfile.TemporaryDirectory() as tmpdir:
-        input_path = Path(tmpdir) / f"input{suffix}"
-        try:
-            with open(input_path, "wb") as f:
-                while True:
-                    chunk = await file.read(1024 * 1024)
-                    if not chunk:
-                        break
-                    f.write(chunk)
+        result = analyze_audio(raw, filename=file.filename or "recording.webm")
 
-            result = analyze_audio_file(str(input_path))
-            return {"ok": True, "sentence": sentence, "result": result}
-
-        except AudioProcessingError as e:
-            return JSONResponse(status_code=400, content={"ok": False, "error": f"音频处理失败：{str(e)}"})
-        except Exception as e:
-            return JSONResponse(status_code=500, content={"ok": False, "error": f"分析失败：{str(e)}"})
+        return {
+            "ok": True,
+            "sentence": sentence,
+            "result": result,
+        }
+    except Exception as e:
+        return JSONResponse(
+            status_code=500,
+            content={"ok": False, "error": f"音频处理失败：{e}"},
+        )
 
 
-app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
+@app.get("/qr")
+def generate_qr(url: str = "http://13.215.87.153"):
+    img = qrcode.make(url)
+    buf = io.BytesIO()
+    img.save(buf, format="PNG")
+    buf.seek(0)
+    return StreamingResponse(buf, media_type="image/png")
