@@ -6,146 +6,53 @@
   <title>一句话语音判词</title>
   <style>
     :root {
-      --bg: #f3f3f1;
-      --card: #ffffff;
-      --text: #121212;
-      --muted: #666;
-      --line: #e6e6e2;
-      --danger: #d3362d;
-      --soft: #f8f8f6;
-      --black: #0d0d0d;
-      --green: #55745f;
+      --bg: #f3f3f1; --card: #ffffff; --text: #121212; --muted: #666; --line: #e6e6e2;
+      --danger: #d3362d; --soft: #f8f8f6; --black: #0d0d0d; --green: #55745f;
     }
     * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      background: var(--bg);
-      color: var(--text);
-      font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang SC","Noto Sans SC",sans-serif;
-    }
+    body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang SC","Noto Sans SC",sans-serif; }
     .wrap { max-width: 780px; margin: 0 auto; padding: 18px 14px 42px; }
-    .card {
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: 28px;
-      padding: 22px 18px;
-      margin-bottom: 18px;
-    }
+    .card { background: var(--card); border: 1px solid var(--line); border-radius: 28px; padding: 22px 18px; margin-bottom: 18px; }
     h1 { margin: 0 0 10px; font-size: 30px; line-height: 1.15; letter-spacing: -0.03em; }
     .desc { color: var(--muted); font-size: 15px; line-height: 1.8; margin-bottom: 16px; }
-    .challenge-banner {
-      display: none;
-      margin-bottom: 12px;
-      padding: 12px 14px;
-      border-radius: 16px;
-      background: #111;
-      color: #fff;
-      font-size: 14px;
-      line-height: 1.7;
-    }
-    .incoming-audio-box {
-      display: none;
-      margin-bottom: 14px;
-      padding: 14px;
-      border-radius: 18px;
-      background: #111;
-      color: #fff;
-    }
-    .incoming-audio-title { font-size: 14px; opacity: 0.8; margin-bottom: 8px; }
-    .incoming-audio-desc { font-size: 13px; line-height: 1.7; color: rgba(255,255,255,0.78); margin-top: 8px; }
-    .sentence-box {
-      background: var(--soft);
-      border: 1px solid var(--line);
-      border-radius: 22px;
-      padding: 18px 16px;
-      text-align: center;
-      font-size: 28px;
-      line-height: 1.28;
-      margin-bottom: 14px;
-      font-weight: 700;
-    }
-    .chips { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 14px; }
-    .chip {
-      border: 1px solid var(--line);
-      background: #fff;
-      border-radius: 999px;
-      padding: 10px 14px;
-      font-size: 14px;
-      cursor: pointer;
-    }
-    .chip.active {
-      border-color: #1f4a38;
-      box-shadow: inset 0 0 0 1px #1f4a38;
-      color: #1f4a38;
-      font-weight: 700;
-    }
-    .tips {
-      border: 1px dashed var(--line);
-      border-radius: 18px;
-      padding: 14px;
-      color: var(--muted);
-      line-height: 1.75;
-      font-size: 14px;
-      background: #fafaf8;
-    }
-    .section-title { margin: 0 0 14px; font-size: 22px; font-weight: 900; }
-    .controls { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 10px; }
-    button {
-      border: none;
-      border-radius: 18px;
-      padding: 16px 22px;
-      font-size: 15px;
-      cursor: pointer;
-    }
-    .btn-primary { background: var(--green); color: white; }
-    .btn-secondary { background: #ececea; color: #555; }
-    .btn-danger { background: var(--black); color: white; }
-    .status { min-height: 22px; color: var(--muted); font-size: 14px; margin-bottom: 8px; }
-    .error { color: var(--danger); font-size: 14px; line-height: 1.7; margin-top: 8px; white-space: pre-wrap; }
-    audio { width: 100%; margin-top: 8px; }
-    .result { margin-top: 18px; border-top: 1px solid var(--line); padding-top: 18px; }
-    .result-audio-box, .dare-box {
-      display: none;
-      margin-bottom: 18px;
-      padding: 14px;
-      border-radius: 18px;
-      background: #f7f7f5;
-      border: 1px solid var(--line);
-    }
-    .result-audio-title { font-size: 14px; font-weight: 800; margin-bottom: 8px; }
-    .badge {
-      display: inline-block;
-      font-size: 12px;
-      letter-spacing: 0.08em;
-      color: var(--danger);
-      margin-bottom: 12px;
-      font-weight: 800;
-      text-transform: uppercase;
-    }
-    .result-sentence { font-size: 24px; line-height: 1.35; font-weight: 800; margin-bottom: 20px; }
-    .result-title { font-size: 34px; line-height: 1.2; font-weight: 900; margin: 0 0 16px; letter-spacing: -0.04em; }
-    .result-sub { font-size: 16px; line-height: 1.85; color: #444; margin-bottom: 24px; }
-    .consequences { margin-bottom: 18px; }
-    .list-title { font-size: 14px; font-weight: 900; margin-bottom: 8px; }
-    .consequences ul { margin: 0; padding-left: 24px; line-height: 1.95; color: #2b2b2b; font-size: 15px; }
-    .challenge-box {
-      background: #050505;
-      color: #fff;
-      border-radius: 22px;
-      padding: 18px 16px;
-      margin-top: 16px;
-      position: relative;
-      overflow: hidden;
-    }
-    .challenge-label { font-size: 12px; opacity: 0.72; margin-bottom: 8px; letter-spacing: 0.08em; text-transform: uppercase; }
-    .challenge-text { font-size: 30px; line-height: 1.26; font-weight: 900; letter-spacing: -0.03em; margin-bottom: 10px; max-width: 72%; }
-    .challenge-sub { font-size: 14px; color: rgba(255,255,255,0.78); line-height: 1.7; max-width: 72%; }
-    .challenge-qr { position: absolute; right: 16px; bottom: 16px; width: 110px; height: 110px; background: #ecece8; border-radius: 6px; object-fit: cover; }
-    .share-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
-    .note { margin-top: 10px; color: var(--muted); font-size: 13px; line-height: 1.7; }
-    .dare-title { font-size: 22px; font-weight: 900; line-height: 1.3; margin-bottom: 8px; }
-    .dare-desc { color: #555; font-size: 14px; line-height: 1.8; margin-bottom: 12px; }
-    canvas { display: none; }
+    .challenge-banner { display:none; margin-bottom:12px; padding:12px 14px; border-radius:16px; background:#111; color:#fff; font-size:14px; line-height:1.7; }
+    .incoming-audio-box { display:none; margin-bottom:14px; padding:14px; border-radius:18px; background:#111; color:#fff; }
+    .incoming-audio-title { font-size:14px; opacity:0.8; margin-bottom:8px; }
+    .incoming-audio-desc { font-size:13px; line-height:1.7; color:rgba(255,255,255,0.78); margin-top:8px; }
+    .sentence-box { background:var(--soft); border:1px solid var(--line); border-radius:22px; padding:18px 16px; text-align:center; font-size:28px; line-height:1.28; margin-bottom:14px; font-weight:700; }
+    .chips { display:flex; flex-wrap:wrap; gap:10px; margin-bottom:14px; }
+    .chip { border:1px solid var(--line); background:#fff; border-radius:999px; padding:10px 14px; font-size:14px; cursor:pointer; }
+    .chip.active { border-color:#1f4a38; box-shadow:inset 0 0 0 1px #1f4a38; color:#1f4a38; font-weight:700; }
+    .tips { border:1px dashed var(--line); border-radius:18px; padding:14px; color:var(--muted); line-height:1.75; font-size:14px; background:#fafaf8; }
+    .section-title { margin:0 0 14px; font-size:22px; font-weight:900; }
+    .controls { display:flex; gap:12px; flex-wrap:wrap; margin-bottom:10px; }
+    button { border:none; border-radius:18px; padding:16px 22px; font-size:15px; cursor:pointer; }
+    .btn-primary { background:var(--green); color:white; }
+    .btn-secondary { background:#ececea; color:#555; }
+    .btn-danger { background:var(--black); color:white; }
+    .status { min-height:22px; color:var(--muted); font-size:14px; margin-bottom:8px; }
+    .error { color:var(--danger); font-size:14px; line-height:1.7; margin-top:8px; white-space:pre-wrap; }
+    audio { width:100%; margin-top:8px; }
+    .result { margin-top:18px; border-top:1px solid var(--line); padding-top:18px; }
+    .result-audio-box, .dare-box { display:none; margin-bottom:18px; padding:14px; border-radius:18px; background:#f7f7f5; border:1px solid var(--line); }
+    .result-audio-title { font-size:14px; font-weight:800; margin-bottom:8px; }
+    .badge { display:inline-block; font-size:12px; letter-spacing:0.08em; color:var(--danger); margin-bottom:12px; font-weight:800; text-transform:uppercase; }
+    .result-sentence { font-size:24px; line-height:1.35; font-weight:800; margin-bottom:20px; }
+    .result-title { font-size:34px; line-height:1.2; font-weight:900; margin:0 0 16px; letter-spacing:-0.04em; }
+    .result-sub { font-size:16px; line-height:1.85; color:#444; margin-bottom:24px; }
+    .consequences { margin-bottom:18px; }
+    .list-title { font-size:14px; font-weight:900; margin-bottom:8px; }
+    .consequences ul { margin:0; padding-left:24px; line-height:1.95; color:#2b2b2b; font-size:15px; }
+    .challenge-box { background:#050505; color:#fff; border-radius:22px; padding:18px 16px; margin-top:16px; position:relative; overflow:hidden; }
+    .challenge-label { font-size:12px; opacity:0.72; margin-bottom:8px; letter-spacing:0.08em; text-transform:uppercase; }
+    .challenge-text { font-size:30px; line-height:1.26; font-weight:900; letter-spacing:-0.03em; margin-bottom:10px; max-width:72%; }
+    .challenge-sub { font-size:14px; color:rgba(255,255,255,0.78); line-height:1.7; max-width:72%; }
+    .challenge-qr { position:absolute; right:16px; bottom:16px; width:110px; height:110px; background:#ecece8; border-radius:6px; object-fit:cover; }
+    .share-actions { display:flex; gap:10px; flex-wrap:wrap; margin-top:16px; }
+    .note { margin-top:10px; color:var(--muted); font-size:13px; line-height:1.7; }
+    .dare-title { font-size:22px; font-weight:900; line-height:1.3; margin-bottom:8px; }
+    .dare-desc { color:#555; font-size:14px; line-height:1.8; margin-bottom:12px; }
+    canvas { display:none; }
   </style>
 </head>
 <body>
@@ -257,36 +164,11 @@
     const sharedAudioUrl = urlParams.get("audio");
 
     const verdictMap = {
-      "热情外放型": {
-        title: "你不是热情，你是在把情绪直接推给别人。",
-        sub: "你自己会觉得这是自然表达，但别人可能会感觉到，你在要求TA立刻接住你的状态，而不是单纯听你说完。",
-        consequences: ["别人可能会觉得你希望TA马上表态","会被误听成：你不是在说话，你是在推动对方回应","情绪存在感一旦太强，别人会先防御再沟通"],
-        challengePool: ["它说我总是用力过猛，你怎么说？","它说我说话会给人压力，你认吗？","它说我不是在沟通，是在逼人表态，你觉得像吗？"]
-      },
-      "冷静控制型": {
-        title: "你不是冷静，你是在把情绪藏起来控场。",
-        sub: "你表面上不急不躁，但别人很可能会觉得，节奏已经被你拿走了，自己只剩下接招的空间。",
-        consequences: ["别人可能会觉得你不是在讨论，而是在控场","你越稳，越容易被误读成：结论已经有了","这种表达会让人感觉自己没有太多余地"],
-        challengePool: ["它说我说话很像在控场，你认吗？","它说我不是冷静，是控制，你觉得过分吗？","它说我一稳下来，别人就不太敢说真话，你认不认？"]
-      },
-      "试探犹豫型": {
-        title: "你不是在试探，你是在把不确定甩给别人消化。",
-        sub: "你没有直接说透，但停顿、犹豫和语气里的悬着，会让别人下意识开始猜你到底想要什么。",
-        consequences: ["别人可能会觉得要不停猜你到底是什么意思","停顿太多时，会被误听成你在等别人先让步","模糊表达本身就是一种压力"],
-        challengePool: ["它说我总把不确定丢给别人，你认不认？","它说我不是含蓄，是让人猜得累，你怎么看？","它说我每次都不说透，只把压力留给别人，像吗？"]
-      },
-      "直接强势型": {
-        title: "你不是直接，你是让人很难不顺着你说。",
-        sub: "你会觉得自己只是干脆，但别人听到的可能是一种边界太硬、很难轻松反驳的推进感。",
-        consequences: ["别人可能会觉得你不是在沟通，而是在定方向","语气太利落时，容易让人先退一步","这种说法最容易让人觉得最好不要反着来"],
-        challengePool: ["它说我一开口就给人压力，你敢说不像？","它说我不是直接，是压人，你觉得呢？","它说我说话让人很难反驳，你认吗？"]
-      },
-      "平稳克制型": {
-        title: "你不是平和，你是在把情绪压得太干净了。",
-        sub: "系统给你的不是成熟感，而是一种压得太平、平到别人不知道你真正站在哪边的表达方式。",
-        consequences: ["别人可能会觉得你看似好说话，其实很难判断真实态度","太平的说法容易被听成敷衍，或者根本不想聊","没有波动并不等于没有压迫感"],
-        challengePool: ["它说我说话有点太收着了，你觉得离谱吗？","它说我表面平和，其实让人摸不清态度，你认吗？","它说我不是温和，是让人觉得有点远，你怎么看？"]
-      }
+      "热情外放型": { title: "你不是热情，你是在把情绪直接推给别人。", sub: "你自己会觉得这是自然表达，但别人可能会感觉到，你在要求TA立刻接住你的状态，而不是单纯听你说完。", consequences: ["别人可能会觉得你希望TA马上表态","会被误听成：你不是在说话，你是在推动对方回应","情绪存在感一旦太强，别人会先防御再沟通"], challengePool: ["它说我总是用力过猛，你怎么说？","它说我说话会给人压力，你认吗？","它说我不是在沟通，是在逼人表态，你觉得像吗？"] },
+      "冷静控制型": { title: "你不是冷静，你是在把情绪藏起来控场。", sub: "你表面上不急不躁，但别人很可能会觉得，节奏已经被你拿走了，自己只剩下接招的空间。", consequences: ["别人可能会觉得你不是在讨论，而是在控场","你越稳，越容易被误读成：结论已经有了","这种表达会让人感觉自己没有太多余地"], challengePool: ["它说我说话很像在控场，你认吗？","它说我不是冷静，是控制，你觉得过分吗？","它说我一稳下来，别人就不太敢说真话，你认不认？"] },
+      "试探犹豫型": { title: "你不是在试探，你是在把不确定甩给别人消化。", sub: "你没有直接说透，但停顿、犹豫和语气里的悬着，会让别人下意识开始猜你到底想要什么。", consequences: ["别人可能会觉得要不停猜你到底是什么意思","停顿太多时，会被误听成你在等别人先让步","模糊表达本身就是一种压力"], challengePool: ["它说我总把不确定丢给别人，你认不认？","它说我不是含蓄，是让人猜得累，你怎么看？","它说我每次都不说透，只把压力留给别人，像吗？"] },
+      "直接强势型": { title: "你不是直接，你是让人很难不顺着你说。", sub: "你会觉得自己只是干脆，但别人听到的可能是一种边界太硬、很难轻松反驳的推进感。", consequences: ["别人可能会觉得你不是在沟通，而是在定方向","语气太利落时，容易让人先退一步","这种说法最容易让人觉得最好不要反着来"], challengePool: ["它说我一开口就给人压力，你敢说不像？","它说我不是直接，是压人，你觉得呢？","它说我说话让人很难反驳，你认吗？"] },
+      "平稳克制型": { title: "你不是平和，你是在把情绪压得太干净了。", sub: "系统给你的不是成熟感，而是一种压得太平、平到别人不知道你真正站在哪边的表达方式。", consequences: ["别人可能会觉得你看似好说话，其实很难判断真实态度","太平的说法容易被听成敷衍，或者根本不想聊","没有波动并不等于没有压迫感"], challengePool: ["它说我说话有点太收着了，你觉得离谱吗？","它说我表面平和，其实让人摸不清态度，你认吗？","它说我不是温和，是让人觉得有点远，你怎么看？"] }
     };
 
     function getVerdict(label) {
@@ -307,7 +189,9 @@
     function buildChallengeUrl(sentence) {
       const url = new URL(window.location.origin + "/");
       url.searchParams.set("challenge", sentence);
-      if (latestShareAudioUrl) url.searchParams.set("audio", absoluteUrl(latestShareAudioUrl));
+      if (latestShareAudioUrl) {
+        url.searchParams.set("audio", absoluteUrl(latestShareAudioUrl));
+      }
       return url.toString();
     }
 
@@ -385,8 +269,7 @@
             if (!res.ok || !data.ok) throw new Error(data.detail || "分析失败");
 
             latestShareAudioUrl = data.audio_url || "";
-
-            const verdict = getVerdict(data.result.title);
+            const verdict = getVerdict(data.result.title || data.result.label);
             const challengeUrl = buildChallengeUrl(selectedSentence);
 
             latestCardData = {
@@ -449,7 +332,6 @@
 
     generateCardBtn.addEventListener("click", async () => {
       if (!latestCardData) return;
-
       const canvas = document.getElementById("shareCanvas");
       const ctx = canvas.getContext("2d");
       const w = canvas.width;
