@@ -6,8 +6,8 @@ After=network.target
 User=ubuntu
 Group=ubuntu
 WorkingDirectory=/opt/voice-expression-mvp
-Environment="PATH=/opt/voice-expression-mvp/venv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
-ExecStart=/opt/voice-expression-mvp/venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 8010
+Environment="PATH=/opt/voice-expression-mvp/venv/bin"
+ExecStart=/opt/voice-expression-mvp/venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 8010
 Restart=always
 RestartSec=3
 
