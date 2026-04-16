@@ -1,16 +1,15 @@
 from __future__ import annotations
 
-import io
 import math
 import tempfile
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, List, Tuple
+from typing import Dict, Tuple
 
 import librosa
 import numpy as np
-import soundfile as sf
-from pydub import AudioSegment, silence
+from pydub import AudioSegment
+from pydub.silence import detect_nonsilent
 
 TARGET_SR = 16000
 MAX_DURATION_SECONDS = 8.0
@@ -79,6 +78,33 @@ class AudioAnalysisError(Exception):
     pass
 
 
+def trim_silence_stable(
+    audio: AudioSegment,
+    silence_thresh: int = -45,
+    min_silence_len: int = 200,
+    keep_silence: int = 120,
+) -> AudioSegment:
+    if len(audio) == 0:
+        return audio
+
+    nonsilent_ranges = detect_nonsilent(
+        audio,
+        min_silence_len=min_silence_len,
+        silence_thresh=silence_thresh,
+    )
+
+    if not nonsilent_ranges:
+        return audio
+
+    start = max(0, nonsilent_ranges[0][0] - keep_silence)
+    end = min(len(audio), nonsilent_ranges[-1][1] + keep_silence)
+
+    if start >= end:
+        return audio
+
+    return audio[start:end]
+
+
 def _load_audio_from_upload(raw_bytes: bytes, filename: str) -> Tuple[np.ndarray, int]:
     suffix = Path(filename or "upload.webm").suffix or ".webm"
 
@@ -89,11 +115,12 @@ def _load_audio_from_upload(raw_bytes: bytes, filename: str) -> Tuple[np.ndarray
         audio = AudioSegment.from_file(src_file.name)
         audio = audio.set_channels(1).set_frame_rate(TARGET_SR)
 
-        trimmed = silence.strip_silence(
+        silence_thresh = int(audio.dBFS - 18) if math.isfinite(audio.dBFS) else -38
+        trimmed = trim_silence_stable(
             audio,
-            silence_len=180,
-            silence_thresh=audio.dBFS - 18 if math.isfinite(audio.dBFS) else -38,
-            padding=80,
+            silence_thresh=silence_thresh,
+            min_silence_len=180,
+            keep_silence=80,
         )
         if len(trimmed) == 0:
             trimmed = audio
