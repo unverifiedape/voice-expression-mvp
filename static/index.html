@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>一句话语音判词</title>
+  <title>毒气测试</title>
   <style>
     :root {
       --bg: #f3f3f1; --card: #ffffff; --text: #121212; --muted: #666; --line: #e6e6e2;
@@ -58,7 +58,9 @@
 <body>
   <div class="wrap">
     <div class="card">
-      <h1>一句话语音判词</h1>
+      <h1>毒气测试</h1>
+      <div class="desc">话不对味，语气有毒。</div>
+      <div class="desc">同一句话，你说出来就变了味。</div>
       <div class="desc">读同一句话。我们不判断内容真假，只判断你说出来时，更像在把什么感觉甩给别人。</div>
       <div id="challengeBanner" class="challenge-banner">有人把这句话发给你，想听你怎么说。</div>
       <div id="incomingAudioBox" class="incoming-audio-box">
@@ -80,7 +82,7 @@
     <div class="card">
       <div class="section-title">录音</div>
       <div class="controls">
-        <button id="startBtn" class="btn-primary">开始录音</button>
+        <button id="startBtn" class="btn-primary">说一句试试</button>
         <button id="stopBtn" class="btn-secondary" disabled>停止并分析</button>
       </div>
       <div id="status" class="status">等待录音</div>
@@ -96,6 +98,12 @@
         <div id="resultAudioBox" class="result-audio-box">
           <div class="result-audio-title">先听我怎么说，再看它为什么这么判</div>
           <audio id="resultAudio" controls playsinline></audio>
+        </div>
+
+        <div id="toxicMeta" class="result-audio-box" style="display:none;">
+          <div id="toxicScore" class="result-title" style="margin-bottom:6px;">毒气指数：87</div>
+          <div class="result-sub" style="margin-bottom:8px;">话不对味，语气有毒。</div>
+          <div id="toxicElements" class="desc" style="margin-bottom:0;">检测成分：二氟化氧 · 氟乙酸钠 · 被动攻击残留 · 轻微阴阳怪气</div>
         </div>
 
         <div class="badge">SYSTEM VERDICT</div>
@@ -116,7 +124,7 @@
         </div>
 
         <div class="share-actions">
-          <button id="generateCardBtn" class="btn-danger">生成判决卡</button>
+          <button id="generateCardBtn" class="btn-danger">生成毒气卡</button>
           <button id="copyLinkBtn" class="btn-secondary">复制挑战链接</button>
         </div>
 
@@ -151,11 +159,33 @@
     const generateCardBtn = document.getElementById("generateCardBtn");
     const copyLinkBtn = document.getElementById("copyLinkBtn");
 
+    const toxicMeta = document.getElementById("toxicMeta");
+    const toxicScoreEl = document.getElementById("toxicScore");
+    const toxicElementsEl = document.getElementById("toxicElements");
+
+    function randomPick(arr) {
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    function buildToxicMeta() {
+      const score = Math.floor(Math.random() * 31) + 65;
+      const level = score >= 90 ? "剧毒" : score >= 80 ? "高危" : score >= 70 ? "有毒" : "轻微变味";
+      const chem = ["二氟化氧", "氟乙酸钠", "硫化氢", "二氧化氮", "氯气"];
+      const emo = ["被动攻击残留", "情绪悬浮物", "隐性施压分子", "未说出口的期待"];
+      const absurd = ["轻微阴阳怪气", "语言变质反应物", "不明来历气味", "过期情绪残留"];
+      return {
+        score,
+        level,
+        elements: [randomPick(chem), randomPick(chem), randomPick(emo), randomPick(absurd)].join(" · ")
+      };
+    }
+
     let mediaRecorder = null;
     let mediaStream = null;
     let chunks = [];
     let selectedSentence = "你开心就好。";
     let latestCardData = null;
+    let latestToxicMeta = null;
     let latestAudioObjectUrl = "";
     let latestShareAudioUrl = "";
 
@@ -271,6 +301,7 @@
             latestShareAudioUrl = data.audio_url || "";
             const verdict = getVerdict(data.result.title || data.result.label);
             const challengeUrl = buildChallengeUrl(selectedSentence);
+            latestToxicMeta = buildToxicMeta();
 
             latestCardData = {
               sentence: selectedSentence,
@@ -278,7 +309,10 @@
               sub: verdict.sub,
               consequences: verdict.consequences,
               challenge: verdict.challenge,
-              url: challengeUrl
+              url: challengeUrl,
+              toxicScore: latestToxicMeta.score,
+              toxicLevel: latestToxicMeta.level,
+              toxicElements: latestToxicMeta.elements
             };
 
             resultSentenceEl.textContent = `“${selectedSentence}”`;
@@ -286,6 +320,9 @@
             resultSubEl.textContent = verdict.sub;
             challengeTextEl.textContent = verdict.challenge;
             liveQrEl.src = `/qr?url=${encodeURIComponent(challengeUrl)}`;
+            toxicScoreEl.textContent = `毒气指数：${latestToxicMeta.score}`;
+            toxicElementsEl.textContent = `检测成分：${latestToxicMeta.elements}`;
+            toxicMeta.style.display = "block";
 
             consequenceListEl.innerHTML = "";
             verdict.consequences.forEach((text) => {
@@ -354,59 +391,68 @@
 
       ctx.fillStyle = "#111111";
       ctx.font = "bold 24px sans-serif";
-      ctx.fillText("▶ 播放我的语气", 130, 206);
+      ctx.fillText("▶ 扫码听我怎么说", 130, 206);
+
+      ctx.fillStyle = "#111111";
+      ctx.font = "bold 58px sans-serif";
+      ctx.fillText(`毒气指数：${latestCardData.toxicScore}`, 96, 318);
+
+      ctx.fillStyle = "#555555";
+      ctx.font = "30px sans-serif";
+      ctx.fillText("话不对味，语气有毒。", 96, 366);
+      ctx.fillText(`检测成分：${latestCardData.toxicElements}`, 96, 412);
 
       ctx.fillStyle = "#d3362d";
       ctx.font = "bold 24px sans-serif";
-      ctx.fillText("SYSTEM VERDICT", 96, 292);
+      ctx.fillText("SYSTEM VERDICT", 96, 470);
 
       ctx.fillStyle = "#111111";
       ctx.font = "bold 56px sans-serif";
-      wrapText(ctx, `“${latestCardData.sentence}”`, 96, 368, w - 192, 66);
+      wrapText(ctx, `“${latestCardData.sentence}”`, 96, 546, w - 192, 66);
 
       ctx.fillStyle = "#111111";
       ctx.font = "bold 60px sans-serif";
-      wrapText(ctx, latestCardData.title, 96, 540, w - 192, 72);
+      wrapText(ctx, latestCardData.title, 96, 718, w - 192, 72);
 
       ctx.fillStyle = "#505050";
       ctx.font = "30px sans-serif";
-      wrapText(ctx, latestCardData.sub, 96, 780, w - 192, 46);
+      wrapText(ctx, latestCardData.sub, 96, 940, w - 192, 46);
 
       ctx.fillStyle = "#111111";
       ctx.font = "bold 26px sans-serif";
-      ctx.fillText("别人可能会怎么感受", 96, 970);
+      ctx.fillText("别人可能会怎么感受", 96, 1110);
 
       ctx.fillStyle = "#333333";
       ctx.font = "28px sans-serif";
-      let y = 1030;
+      let y = 1170;
       latestCardData.consequences.forEach((item) => {
         wrapText(ctx, `• ${item}`, 110, y, w - 250, 42);
         y += 74;
       });
 
       ctx.fillStyle = "#050505";
-      roundRect(ctx, 78, 1190, w - 156, 190, 26);
+      roundRect(ctx, 78, 1210, w - 156, 170, 26);
       ctx.fill();
 
       ctx.fillStyle = "#ffffff";
       ctx.font = "bold 42px sans-serif";
-      wrapText(ctx, latestCardData.challenge, 110, 1256, w - 420, 54);
+      wrapText(ctx, latestCardData.challenge, 110, 1266, w - 420, 54);
 
       ctx.fillStyle = "#ffffff";
       ctx.font = "24px sans-serif";
-      ctx.fillText("扫码测同一句话", 110, 1340);
+      ctx.fillText("扫码听我怎么说", 110, 1348);
 
       try {
         const qrImg = await loadImage(`/qr?url=${encodeURIComponent(latestCardData.url)}`);
         ctx.fillStyle = "#ffffff";
-        ctx.fillRect(w - 290, 1210, 150, 150);
-        ctx.drawImage(qrImg, w - 290, 1210, 150, 150);
+        ctx.fillRect(w - 290, 1220, 150, 150);
+        ctx.drawImage(qrImg, w - 290, 1220, 150, 150);
       } catch (e) {
         ctx.fillStyle = "#ecece8";
-        ctx.fillRect(w - 290, 1210, 150, 150);
+        ctx.fillRect(w - 290, 1220, 150, 150);
         ctx.fillStyle = "#999999";
         ctx.font = "24px sans-serif";
-        ctx.fillText("QR", w - 236, 1294);
+        ctx.fillText("QR", w - 236, 1304);
       }
 
       ctx.fillStyle = "#111111";
