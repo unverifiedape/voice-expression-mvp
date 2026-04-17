@@ -35,6 +35,10 @@
     audio { width:100%; margin-top:8px; }
     .result { margin-top:18px; border-top:1px solid var(--line); padding-top:18px; }
     .result-audio-box, .dare-box { display:none; margin-bottom:18px; padding:14px; border-radius:18px; background:#f7f7f5; border:1px solid var(--line); }
+    .toxic-inline { display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+    .toxic-pill { display:inline-flex; align-items:center; gap:8px; padding:6px 12px; border-radius:999px; background:#eef5ef; color:#1f4a38; font-size:13px; font-weight:800; }
+    .toxic-elements-line { font-size:16px; line-height:1.9; color:#2f2f2f; }
+    .challenge-box { background:linear-gradient(180deg,#050505 0%,#111 100%); }
     .result-audio-title { font-size:14px; font-weight:800; margin-bottom:8px; }
     .badge { display:inline-block; font-size:12px; letter-spacing:0.08em; color:var(--danger); margin-bottom:12px; font-weight:800; text-transform:uppercase; }
     .result-sentence { font-size:24px; line-height:1.35; font-weight:800; margin-bottom:20px; }
@@ -102,9 +106,12 @@
         </div>
 
         <div id="toxicMeta" class="result-audio-box" style="display:none;">
-          <div id="toxicScore" class="result-title" style="margin-bottom:6px;">毒气指数：87</div>
+          <div class="toxic-inline" style="margin-bottom:8px;">
+            <div id="toxicScore" class="result-title" style="margin-bottom:0;">毒气指数：87</div>
+            <div id="toxicLevel" class="toxic-pill">偏高</div>
+          </div>
           <div class="result-sub" style="margin-bottom:8px;">话不对味，语气有毒。</div>
-          <div id="toxicElements" class="desc" style="margin-bottom:0;">检测成分：二氟化氧 · 氟乙酸钠 · 被动攻击残留 · 轻微阴阳怪气</div>
+          <div id="toxicElements" class="toxic-elements-line" style="margin-bottom:0;">检测到的毒气：氟乙酸钠 · 氯气 · 情绪悬浮物 · 轻微阴阳怪气</div>
         </div>
 
         <div class="badge">SYSTEM VERDICT</div>
@@ -120,16 +127,16 @@
         <div class="challenge-box">
           <div class="challenge-label">拿去问别人</div>
           <div id="challengeText" class="challenge-text"></div>
-          <div class="challenge-sub">别解释，丢给朋友看他们怎么说。</div>
+          <div class="challenge-sub">别解释，直接发给朋友听听他会怎么说。</div>
           <img id="liveQr" class="challenge-qr" src="" alt="挑战二维码" />
         </div>
 
         <div class="share-actions">
           <button id="generateCardBtn" class="btn-danger">生成毒气卡</button>
-          <button id="copyLinkBtn" class="btn-secondary">复制挑战链接</button>
+          <button id="copyLinkBtn" class="btn-secondary">发起毒气挑战</button>
         </div>
 
-        <div class="note">传播最有效的方式不是“来试试”，而是“你怎么说”。</div>
+        <div class="note">一张是结果图，一张是挑战入口。越像在“点名”，越容易被点开。</div>
       </div>
     </div>
   </div>
@@ -162,22 +169,106 @@
 
     const toxicMeta = document.getElementById("toxicMeta");
     const toxicScoreEl = document.getElementById("toxicScore");
+    const toxicLevelEl = document.getElementById("toxicLevel");
     const toxicElementsEl = document.getElementById("toxicElements");
 
     function randomPick(arr) {
       return arr[Math.floor(Math.random() * arr.length)];
     }
 
-    function buildToxicMeta() {
+    function scoreToLevel(score) {
+      if (score >= 90) return "超标";
+      if (score >= 80) return "偏高";
+      if (score >= 70) return "有点毒";
+      return "轻微变味";
+    }
+
+    const toxicChem = [
+      "氟乙酸钠",
+      "氯气",
+      "二氧化氮",
+      "硫化氢",
+      "氨气",
+      "一氧化碳",
+      "二氧化硫",
+      "氰化物残留",
+      "低剂量神经毒素",
+      "未知挥发性化合物"
+    ];
+
+    const toxicEmotion = [
+      "情绪悬浮物",
+      "轻度控制欲",
+      "表达含糊",
+      "语气偏冷",
+      "被动攻击倾向",
+      "不确定性扩散",
+      "情绪延迟释放",
+      "轻微压迫感",
+      "让人猜测倾向",
+      "回避式表达"
+    ];
+
+    const toxicFun = [
+      "臭鸡蛋气味",
+      "隔夜情绪残留",
+      "微妙阴阳怪气",
+      "说了但没说清气体",
+      "你应该懂残留",
+      "空气突然安静颗粒",
+      "懂的人已经累了",
+      "轻微翻白眼气流",
+      "情绪憋着不说蒸汽",
+      "话说一半就撤离气体",
+      "人没事但气氛有事",
+      "礼貌但有距离感气味",
+      "你开心就好但不太开心气体",
+      "表面无事内心翻涌气流"
+    ];
+
+    function pickDistinct(arr, used) {
+      const pool = arr.filter(item => !used.has(item));
+      const item = pool.length ? randomPick(pool) : randomPick(arr);
+      used.add(item);
+      return item;
+    }
+
+    function getWeakBoundElements(label, sentence) {
+      const used = new Set();
+      let chemPool = toxicChem;
+      let emotionPool = toxicEmotion;
+      let funPool = toxicFun;
+
+      const text = `${label || ""} ${sentence || ""}`;
+
+      if (text.includes("试探") || text.includes("不确定") || text.includes("猜")) {
+        emotionPool = ["不确定性扩散", "表达含糊", "让人猜测倾向", "回避式表达", "情绪悬浮物"];
+        funPool = ["你应该懂残留", "懂的人已经累了", "说了但没说清气体", "空气突然安静颗粒", "臭鸡蛋气味"];
+      } else if (text.includes("冷静") || text.includes("控场") || text.includes("平和")) {
+        emotionPool = ["语气偏冷", "轻度控制欲", "轻微压迫感", "情绪延迟释放", "回避式表达"];
+        funPool = ["礼貌但有距离感气味", "轻微翻白眼气流", "人没事但气氛有事", "隔夜情绪残留", "表面无事内心翻涌气流"];
+      } else if (text.includes("直接") || text.includes("强势")) {
+        emotionPool = ["轻微压迫感", "轻度控制欲", "被动攻击倾向", "语气偏冷", "情绪悬浮物"];
+        funPool = ["空气突然安静颗粒", "人没事但气氛有事", "微妙阴阳怪气", "臭鸡蛋气味", "话说一半就撤离气体"];
+      } else if (text.includes("你开心就好")) {
+        emotionPool = ["被动攻击倾向", "表达含糊", "不确定性扩散", "情绪悬浮物", "让人猜测倾向"];
+        funPool = ["你开心就好但不太开心气体", "臭鸡蛋气味", "你应该懂残留", "懂的人已经累了", "微妙阴阳怪气"];
+      }
+
+      return [
+        pickDistinct(chemPool, used),
+        pickDistinct(chemPool, used),
+        pickDistinct(emotionPool, used),
+        pickDistinct(funPool, used)
+      ].join(" · ");
+    }
+
+    function buildToxicMeta(label, sentence) {
       const score = Math.floor(Math.random() * 31) + 65;
-      const level = score >= 90 ? "剧毒" : score >= 80 ? "高危" : score >= 70 ? "有毒" : "轻微变味";
-      const chem = ["二氟化氧", "氟乙酸钠", "硫化氢", "二氧化氮", "氯气"];
-      const emo = ["被动攻击残留", "情绪悬浮物", "隐性施压分子", "未说出口的期待"];
-      const absurd = ["轻微阴阳怪气", "语言变质反应物", "不明来历气味", "过期情绪残留"];
       return {
         score,
-        level,
-        elements: [randomPick(chem), randomPick(chem), randomPick(emo), randomPick(absurd)].join(" · ")
+        level: scoreToLevel(score),
+        elements: getWeakBoundElements(label, sentence)
       };
     }
 
@@ -302,7 +393,7 @@
             latestShareAudioUrl = data.audio_url || "";
             const verdict = getVerdict(data.result.title || data.result.label);
             const challengeUrl = buildChallengeUrl(selectedSentence);
-            latestToxicMeta = buildToxicMeta();
+            latestToxicMeta = buildToxicMeta(data.result.title || data.result.label, selectedSentence);
 
             latestCardData = {
               sentence: selectedSentence,
@@ -322,7 +413,8 @@
             challengeTextEl.textContent = verdict.challenge;
             liveQrEl.src = `/qr?url=${encodeURIComponent(challengeUrl)}`;
             toxicScoreEl.textContent = `毒气指数：${latestToxicMeta.score}`;
-            toxicElementsEl.textContent = `检测成分：${latestToxicMeta.elements}`;
+            toxicLevelEl.textContent = latestToxicMeta.level;
+            toxicElementsEl.textContent = `检测到的毒气：${latestToxicMeta.elements}`;
             toxicMeta.style.display = "block";
 
             consequenceListEl.innerHTML = "";
@@ -392,7 +484,7 @@
 
       ctx.fillStyle = "#111111";
       ctx.font = "bold 24px sans-serif";
-      ctx.fillText("▶ 扫码听我怎么说", 130, 206);
+      ctx.fillText("▶ 先听我怎么说", 130, 206);
 
       ctx.fillStyle = "#111111";
       ctx.font = "bold 58px sans-serif";
@@ -401,7 +493,7 @@
       ctx.fillStyle = "#555555";
       ctx.font = "30px sans-serif";
       ctx.fillText("话不对味，语气有毒。", 96, 366);
-      ctx.fillText(`检测成分：${latestCardData.toxicElements}`, 96, 412);
+      ctx.fillText(`毒气元素：${latestCardData.toxicElements}`, 96, 412);
 
       ctx.fillStyle = "#d3362d";
       ctx.font = "bold 24px sans-serif";
