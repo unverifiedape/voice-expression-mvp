@@ -4,20 +4,21 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>毒气测试</title>
-  
   <style>
     :root{
-      --bg:#f3f4f2;
+      --bg:#f3f4f1;
       --card:#ffffff;
-      --soft:#f7f8f6;
-      --line:#e5e7e2;
-      --text:#121212;
-      --muted:#73766f;
-      --green:#4d7f5d;
-      --green-deep:#355c43;
-      --green-soft:#e7f1e9;
-      --danger:#c85845;
-      --black:#111315;
+      --soft:#f8faf7;
+      --line:#e6e8e3;
+      --text:#111111;
+      --muted:#70756f;
+      --green:#3f7b52;
+      --green-2:#eaf4ed;
+      --green-3:#cfe7d6;
+      --black:#0d1110;
+      --danger:#c75743;
+      --shadow:0 10px 35px rgba(22,30,24,.06);
+      --radius:28px;
     }
     *{box-sizing:border-box}
     body{
@@ -27,418 +28,522 @@
       font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang SC","Noto Sans SC",sans-serif;
     }
     .wrap{
-      max-width:760px;
+      max-width:780px;
       margin:0 auto;
       padding:18px 14px 42px;
     }
     .card{
       background:var(--card);
       border:1px solid var(--line);
-      border-radius:30px;
-      padding:24px 18px;
+      border-radius:32px;
+      padding:22px 18px;
       margin-bottom:18px;
-      box-shadow:0 1px 0 rgba(0,0,0,.02);
+      box-shadow:var(--shadow);
+    }
+
+    .hero-head{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:14px;
+      margin-bottom:18px;
+    }
+    .tag{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 14px;
+      border-radius:999px;
+      background:var(--green-2);
+      color:var(--green);
+      font-size:14px;
+      font-weight:800;
+      margin-bottom:14px;
     }
     h1{
-      margin:0 0 14px;
+      margin:0;
       font-size:34px;
-      line-height:1.06;
-      letter-spacing:-.04em;
+      line-height:1.08;
+      letter-spacing:-0.05em;
+      font-weight:900;
     }
+    .hero-accent{color:var(--green)}
     .desc{
       color:var(--muted);
-      font-size:16px;
+      font-size:15px;
       line-height:1.8;
-      margin-bottom:0;
+      margin-top:12px;
     }
+    .orb{
+      width:92px;height:92px;flex:0 0 92px;border-radius:50%;
+      background:
+        radial-gradient(circle at 34% 32%, #8cffb3 0 7%, transparent 8%),
+        radial-gradient(circle at 62% 34%, #8cffb3 0 7%, transparent 8%),
+        radial-gradient(circle at 50% 60%, #8cffb3 0 5%, transparent 6%),
+        radial-gradient(circle at 50% 50%, #0d1110 0 58%, transparent 59%),
+        radial-gradient(circle at 50% 50%, rgba(83,204,120,.28) 0 68%, transparent 69%);
+      position:relative;
+      box-shadow:0 12px 30px rgba(54,127,74,.18);
+      margin-top:22px;
+    }
+    .orb:before{
+      content:"";
+      position:absolute;right:-6px;top:-10px;width:18px;height:18px;border-radius:999px;
+      background:#53c66f;box-shadow:-8px 12px 0 2px #53c66f;
+      transform:rotate(18deg);
+    }
+
     .challenge-banner{
       display:none;
-      margin:18px 0 12px;
-      padding:12px 14px;
-      background:#fff7e8;
-      color:#8a5b00;
-      border:1px solid #f1dfb0;
-      border-radius:16px;
+      margin-bottom:12px;
+      padding:14px 16px;
+      border-radius:18px;
+      background:#101313;
+      color:#fff;
       font-size:14px;
-      font-weight:700;
+      line-height:1.75;
     }
     .incoming-audio-box{
       display:none;
-      margin:14px 0 14px;
-      padding:16px;
-      background:var(--soft);
-      border:1px solid var(--line);
+      margin-bottom:14px;
+      padding:14px;
       border-radius:22px;
+      background:#101313;
+      color:#fff;
     }
-    .incoming-audio-title,.result-audio-title,.section-title{
-      font-size:16px;
-      font-weight:800;
-      margin-bottom:10px;
+    .incoming-audio-title{
+      font-size:14px;
+      opacity:.85;
+      margin-bottom:8px;
+      font-weight:700;
     }
     .incoming-audio-desc{
-      margin-top:10px;
-      color:var(--muted);
-      font-size:14px;
+      font-size:13px;
       line-height:1.7;
+      color:rgba(255,255,255,.78);
+      margin-top:8px;
     }
 
-    .trial-row{
+    .sentence-shell{
+      background:var(--soft);
+      border:1px solid var(--line);
+      border-radius:28px;
+      padding:14px;
+      margin-top:8px;
+    }
+    .sentence-top{
       display:flex;
       justify-content:space-between;
       align-items:center;
-      margin:18px 0 10px;
-      color:#8b8f88;
-      font-size:14px;
-      font-weight:700;
+      gap:10px;
+      margin-bottom:10px;
     }
-    .switch-link{
+    .micro-label{
+      display:inline-flex;align-items:center;
+      padding:6px 12px;border-radius:999px;
+      background:#f0f3ef;color:#7a817b;font-size:13px;font-weight:700;
+    }
+    .switch-btn{
+      border:none;
+      background:var(--green-2);
       color:var(--green);
+      border-radius:999px;
+      padding:8px 14px;
+      font-size:14px;
       font-weight:800;
+      cursor:pointer;
     }
     .sentence-box{
-      padding:22px 16px;
-      background:#f4f5f3;
+      background:#f4faf5;
       border:1px solid var(--line);
-      border-radius:24px;
+      border-radius:22px;
+      padding:18px 16px;
       text-align:center;
-      font-size:24px;
-      line-height:1.35;
+      font-size:30px;
+      line-height:1.28;
+      margin-bottom:14px;
       font-weight:800;
       letter-spacing:-.03em;
-      margin-bottom:14px;
     }
     .chips{
       display:flex;
       flex-wrap:wrap;
-      gap:12px 12px;
-      margin-bottom:18px;
+      gap:10px;
+      margin-bottom:0;
     }
     .chip{
-      appearance:none;
-      border:1px solid #d7dbd4;
+      border:1px solid var(--line);
       background:#fff;
-      color:#1f1f1f;
       border-radius:999px;
-      padding:14px 18px;
-      font-size:16px;
-      line-height:1;
-      font-weight:700;
+      padding:12px 16px;
+      font-size:14px;
       cursor:pointer;
+      color:#1a1d1a;
+      box-shadow:none;
     }
     .chip.active{
-      border:2px solid var(--green-deep);
-      color:var(--green-deep);
-      background:#fbfffb;
-      box-shadow: inset 0 0 0 1px rgba(77,127,93,.08);
+      border-color:var(--green);
+      box-shadow:inset 0 0 0 1px var(--green);
+      color:var(--green);
+      font-weight:800;
+      background:#fbfffc;
     }
 
-    .record-shell{
-      margin-top:10px;
-      background:var(--soft);
+    .record-hero{
+      margin-top:18px;
+      background:linear-gradient(180deg,#fcfdfb 0%, #f7faf7 100%);
       border:1px solid var(--line);
-      border-radius:26px;
-      padding:18px 16px 16px;
-    }
-    .tips{
-      color:#8c8f89;
-      font-size:16px;
+      border-radius:30px;
+      padding:22px 18px;
       text-align:center;
-      margin:0;
-      line-height:1.8;
-    }
-    .mic-stage{
-      margin:18px auto 16px;
-      width:150px;
-      height:150px;
-      border-radius:50%;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      background:
-        radial-gradient(circle at center, #5a8b68 0, #4d7f5d 45%, #4d7f5d 46%, rgba(77,127,93,.18) 47%, rgba(77,127,93,.18) 60%, rgba(77,127,93,.09) 61%, rgba(77,127,93,.09) 76%, transparent 77%);
-      color:#fff;
-      font-size:46px;
       position:relative;
+      overflow:hidden;
     }
-    .mic-stage::before,.mic-stage::after{
+    .record-hero:before,.record-hero:after{
       content:"";
       position:absolute;
-      top:50%;
-      width:72px;
-      height:22px;
-      transform:translateY(-50%);
-      background:repeating-linear-gradient(90deg, rgba(113,176,130,.45) 0 4px, transparent 4px 10px);
-      opacity:.7;
+      width:140px;height:140px;border-radius:50%;
+      background:radial-gradient(circle, rgba(63,123,82,.10) 0%, rgba(63,123,82,0) 70%);
+      z-index:0;
     }
-    .mic-stage::before{right:100%; margin-right:14px}
-    .mic-stage::after{left:100%; margin-left:14px}
+    .record-hero:before{left:-40px;bottom:-50px}
+    .record-hero:after{right:-40px;top:-50px}
+    .record-hero > *{position:relative;z-index:1}
+    .tips-main{
+      color:var(--muted);
+      font-size:16px;
+      margin-bottom:18px;
+    }
+    .tips-sub{
+      color:#9aa098;
+      font-size:14px;
+      margin-top:8px;
+    }
+    .mic-hero{
+      width:118px;height:118px;border-radius:999px;
+      margin:0 auto 14px;
+      display:flex;align-items:center;justify-content:center;
+      background:radial-gradient(circle at 30% 25%, #4a975f 0%, #3f7b52 60%, #336444 100%);
+      box-shadow:0 16px 34px rgba(63,123,82,.28);
+      color:#fff;font-size:46px;font-weight:700;
+    }
+    .wave{
+      height:16px;
+      margin:0 auto 18px;
+      max-width:220px;
+      background:
+        radial-gradient(circle, #cfe7d6 1px, transparent 2px) center/18px 8px repeat-x;
+      opacity:.9;
+    }
 
-    .controls{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:12px;
-      margin-top:6px;
+    .section-title{
+      margin:0 0 14px;
+      font-size:22px;
+      font-weight:900;
     }
-    .btn-primary,.btn-secondary,.btn-danger{
-      appearance:none;
+    .controls{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-bottom:10px;
+    }
+    button{
       border:none;
       border-radius:18px;
-      padding:16px 14px;
-      font-size:18px;
-      font-weight:800;
-      cursor:pointer;
-    }
-    .btn-primary{
-      background:var(--green);
-      color:#fff;
-    }
-    .btn-secondary{
-      background:#eceeeb;
-      color:#80847d;
-    }
-    .btn-secondary:disabled{opacity:1}
-    .status{
-      margin:14px 2px 0;
-      color:#8b8f88;
+      padding:16px 22px;
       font-size:15px;
-      font-weight:700;
+      cursor:pointer;
+      transition:.18s ease;
+    }
+    .btn-primary{background:var(--green);color:#fff}
+    .btn-secondary{background:#ececea;color:#555}
+    .btn-danger{background:var(--black);color:#fff}
+    .record-actions{
+      display:flex;
+      gap:12px;
+      margin-top:14px;
+    }
+    .record-actions button{flex:1}
+    .status{
+      min-height:22px;
+      color:var(--muted);
+      font-size:14px;
+      margin:6px 0 8px;
+    }
+    .error{
+      color:var(--danger);
+      font-size:14px;
+      line-height:1.7;
+      margin-top:8px;
+      white-space:pre-wrap;
     }
     audio{
       width:100%;
-      margin-top:10px;
-      display:block;
-    }
-    .error{
-      color:#b33f30;
-      font-size:14px;
       margin-top:8px;
-      min-height:20px;
+      border-radius:14px;
     }
-    .dare-box,.result-audio-box,.consequences,.challenge-box,#toxicMeta{
-      border-radius:24px;
-      border:1px solid var(--line);
-      background:var(--soft);
-      padding:16px;
+
+    .result{
       margin-top:18px;
+      border-top:1px solid var(--line);
+      padding-top:18px;
     }
-    .dare-box{display:none}
-    .dare-title{
-      font-size:18px;
-      line-height:1.5;
+    .result-audio-box,.dare-box{
+      display:none;
+      margin-bottom:18px;
+      padding:16px;
+      border-radius:24px;
+      background:#f8faf7;
+      border:1px solid var(--line);
+    }
+    .result-audio-title{
+      font-size:15px;
       font-weight:800;
       margin-bottom:8px;
     }
-    .dare-desc{
-      color:var(--muted);
-      font-size:15px;
-      line-height:1.8;
+    .dare-title{
+      font-size:22px;
+      font-weight:900;
+      line-height:1.3;
+      margin-bottom:8px;
     }
-    .result{display:none;margin-top:16px}
-    .toxic-inline{
-      display:flex;
-      align-items:flex-end;
-      gap:10px;
-      flex-wrap:wrap;
+    .dare-desc{
+      font-size:15px;
+      color:#444;
+      line-height:1.75;
+    }
+
+    .toxic-meta-card{
+      display:none;
+      margin-bottom:18px;
+      padding:18px;
+      border-radius:28px;
+      background:#fbfcfa;
+      border:1px solid var(--line);
+    }
+    .toxic-head{
+      display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap;
       margin-bottom:8px;
     }
     .result-title{
-      font-size:34px;
-      line-height:1.1;
-      font-weight:900;
-      letter-spacing:-.04em;
-      margin:0 0 8px;
+      font-size:40px;
+      line-height:1.08;
+      font-weight:950;
+      margin:0;
+      letter-spacing:-0.05em;
     }
     .toxic-pill{
       display:inline-flex;
       align-items:center;
-      padding:6px 12px;
+      gap:8px;
+      padding:8px 14px;
       border-radius:999px;
-      background:var(--green-soft);
-      color:var(--green-deep);
-      font-size:14px;
+      background:var(--green-2);
+      color:#1f4a38;
+      font-size:13px;
       font-weight:800;
+      flex:0 0 auto;
     }
     .result-sub{
-      color:#50534d;
       font-size:16px;
-      line-height:1.8;
-      margin:0 0 10px;
+      line-height:1.85;
+      color:#444;
+      margin:10px 0 0;
     }
     .toxic-elements-line{
-      color:#3f423d;
       font-size:18px;
       line-height:1.8;
-      font-weight:700;
+      color:#2f2f2f;
+      margin-top:12px;
     }
+
     .badge{
-      margin-top:20px;
-      color:var(--danger);
-      font-size:14px;
-      font-weight:900;
+      display:inline-block;
+      font-size:12px;
       letter-spacing:.08em;
+      color:var(--danger);
+      margin-bottom:10px;
+      font-weight:800;
+      text-transform:uppercase;
     }
     .result-sentence{
-      margin-top:12px;
-      font-size:28px;
-      line-height:1.3;
+      font-size:26px;
+      line-height:1.35;
       font-weight:800;
+      margin-bottom:14px;
     }
+    .verdict-card{
+      padding:18px;
+      border-radius:26px;
+      background:linear-gradient(180deg,#f7faf7 0%, #eef6f0 100%);
+      border:1px solid var(--line);
+      margin-bottom:16px;
+    }
+
     .consequences{
-      background:#fff;
+      margin-bottom:18px;
     }
     .list-title{
-      font-size:18px;
-      font-weight:800;
+      font-size:20px;
+      font-weight:900;
       margin-bottom:10px;
     }
     #consequenceList{
-      padding-left:18px;
+      padding-left:22px;
       margin:0;
-    }
-    #consequenceList li{
-      margin-bottom:12px;
-      color:#4f524d;
+      color:#444;
+      line-height:1.9;
       font-size:16px;
-      line-height:1.75;
     }
 
     .challenge-box{
-      background:linear-gradient(180deg,#0e1011 0%, #151818 100%);
-      border-color:#1e2122;
+      margin-top:14px;
+      background:linear-gradient(180deg,#0a0f0c 0%, #121816 100%);
+      border-radius:26px;
+      padding:16px;
       color:#fff;
       position:relative;
       overflow:hidden;
-      padding-right:132px;
+      border:1px solid rgba(255,255,255,.06);
     }
-    .challenge-box::before{
+    .challenge-box:before{
       content:"";
       position:absolute;
-      inset:auto -30px -30px auto;
-      width:180px;
-      height:180px;
-      background:radial-gradient(circle, rgba(99,168,118,.24), transparent 60%);
+      inset:auto auto -50px -20px;
+      width:220px;height:120px;
+      background:radial-gradient(circle at center, rgba(85,116,95,.28), rgba(85,116,95,0));
       pointer-events:none;
     }
     .challenge-label{
-      color:#9aa09a;
-      font-size:14px;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:7px 12px;
+      border-radius:999px;
+      background:rgba(122,188,146,.14);
+      color:#d0efd9;
+      font-size:13px;
       font-weight:800;
-      margin-bottom:10px;
+      margin-bottom:12px;
     }
+    .challenge-content{
+      display:flex;
+      gap:14px;
+      align-items:flex-end;
+      justify-content:space-between;
+    }
+    .challenge-left{flex:1; min-width:0}
     .challenge-text{
       font-size:22px;
-      line-height:1.45;
+      line-height:1.28;
       font-weight:900;
       letter-spacing:-.03em;
       margin-bottom:12px;
-      white-space:pre-wrap;
     }
     .challenge-sub{
-      color:#a6aba5;
       font-size:14px;
       line-height:1.7;
+      color:rgba(255,255,255,.75);
+      margin-bottom:10px;
+    }
+    .challenge-mini{
+      font-size:14px;
+      line-height:1.7;
+      color:#b7e8c4;
+      font-weight:700;
     }
     .challenge-qr{
-      position:absolute;
-      right:16px;
-      bottom:16px;
-      width:96px;
-      height:96px;
-      border-radius:10px;
-      background:#fff;
-      object-fit:cover;
-      padding:6px;
+      width:112px;height:112px;border-radius:14px;background:#fff;padding:8px;object-fit:cover;flex:0 0 112px;
     }
+
     .share-actions{
-      display:grid;
-      grid-template-columns:1fr 1fr;
+      display:flex;
       gap:12px;
-      margin-top:16px;
+      margin-top:14px;
     }
-    .btn-danger{
-      background:#fff;
-      color:#111;
-      border:1px solid var(--line);
+    .share-actions button{
+      flex:1;
+      border-radius:18px;
+      font-weight:800;
     }
     .note{
-      color:#8b8f88;
-      font-size:14px;
-      line-height:1.8;
       margin-top:12px;
+      color:#7a817b;
+      font-size:13px;
+      line-height:1.8;
     }
 
     #shareCanvas{display:none}
 
-    @media (min-width: 860px){
-      .wrap{max-width:980px}
-      .card{padding:28px 24px}
+    @media (min-width:760px){
+      .wrap{padding-top:26px}
     }
   </style>
-
 </head>
 <body>
   <div class="wrap">
     <div class="card">
-      <h1>毒气测试</h1>
-      <div class="desc">你说话其实挺有毒的。</div>
-      <div class="desc" style="margin-top:6px;">同一句话，你说出来就变了味。</div>
+      <div class="hero-head">
+        <div style="flex:1;min-width:0">
+          <div class="tag">毒气测试</div>
+          <h1>你说话，<br><span class="hero-accent">其实挺有毒的。</span></h1>
+          <div class="desc">同一句话，你说出来就变了味。</div>
+        </div>
+        <div class="orb" aria-hidden="true"></div>
+      </div>
 
       <div id="challengeBanner" class="challenge-banner">有人把这句话发给你，想听你怎么说。</div>
-
       <div id="incomingAudioBox" class="incoming-audio-box">
-        <div class="incoming-audio-title">TA 刚刚是这样说的</div>
+        <div class="incoming-audio-title">TA刚刚是这样说的</div>
         <audio id="incomingAudio" controls playsinline></audio>
         <div class="incoming-audio-desc">先听这句是怎么被说出来的，再决定你要不要用你的语气说一遍。</div>
       </div>
 
-      <div class="trial-row">
-        <span>试试这句</span>
-        <span class="switch-link">换一句</span>
+      <div class="sentence-shell">
+        <div class="sentence-top">
+          <span class="micro-label">试试这句</span>
+          <button type="button" class="switch-btn" id="switchSentenceBtn">换一句</button>
+        </div>
+        <div id="sentenceBox" class="sentence-box">“你开心就好。”</div>
+        <div class="chips" id="chips">
+          <button class="chip active" data-sentence="你开心就好。">你开心就好。</button>
+          <button class="chip" data-sentence="没关系，你忙你的。">没关系，你忙你的。</button>
+          <button class="chip" data-sentence="都行，我无所谓。">都行，我无所谓。</button>
+          <button class="chip" data-sentence="好的，我知道了。">好的，我知道了。</button>
+          <button class="chip" data-sentence="行啊，随你。">行啊，随你。</button>
+        </div>
       </div>
 
-      <div id="sentenceBox" class="sentence-box">“你开心就好。”</div>
-
-      <div class="chips" id="chips">
-        <button class="chip active" data-sentence="你开心就好。">你开心就好。</button>
-        <button class="chip" data-sentence="没关系，你忙你的。">没关系，你忙你的。</button>
-        <button class="chip" data-sentence="都行，我无所谓。">都行，我无所谓。</button>
-        <button class="chip" data-sentence="好的，我知道了。">好的，我知道了。</button>
-        <button class="chip" data-sentence="行啊，随你。">行啊，随你。</button>
-      </div>
-
-      <div class="record-shell">
-        <div class="tips">读一句就行，很简单。</div>
-        <div class="tips" style="margin-top:4px;">读上面那句话</div>
-        <div class="mic-stage">🎤</div>
-
-        <div class="controls">
-          <button id="startBtn" class="btn-primary">说一句试试</button>
+      <div class="record-hero">
+        <div class="tips-main">读一句就行，很简单。</div>
+        <div class="wave" aria-hidden="true"></div>
+        <div class="mic-hero">🎤</div>
+        <div class="tips-sub">读上面那句话</div>
+        <div class="record-actions">
+          <button id="startBtn" class="btn-primary">按住说一句</button>
           <button id="stopBtn" class="btn-secondary" disabled>停止并分析</button>
         </div>
-
         <div id="status" class="status">等待录音</div>
         <audio id="audioPlayer" controls playsinline style="display:none;"></audio>
         <div id="error" class="error"></div>
       </div>
-    </div>
-
-    <div class="card">
-      <div class="section-title">录音</div>
 
       <div id="dareBox" class="dare-box">
         <div class="dare-title">听完了。你敢用你的语气说一遍吗？</div>
         <div class="dare-desc">别模仿，直接用你自己的说法录一句，看看系统会不会骂得更狠。</div>
       </div>
+    </div>
 
+    <div class="card">
       <div id="result" class="result" style="display:none;">
         <div id="resultAudioBox" class="result-audio-box">
           <div class="result-audio-title">先听我怎么说，再看它为什么这么判</div>
           <audio id="resultAudio" controls playsinline></audio>
         </div>
 
-        <div id="toxicMeta" class="result-audio-box" style="display:none;">
-          <div class="toxic-inline">
-            <div id="toxicScore" class="result-title" style="margin-bottom:0;">毒气指数：87</div>
+        <div id="toxicMeta" class="toxic-meta-card">
+          <div class="toxic-head">
+            <div id="toxicScore" class="result-title">毒气指数：87</div>
             <div id="toxicLevel" class="toxic-pill">偏高</div>
           </div>
           <div class="result-sub">话不对味，语气有毒。</div>
@@ -447,8 +552,10 @@
 
         <div class="badge">SYSTEM VERDICT</div>
         <div id="resultSentence" class="result-sentence"></div>
-        <div id="resultTitle" class="result-title"></div>
-        <div id="resultSub" class="result-sub"></div>
+        <div class="verdict-card">
+          <div id="resultTitle" class="result-title"></div>
+          <div id="resultSub" class="result-sub"></div>
+        </div>
 
         <div class="consequences">
           <div class="list-title">别人可能会怎么感受</div>
@@ -457,9 +564,14 @@
 
         <div class="challenge-box">
           <div class="challenge-label">拿去问别人</div>
-          <div id="challengeText" class="challenge-text"></div>
-          <div class="challenge-sub">别解释，直接发给朋友听听他会怎么说。</div>
-          <img id="liveQr" class="challenge-qr" src="" alt="挑战二维码" />
+          <div class="challenge-content">
+            <div class="challenge-left">
+              <div id="challengeText" class="challenge-text"></div>
+              <div class="challenge-sub">别解释，直接发给朋友听听他会怎么说。</div>
+              <div class="challenge-mini">扫码你也说一句</div>
+            </div>
+            <img id="liveQr" class="challenge-qr" src="" alt="挑战二维码" />
+          </div>
         </div>
 
         <div class="share-actions">
@@ -473,6 +585,7 @@
   </div>
 
   <canvas id="shareCanvas" width="1080" height="1450"></canvas>
+
 <script>
     const sentenceBox = document.getElementById("sentenceBox");
     const chips = document.querySelectorAll(".chip");
