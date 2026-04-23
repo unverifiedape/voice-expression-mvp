@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- test update -->
+<!-- relationship-final-press-hold-mic-v1 -->
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
@@ -235,6 +235,38 @@
       background:
         radial-gradient(circle, #cfe7d6 1px, transparent 2px) center/18px 8px repeat-x;
       opacity:.9;
+    }
+
+
+    .mic-hold-btn{
+      border:none;
+      background:transparent;
+      padding:0;
+      margin:0 auto 10px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      cursor:pointer;
+    }
+    .mic-hold-btn:active{transform:scale(.985)}
+    .mic-hold-circle{
+      width:138px;height:138px;border-radius:999px;
+      display:flex;align-items:center;justify-content:center;
+      background:radial-gradient(circle at 30% 25%, #4a975f 0%, #3f7b52 60%, #336444 100%);
+      box-shadow:0 16px 34px rgba(63,123,82,.28);
+      overflow:hidden;
+      position:relative;
+    }
+    .mic-hold-circle.recording{
+      box-shadow:0 0 0 10px rgba(63,123,82,.10), 0 18px 36px rgba(63,123,82,.32);
+    }
+    .mic-photo{
+      width:112px;height:112px;border-radius:999px;
+      background:
+        radial-gradient(circle at 50% 50%, rgba(255,255,255,.16), rgba(255,255,255,0) 65%),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Ccircle cx='60' cy='60' r='60' fill='none'/%3E%3Cg transform='translate(18 16)'%3E%3Crect x='27' y='40' width='18' height='30' rx='6' fill='%23373737' transform='rotate(38 36 55)'/%3E%3Ccircle cx='47' cy='53' r='4' fill='%23080808'/%3E%3Crect x='54' y='24' width='32' height='28' rx='12' fill='%23a8a8ad' transform='rotate(38 70 38)'/%3E%3Crect x='57' y='34' width='34' height='8' rx='4' fill='%2390c8db' transform='rotate(38 74 38)'/%3E%3Crect x='49' y='28' width='10' height='30' rx='4' fill='%23707074' transform='rotate(38 54 43)'/%3E%3Crect x='18' y='54' width='34' height='10' rx='5' fill='%23474a4a' transform='rotate(38 35 59)'/%3E%3C/g%3E%3C/svg%3E") center/84px 84px no-repeat;
+      filter:drop-shadow(0 10px 18px rgba(0,0,0,.12));
+      display:block;
     }
 
     .section-title{
@@ -506,24 +538,17 @@
           <button type="button" class="switch-btn" id="switchSentenceBtn">换一句</button>
         </div>
         <div id="sentenceBox" class="sentence-box">“你开心就好。”</div>
-        <div class="chips" id="chips">
-          <button class="chip active" data-sentence="你开心就好。">你开心就好。</button>
-          <button class="chip" data-sentence="没关系，你忙你的。">没关系，你忙你的。</button>
-          <button class="chip" data-sentence="都行，我无所谓。">都行，我无所谓。</button>
-          <button class="chip" data-sentence="好的，我知道了。">好的，我知道了。</button>
-          <button class="chip" data-sentence="行啊，随你。">行啊，随你。</button>
         </div>
-      </div>
 
       <div class="record-hero">
         <div class="tips-main">读一句就行，很简单。</div>
         <div class="wave" aria-hidden="true"></div>
-        <div class="mic-hero">🎤</div>
-        <div class="tips-sub">读上面那句话</div>
-        <div class="record-actions">
-          <button id="startBtn" class="btn-primary">按住说一句</button>
-          <button id="stopBtn" class="btn-secondary" disabled>停止并分析</button>
-        </div>
+        <button id="micHoldBtn" class="mic-hold-btn" type="button" aria-label="按住录音">
+          <span class="mic-hold-circle">
+            <span class="mic-photo" aria-hidden="true"></span>
+          </span>
+        </button>
+        <div class="tips-sub">按住上面的麦克风，说完松手就分析</div>
         <div id="status" class="status">等待录音</div>
         <audio id="audioPlayer" controls playsinline style="display:none;"></audio>
         <div id="error" class="error"></div>
@@ -537,9 +562,7 @@
 
     <div class="card">
       <div id="result" class="result" style="display:none;">
-        <div id="resultAudioBox" class="result-audio-box">
-          <div class="result-audio-title">先听我怎么说，再看它为什么这么判</div>
-          <audio id="resultAudio" controls playsinline></audio>
+<audio id="resultAudio" controls playsinline></audio>
         </div>
 
         <div id="toxicMeta" class="toxic-meta-card">
@@ -589,19 +612,14 @@
 
 <script>
     const sentenceBox = document.getElementById("sentenceBox");
-    const chips = document.querySelectorAll(".chip");
     const challengeBanner = document.getElementById("challengeBanner");
     const incomingAudioBox = document.getElementById("incomingAudioBox");
     const incomingAudio = document.getElementById("incomingAudio");
-    const startBtn = document.getElementById("startBtn");
-    const stopBtn = document.getElementById("stopBtn");
     const statusEl = document.getElementById("status");
     const errorEl = document.getElementById("error");
     const audioPlayer = document.getElementById("audioPlayer");
     const dareBox = document.getElementById("dareBox");
     const resultEl = document.getElementById("result");
-    const resultAudioBox = document.getElementById("resultAudioBox");
-    const resultAudio = document.getElementById("resultAudio");
     const resultSentenceEl = document.getElementById("resultSentence");
     const resultTitleEl = document.getElementById("resultTitle");
     const resultSubEl = document.getElementById("resultSub");
@@ -719,6 +737,8 @@
     let mediaRecorder = null;
     let mediaStream = null;
     let chunks = [];
+    const micHoldBtn = document.getElementById("micHoldBtn");
+    const micHoldCircle = document.querySelector(".mic-hold-circle");
     let selectedSentence = "你开心就好。";
     let latestCardData = null;
     let latestToxicMeta = null;
@@ -771,19 +791,18 @@
       });
     }
 
+    const sentencePool = [
+      "你开心就好。",
+      "都行，我无所谓。",
+      "好的，我知道了。",
+      "行啊，随你。"
+    ];
+
     if (challengeSentence) {
       selectedSentence = challengeSentence;
       sentenceBox.textContent = `“${selectedSentence}”`;
       challengeBanner.style.display = "block";
       dareBox.style.display = "block";
-      chips.forEach((chip) => {
-        if (chip.dataset.sentence === challengeSentence) {
-          chips.forEach((c) => c.classList.remove("active"));
-          chip.classList.add("active");
-        } else {
-          chip.classList.remove("active");
-        }
-      });
       statusEl.textContent = "你正在挑战别人发来的同一句话。";
     }
 
@@ -792,19 +811,13 @@
       incomingAudio.src = sharedAudioUrl;
     }
 
-    chips.forEach((chip) => {
-      chip.addEventListener("click", () => {
-        chips.forEach((c) => c.classList.remove("active"));
-        chip.classList.add("active");
-        selectedSentence = chip.dataset.sentence;
-        sentenceBox.textContent = `“${selectedSentence}”`;
-      });
-    });
+    let isPressing = false;
 
-    startBtn.addEventListener("click", async () => {
+    async function beginRecording() {
+      if (isPressing) return;
+      isPressing = true;
       errorEl.textContent = "";
       resultEl.style.display = "none";
-      resultAudioBox.style.display = "none";
       try {
         mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
         chunks = [];
@@ -823,8 +836,6 @@
             latestAudioObjectUrl = URL.createObjectURL(blob);
             audioPlayer.src = latestAudioObjectUrl;
             audioPlayer.style.display = "block";
-            resultAudio.src = latestAudioObjectUrl;
-            resultAudioBox.style.display = "block";
 
             const formData = new FormData();
             formData.append("audio", blob, "voice.webm");
@@ -869,30 +880,47 @@
             });
 
             resultEl.style.display = "block";
-            statusEl.textContent = "判词已生成";
+            statusEl.textContent = "松手完成，判词已生成";
           } catch (err) {
             statusEl.textContent = "分析失败";
             errorEl.textContent = String(err.message || err);
           } finally {
             if (mediaStream) mediaStream.getTracks().forEach((t) => t.stop());
-            startBtn.disabled = false;
-            stopBtn.disabled = true;
+            micHoldCircle.classList.remove("recording");
+            isPressing = false;
           }
         };
 
         mediaRecorder.start();
-        statusEl.textContent = "录音中...";
-        startBtn.disabled = true;
-        stopBtn.disabled = false;
+        micHoldCircle.classList.add("recording");
+        statusEl.textContent = "按住录音中，松手后自动分析...";
       } catch (err) {
+        isPressing = false;
+        micHoldCircle.classList.remove("recording");
         errorEl.textContent = "无法打开麦克风，请检查浏览器权限。";
       }
-    });
+    }
 
-    stopBtn.addEventListener("click", () => {
-      if (mediaRecorder && mediaRecorder.state !== "inactive") mediaRecorder.stop();
-      statusEl.textContent = "录音结束，正在分析...";
+    function endRecording() {
+      if (!isPressing) return;
+      if (mediaRecorder && mediaRecorder.state !== "inactive") {
+        statusEl.textContent = "已松手，正在分析...";
+        mediaRecorder.stop();
+      } else {
+        isPressing = false;
+        micHoldCircle.classList.remove("recording");
+      }
+    }
+
+    micHoldBtn.addEventListener("pointerdown", async (e) => {
+      e.preventDefault();
+      await beginRecording();
     });
+    micHoldBtn.addEventListener("pointerup", endRecording);
+    micHoldBtn.addEventListener("pointerleave", endRecording);
+    micHoldBtn.addEventListener("pointercancel", endRecording);
+    micHoldBtn.addEventListener("touchend", endRecording);
+    micHoldBtn.addEventListener("mouseup", endRecording);
 
     copyLinkBtn.addEventListener("click", async () => {
       try {
@@ -902,6 +930,15 @@
       } catch (e) {
         alert("复制失败，请手动复制地址");
       }
+    });
+
+    document.getElementById("switchSentenceBtn").addEventListener("click", () => {
+      const candidates = sentencePool.filter((s) => s !== selectedSentence);
+      selectedSentence = randomPick(candidates);
+      sentenceBox.textContent = `“${selectedSentence}”`;
+      resultEl.style.display = "none";
+      errorEl.textContent = "";
+      statusEl.textContent = "已换一句，按住麦克风试试。";
     });
 
     generateCardBtn.addEventListener("click", async () => {
