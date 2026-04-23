@@ -1065,5 +1065,16 @@
       if (line) ctx.fillText(line, x, y);
     }
   </script>
+
+<script>
+// ensure result shows after analysis
+(function(){
+const showResult=()=>{const el=document.getElementById('result'); if(el) el.style.display='block';};
+// hook into existing analyze button if any
+const btn=document.getElementById('stopBtn')||document.getElementById('analyzeBtn');
+if(btn){btn.addEventListener('click',showResult);} 
+})();
+</script>
+
 </body>
 </html>
