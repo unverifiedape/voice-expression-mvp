@@ -1,10 +1,10 @@
 <!doctype html>
-<!-- relationship-viral-growth-v2 -->
+<!-- relationship-human-product-v3 -->
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>毒气测试</title>
+  <title>语气测试</title>
   <style>
     :root{
       --bg:#f3f4f1;
@@ -544,6 +544,27 @@
       line-height:1.8;
     }
 
+
+    .tone-card{padding:20px 18px 18px;border-radius:30px;background:linear-gradient(180deg,#f9fbf8 0%,#eef7f1 100%);border:1px solid var(--line);margin-bottom:16px}
+    .tone-eyebrow{font-size:13px;font-weight:900;color:#b15a54;letter-spacing:.04em;margin-bottom:12px}
+    .human-title{font-size:38px;line-height:1.08;letter-spacing:-.06em;font-weight:950;color:#111;margin:0 0 14px}
+    .human-sub{font-size:18px;line-height:1.75;color:#3f4641;margin:0}
+    .quiet-line{margin-top:16px;padding:14px 16px;border-radius:22px;background:#fff;border:1px solid rgba(18,35,26,.08);font-size:16px;line-height:1.7;color:#1f3429}
+    .quiet-line b{color:var(--green)}
+    .fold-box{margin:18px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+    .fold-box summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;padding:16px 0;font-size:18px;font-weight:900}
+    .fold-box summary::-webkit-details-marker{display:none}
+    .fold-box summary:after{content:'展开';font-size:14px;color:var(--green);font-weight:800}
+    .fold-box[open] summary:after{content:'收起'}
+    .fold-box ul{margin:0 0 16px;padding-left:20px;color:#555;line-height:1.85;font-size:15px}
+    .challenge-box.human-share{border-radius:30px;padding:18px;transform:rotate(-.4deg);box-shadow:0 18px 40px rgba(0,0,0,.12)}
+    .challenge-box.human-share .challenge-label{background:rgba(122,188,146,.16);color:#cdeed7;font-size:13px}
+    .challenge-box.human-share .challenge-text{font-size:30px;line-height:1.18;letter-spacing:-.06em}
+    .qr-wrap{width:112px;height:112px;flex:0 0 112px;position:relative}
+    .qr-wrap .challenge-qr{width:112px;height:112px}
+    .qr-fallback{display:none;place-items:center;width:112px;height:112px;border-radius:14px;background:#fff;color:#111;font-weight:900;font-size:16px;text-align:center;line-height:1.3;padding:10px}
+    .share-actions .btn-secondary{background:#fff;color:#111;border:1px solid var(--line)}
+
     #shareCanvas{display:none}
 
     @media (min-width:760px){
@@ -556,9 +577,9 @@
     <div class="card">
       <div class="hero-head">
         <div style="flex:1;min-width:0">
-          <div class="tag">毒气测试</div>
-          <h1>你说话，<br><span class="hero-accent">其实挺有毒的。</span></h1>
-          <div class="desc">同一句话，你说出来就变了味。</div>
+          <div class="tag">语气测试</div>
+          <h1>有些话，<br><span class="hero-accent">听着会变味。</span></h1>
+          <div class="desc">读一句，看看别人听到的是什么味道。</div>
         </div>
         <div class="orb" aria-hidden="true"></div>
       </div>
@@ -579,14 +600,14 @@
         </div>
 
       <div class="record-hero">
-        <div class="tips-main">读一句就行，很简单。</div>
+        <div class="tips-main">读一句，别演。</div>
         <div class="wave" aria-hidden="true"></div>
         <button id="micHoldBtn" class="mic-hold-btn" type="button" aria-label="按住录音">
           <span class="mic-hold-circle">
             <span class="mic-photo" aria-hidden="true"></span>
           </span>
         </button>
-        <div class="tips-sub">按住上面的麦克风，说完松手就分析</div>
+        <div class="tips-sub">按住说，说完松手。</div>
         <div id="status" class="status">等待录音</div>
         <audio id="audioPlayer" controls playsinline style="display:none;"></audio>
         <div id="error" class="error"></div>
@@ -601,55 +622,55 @@
     <div id="resultCard" class="card" style="display:none;">
       <div id="result" class="result" style="display:block;">
 
-        <div id="toxicMeta" class="toxic-meta-card">
+        <div id="toxicMeta" class="toxic-meta-card" aria-hidden="true">
           <div class="toxic-head">
-            <div id="toxicScore" class="result-title">毒气指数：87</div>
-            <div id="toxicLevel" class="toxic-pill">偏高</div>
+            <div id="toxicScore" class="result-title">语气指数：70</div>
+            <div id="toxicLevel" class="toxic-pill">有点怪</div>
           </div>
-          <div class="result-sub">话不对味，语气有毒。</div>
-          <div id="toxicElements" class="toxic-elements-line">检测到的毒气：氟乙酸钠 · 氯气 · 情绪悬浮物 · 轻微阴阳怪气</div>
+          <div id="toxicElements" class="toxic-elements-line"></div>
         </div>
 
-        <div class="viral-hook">
-          <div class="viral-kicker">你以为你在正常说话，别人可能已经听偏了。</div>
-          <div class="viral-compare">
-            <div class="viral-row"><b>你说：</b><span id="youSaidLine">“你开心就好。”</span></div>
-            <div class="viral-row"><b>别人听：</b><span id="heardAsLine">有点敷衍 / 不太在乎</span></div>
+        <div class="tone-card">
+          <div class="tone-eyebrow">别人听到的可能是</div>
+          <div id="resultTitle" class="human-title"></div>
+          <p id="resultSub" class="human-sub"></p>
+          <div class="quiet-line">
+            <b>你说：</b><span id="youSaidLine">“你开心就好。”</span><br>
+            <b>别人听：</b><span id="heardAsLine">有点敷衍 / 不太在乎</span>
           </div>
-          <div class="share-prompt">同一句话，不同的人听到完全不一样。发给一个人试试，看TA怎么说。</div>
         </div>
 
-        <div class="badge">别人可能会这么理解</div>
+        <div class="badge">这次测试的句子</div>
         <div id="resultSentence" class="result-sentence"></div>
-        <div class="verdict-card">
-          <div id="resultTitle" class="result-title"></div>
-          <div id="resultSub" class="result-sub"></div>
-        </div>
 
-        <div class="consequences">
-          <div class="list-title">为什么这句话容易被误会</div>
-          <ul id="consequenceList"></ul>
-        </div>
-
-        <div class="challenge-box">
-          <div class="challenge-label">发给一个人试试</div>
+        <div class="challenge-box human-share">
+          <div class="challenge-label">发给TA看看</div>
           <div class="challenge-content">
             <div class="challenge-left">
               <div id="challengeText" class="challenge-text"></div>
-              <div class="challenge-sub">不要解释，直接发给TA。越像在“点名”，越容易被点开。</div>
-              <div class="challenge-mini">扫码听听你会怎么说</div>
+              <div class="challenge-sub">别解释，直接发给TA。让TA自己听。</div>
+              <div class="challenge-mini">扫码也读一句</div>
             </div>
-            <img id="liveQr" class="challenge-qr" src="" alt="挑战二维码" />
+            <div class="qr-wrap">
+              <img id="liveQr" class="challenge-qr" src="" alt="挑战二维码" onerror="this.style.display='none';this.nextElementSibling.style.display='grid';" />
+              <div class="qr-fallback">复制链接<br>发给TA</div>
+            </div>
           </div>
         </div>
 
         <div class="share-actions">
-          <button id="generateCardBtn" class="btn-danger">生成点名卡</button>
-          <button id="copyLinkBtn" class="btn-primary">发给TA测一下</button>
+          <button id="copyLinkBtn" class="btn-primary">发给TA</button>
+          <button id="generateCardBtn" class="btn-secondary">保存卡片</button>
         </div>
 
-        <div class="note">不要解释，直接发出去。让对方自己听、自己测，传播会更自然。</div>
+        <details class="fold-box">
+          <summary>为什么会这样</summary>
+          <ul id="consequenceList"></ul>
+        </details>
+
+        <div class="note">内容只是语气娱乐测试，不代表真实关系判断。</div>
       </div>
+    </div>
     </div>
   </div>
 
@@ -811,19 +832,19 @@
     const sharedAudioUrl = urlParams.get("audio");
 
     const verdictMap = {
-      "热情外放型": { title: "听起来像：你不是热情，是在把情绪推给别人。", sub: "你自己会觉得这是自然表达，但别人可能会感觉到，你在要求TA立刻接住你的状态，而不是单纯听你说完。", consequences: ["别人可能会觉得你希望TA马上表态","会被误听成：你不是在说话，你是在推动对方回应","情绪存在感一旦太强，别人会先防御再沟通"], challengePool: ["我这样说话真的会给人压力吗？","你听到我这句会不会想退一步？","别安慰我，你觉得我是不是太用力了？"] },
-      "冷静控制型": { title: "听起来像：你不是冷静，是在悄悄控场。", sub: "你表面上不急不躁，但别人很可能会觉得，节奏已经被你拿走了，自己只剩下接招的空间。", consequences: ["别人可能会觉得你不是在讨论，而是在控场","你越稳，越容易被误读成：结论已经有了","这种表达会让人感觉自己没有太多余地"], challengePool: ["我这样说话像不像在控场？","你听我这样说，会不会觉得不好反驳？","别解释，你觉得我是不是太冷静了？"] },
-      "试探犹豫型": { title: "听起来像：你不是试探，是把不确定丢给别人。", sub: "你没有直接说透，但停顿、犹豫和语气里的悬着，会让别人下意识开始猜你到底想要什么。", consequences: ["别人可能会觉得要不停猜你到底是什么意思","停顿太多时，会被误听成你在等别人先让步","模糊表达本身就是一种压力"], challengePool: ["我这句话是不是让人很累？","你听到会不会开始猜我到底什么意思？","别客气，你觉得我是不是不说透？"] },
-      "直接强势型": { title: "听起来像：你不是直接，是让人很难反驳。", sub: "你会觉得自己只是干脆，但别人听到的可能是一种边界太硬、很难轻松反驳的推进感。", consequences: ["别人可能会觉得你不是在沟通，而是在定方向","语气太利落时，容易让人先退一步","这种说法最容易让人觉得最好不要反着来"], challengePool: ["我这样说话是不是有点压人？","你听到会不会不想反驳？","别装没事，你觉得我这句狠不狠？"] },
-      "平稳克制型": { title: "听起来像：你不是平和，是把态度藏得太干净。", sub: "系统给你的不是成熟感，而是一种压得太平、平到别人不知道你真正站在哪边的表达方式。", consequences: ["别人可能会觉得你看似好说话，其实很难判断真实态度","太平的说法容易被听成敷衍，或者根本不想聊","没有波动并不等于没有压迫感"], challengePool: ["我这句话是不是太客气了？","你听得出我真实态度吗？","你会不会觉得我有点远？"] }
+      "热情外放型": { title: "这句话，听起来有点用力。", sub: "像是：你希望别人马上接住你的情绪。", consequences: ["你自己觉得只是热情，别人可能觉得压力忽然靠近。","语气太满时，对方会先防御，再回应。","不是错，只是容易让人觉得没地方躲。"], challengePool: ["你刚刚那句话，是不是有点用力？","这句听起来有点压过来了，你觉得呢？","别解释，你听听是不是有点满。"] },
+      "冷静控制型": { title: "这句话，听起来有点压人。", sub: "像是：你已经有答案，只是在等别人同意。", consequences: ["你觉得自己很冷静，别人可能觉得空间被收窄了。","越平稳，越容易像是在控场。","对方可能不是不想说，而是不知道怎么反驳。"], challengePool: ["你刚刚那句话，是不是有点压人？","这句听起来像已经定了，你觉得呢？","别解释，你听听像不像在控场。"] },
+      "试探犹豫型": { title: "这句话，听起来有点累。", sub: "像是：你不说透，但又希望别人猜到。", consequences: ["模糊不是没表达，它会把压力留给对方。","你越绕，对方越容易开始猜你到底想要什么。","这种句子最容易让人觉得：我是不是又要读空气。"], challengePool: ["你刚刚那句话，是不是有点让人累？","这句听起来像要我猜，你觉得呢？","别解释，你听听是不是没说透。"] },
+      "直接强势型": { title: "这句话，听起来有点硬。", sub: "像是：别人最好别反驳。", consequences: ["直接不是问题，但太利落会让人先退一步。","对方可能还没想好，就已经感觉结论被推过来了。","它听起来更像一句决定，不像一句沟通。"], challengePool: ["你刚刚那句话，是不是有点硬？","这句听起来不太好反驳，你觉得呢？","别解释，你听听是不是太直接了。"] },
+      "平稳克制型": { title: "这句话，听起来有点远。", sub: "像是：你很客气，但没有真的靠近。", consequences: ["太平的语气，有时会被听成敷衍。","你可能只是克制，但别人会觉得你在保持距离。","没有情绪不等于舒服，也可能让人更猜不透。"], challengePool: ["你刚刚那句话，是不是有点远？","这句听起来像不太想聊，你觉得呢？","别解释，你听听是不是太客气了。"] }
     };
 
     function getVerdict(label) {
       const base = verdictMap[label] || {
-        title: "听起来像：你说的和别人听到的，不是一回事。",
-        sub: "你自己觉得这是正常表达，但别人未必按你的自我理解来接收。这种偏差本身就值得拿去问熟人。",
-        consequences: ["别人不一定按你的自我理解来接收","你以为自然的地方，别人可能会觉得不太舒服","这种偏差本身就值得拿去问熟人"],
-        challengePool: ["它说我说话让人不太舒服，你怎么说？","它说我自己觉得正常，别人未必舒服，你认吗？"]
+        title: "这句话，听起来有点怪。",
+        sub: "像是：你说得不重，但味道不太对。",
+        consequences: ["别人未必按你的本意来听。","越轻描淡写，越容易被听成别的意思。","这类句子适合发给熟人，让TA直接说真实感受。"],
+        challengePool: ["你刚刚那句话，是不是有点怪？","这句听起来味道不太对，你觉得呢？"]
       };
       const challenge = base.challengePool[Math.floor(Math.random() * base.challengePool.length)];
       return { ...base, challenge };
@@ -932,10 +953,10 @@
             resultSubEl.textContent = verdict.sub;
             challengeTextEl.textContent = verdict.challenge;
             liveQrEl.src = `/qr?url=${encodeURIComponent(challengeUrl)}`;
-            toxicScoreEl.textContent = `毒气指数：${latestToxicMeta.score}`;
+            toxicScoreEl.textContent = `语气指数：${latestToxicMeta.score}`;
             toxicLevelEl.textContent = latestToxicMeta.level;
-            toxicElementsEl.textContent = `检测到的毒气：${latestToxicMeta.elements}`;
-            toxicMeta.style.display = "block";
+            toxicElementsEl.textContent = `语气标签：${latestToxicMeta.elements}`;
+            toxicMeta.style.display = "none";
 
             consequenceListEl.innerHTML = "";
             verdict.consequences.forEach((text) => {
@@ -1024,7 +1045,7 @@
 
       ctx.fillStyle = "#111111";
       ctx.font = "bold 28px sans-serif";
-      ctx.fillText("TA 说了这句话👇", 96, 118);
+      ctx.fillText("这句话，别人可能不是这样听的", 96, 118);
 
       ctx.fillStyle = "#efefec";
       roundRect(ctx, 96, 150, w - 192, 92, 22);
@@ -1036,20 +1057,19 @@
 
       ctx.fillStyle = "#111111";
       ctx.font = "bold 58px sans-serif";
-      ctx.fillText(`毒气指数：${latestCardData.toxicScore}`, 96, 318);
+      ctx.fillText("别解释，先听听。", 96, 318);
 
       ctx.fillStyle = "#555555";
       ctx.font = "30px sans-serif";
-      ctx.fillText("话不对味，语气有毒。", 96, 366);
-      ctx.fillText(`毒气元素：${latestCardData.toxicElements}`, 96, 412);
+      ctx.fillText("有些话，本意没错，听感会偏。", 96, 366);
 
       ctx.fillStyle = "#d3362d";
       ctx.font = "bold 24px sans-serif";
-      ctx.fillText("别人可能这样听", 96, 470);
+      ctx.fillText("别人听起来像", 96, 470);
 
       ctx.fillStyle = "#111111";
       ctx.font = "bold 56px sans-serif";
-      wrapText(ctx, `听起来像：${latestCardData.heardAs || "味道不太对"}`, 96, 546, w - 192, 66);
+      wrapText(ctx, `${latestCardData.heardAs || "味道不太对"}`, 96, 546, w - 192, 66);
 
       ctx.fillStyle = "#111111";
       ctx.font = "bold 60px sans-serif";
@@ -1061,7 +1081,7 @@
 
       ctx.fillStyle = "#111111";
       ctx.font = "bold 26px sans-serif";
-      ctx.fillText("为什么容易被误会", 96, 1110);
+      ctx.fillText("发给TA看看", 96, 1110);
 
       ctx.fillStyle = "#333333";
       ctx.font = "28px sans-serif";
@@ -1081,7 +1101,7 @@
 
       ctx.fillStyle = "#ffffff";
       ctx.font = "24px sans-serif";
-      ctx.fillText("扫码你也说一句", 110, 1348);
+      ctx.fillText("扫码也读一句", 110, 1348);
 
       try {
         const qrImg = await loadImage(`/qr?url=${encodeURIComponent(latestCardData.url)}`);
