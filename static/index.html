@@ -560,10 +560,8 @@
       </div>
     </div>
 
-    <div class="card">
-      <div id="result" class="result" style="display:none;">
-<audio id="resultAudio" controls playsinline></audio>
-        </div>
+    <div id="resultCard" class="card" style="display:none;">
+      <div id="result" class="result" style="display:block;">
 
         <div id="toxicMeta" class="toxic-meta-card">
           <div class="toxic-head">
@@ -620,6 +618,7 @@
     const audioPlayer = document.getElementById("audioPlayer");
     const dareBox = document.getElementById("dareBox");
     const resultEl = document.getElementById("result");
+    const resultCardEl = document.getElementById("resultCard");
     const resultSentenceEl = document.getElementById("resultSentence");
     const resultTitleEl = document.getElementById("resultTitle");
     const resultSubEl = document.getElementById("resultSub");
@@ -818,6 +817,7 @@
       isPressing = true;
       errorEl.textContent = "";
       resultEl.style.display = "none";
+      if (resultCardEl) resultCardEl.style.display = "none";
       try {
         mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
         chunks = [];
@@ -879,6 +879,7 @@
               consequenceListEl.appendChild(li);
             });
 
+            if (resultCardEl) resultCardEl.style.display = "block";
             resultEl.style.display = "block";
             statusEl.textContent = "松手完成，判词已生成";
           } catch (err) {
@@ -937,6 +938,7 @@
       selectedSentence = randomPick(candidates);
       sentenceBox.textContent = `“${selectedSentence}”`;
       resultEl.style.display = "none";
+      if (resultCardEl) resultCardEl.style.display = "none";
       errorEl.textContent = "";
       statusEl.textContent = "已换一句，按住麦克风试试。";
     });
@@ -1066,15 +1068,6 @@
     }
   </script>
 
-<script>
-// ensure result shows after analysis
-(function(){
-const showResult=()=>{const el=document.getElementById('result'); if(el) el.style.display='block';};
-// hook into existing analyze button if any
-const btn=document.getElementById('stopBtn')||document.getElementById('analyzeBtn');
-if(btn){btn.addEventListener('click',showResult);} 
-})();
-</script>
 
 </body>
 </html>
