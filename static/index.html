@@ -1,6 +1,7 @@
 <!doctype html>
 <!-- relationship-human-product-v3 -->
 <html lang="zh-CN">
+<!-- boom viral version v5 recorder states -->
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -192,82 +193,78 @@
 
     .record-hero{
       margin-top:18px;
-      background:linear-gradient(180deg,#fcfdfb 0%, #f7faf7 100%);
+      background:#fff;
       border:1px solid var(--line);
       border-radius:30px;
-      padding:22px 18px;
+      padding:30px 18px 26px;
       text-align:center;
       position:relative;
       overflow:hidden;
+      min-height:420px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:flex-start;
     }
-    .record-hero:before,.record-hero:after{
+    .record-hero:before{
       content:"";
       position:absolute;
-      width:140px;height:140px;border-radius:50%;
-      background:radial-gradient(circle, rgba(63,123,82,.10) 0%, rgba(63,123,82,0) 70%);
-      z-index:0;
+      inset:auto -80px -120px -80px;
+      height:240px;
+      background:radial-gradient(circle at 50% 0%, rgba(63,123,82,.08), rgba(63,123,82,0) 66%);
+      pointer-events:none;
     }
-    .record-hero:before{left:-40px;bottom:-50px}
-    .record-hero:after{right:-40px;top:-50px}
     .record-hero > *{position:relative;z-index:1}
-    .tips-main{
-      color:var(--muted);
-      font-size:16px;
-      margin-bottom:18px;
-    }
-    .tips-sub{
-      color:#9aa098;
-      font-size:14px;
-      margin-top:8px;
-    }
-    .mic-hero{
-      width:118px;height:118px;border-radius:999px;
-      margin:0 auto 14px;
-      display:flex;align-items:center;justify-content:center;
-      background:radial-gradient(circle at 30% 25%, #4a975f 0%, #3f7b52 60%, #336444 100%);
-      box-shadow:0 16px 34px rgba(63,123,82,.28);
-      color:#fff;font-size:46px;font-weight:700;
-    }
-    .wave{
-      height:16px;
-      margin:0 auto 18px;
-      max-width:220px;
-      background:
-        radial-gradient(circle, #cfe7d6 1px, transparent 2px) center/18px 8px repeat-x;
-      opacity:.9;
-    }
-
-
-    .mic-hold-btn{
-      border:none;
-      background:transparent;
-      padding:0;
-      margin:0 auto 10px;
+    .rec-state{
+      min-height:28px;
       display:flex;
       align-items:center;
       justify-content:center;
-      cursor:pointer;
+      gap:8px;
+      color:var(--muted);
+      font-size:17px;
+      font-weight:700;
+      margin:2px 0 18px;
     }
+    .rec-state .dot{width:9px;height:9px;border-radius:50%;background:#d8ddd7;display:none;}
+    .record-hero.is-recording .rec-state{color:#e86583}
+    .record-hero.is-recording .rec-state .dot{display:inline-block;background:#e86583;box-shadow:0 0 0 6px rgba(232,101,131,.12)}
+    .record-hero.is-processing .rec-state{color:#6f65e9}
+    .rec-progress{width:min(300px,78%);height:5px;border-radius:999px;background:#eceef0;overflow:hidden;margin:-6px auto 18px;display:none;}
+    .rec-progress span{display:block;height:100%;width:45%;border-radius:inherit;background:#6f65e9;animation:progressSlide 1.25s ease-in-out infinite;}
+    .record-hero.is-processing .rec-progress{display:block}
+    @keyframes progressSlide{0%{transform:translateX(-110%);width:38%}50%{width:56%}100%{transform:translateX(260%);width:38%}}
+    .rec-timer{font-size:62px;line-height:1;letter-spacing:.02em;font-weight:300;color:#6f757b;font-variant-numeric:tabular-nums;margin:0 0 30px;}
+    .record-hero.is-recording .rec-timer{color:#111;font-weight:300}
+    .wave{height:70px;width:220px;display:flex;align-items:center;justify-content:center;gap:8px;margin:0 auto 46px;opacity:.95;}
+    .wave span{width:7px;height:28px;border-radius:999px;background:#e5e7ea;display:block;transform-origin:center;}
+    .wave span:nth-child(1),.wave span:nth-child(9){height:28px}
+    .wave span:nth-child(2),.wave span:nth-child(8){height:42px}
+    .wave span:nth-child(3),.wave span:nth-child(7){height:34px}
+    .wave span:nth-child(4),.wave span:nth-child(6){height:48px}
+    .wave span:nth-child(5){height:58px}
+    .record-hero.is-recording .wave span{background:#6f65e9;animation:wavePulse .7s ease-in-out infinite alternate;}
+    .record-hero.is-recording .wave span:nth-child(2){animation-delay:.08s}
+    .record-hero.is-recording .wave span:nth-child(3){animation-delay:.16s}
+    .record-hero.is-recording .wave span:nth-child(4){animation-delay:.24s}
+    .record-hero.is-recording .wave span:nth-child(5){animation-delay:.32s}
+    .record-hero.is-recording .wave span:nth-child(6){animation-delay:.24s}
+    .record-hero.is-recording .wave span:nth-child(7){animation-delay:.16s}
+    .record-hero.is-recording .wave span:nth-child(8){animation-delay:.08s}
+    .record-hero.is-processing .wave span{background:#e5e7ea;animation:none;opacity:.55}
+    @keyframes wavePulse{from{transform:scaleY(.52)}to{transform:scaleY(1.22)}}
+    .mic-hold-btn{border:none;background:transparent;padding:0;margin:0 auto 18px;display:flex;align-items:center;justify-content:center;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:none;}
     .mic-hold-btn:active{transform:scale(.985)}
-    .mic-hold-circle{
-      width:138px;height:138px;border-radius:999px;
-      display:flex;align-items:center;justify-content:center;
-      background:radial-gradient(circle at 30% 25%, #4a975f 0%, #3f7b52 60%, #336444 100%);
-      box-shadow:0 16px 34px rgba(63,123,82,.28);
-      overflow:hidden;
-      position:relative;
-    }
-    .mic-hold-circle.recording{
-      box-shadow:0 0 0 10px rgba(63,123,82,.10), 0 18px 36px rgba(63,123,82,.32);
-    }
-    .mic-photo{
-      width:112px;height:112px;border-radius:999px;
-      background:
-        radial-gradient(circle at 50% 50%, rgba(255,255,255,.16), rgba(255,255,255,0) 65%),
-        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Ccircle cx='60' cy='60' r='60' fill='none'/%3E%3Cg transform='translate(18 16)'%3E%3Crect x='27' y='40' width='18' height='30' rx='6' fill='%23373737' transform='rotate(38 36 55)'/%3E%3Ccircle cx='47' cy='53' r='4' fill='%23080808'/%3E%3Crect x='54' y='24' width='32' height='28' rx='12' fill='%23a8a8ad' transform='rotate(38 70 38)'/%3E%3Crect x='57' y='34' width='34' height='8' rx='4' fill='%2390c8db' transform='rotate(38 74 38)'/%3E%3Crect x='49' y='28' width='10' height='30' rx='4' fill='%23707074' transform='rotate(38 54 43)'/%3E%3Crect x='18' y='54' width='34' height='10' rx='5' fill='%23474a4a' transform='rotate(38 35 59)'/%3E%3C/g%3E%3C/svg%3E") center/84px 84px no-repeat;
-      filter:drop-shadow(0 10px 18px rgba(0,0,0,.12));
-      display:block;
-    }
+    .mic-hold-circle{width:142px;height:142px;border-radius:999px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#7b72ff,#5f5bed);box-shadow:0 22px 42px rgba(103,95,238,.20);overflow:hidden;position:relative;transition:.2s ease;}
+    .mic-hold-circle::before{content:"";width:42px;height:58px;border-radius:24px 24px 22px 22px;background:#fff;display:block;position:absolute;top:40px;left:50%;transform:translateX(-50%);}
+    .mic-hold-circle::after{content:"";position:absolute;left:50%;top:90px;width:48px;height:34px;transform:translateX(-50%);border:7px solid #fff;border-top:0;border-radius:0 0 28px 28px;box-shadow:0 23px 0 -17px #fff;}
+    .record-hero.is-recording .mic-hold-circle{background:#e86583;box-shadow:0 22px 42px rgba(232,101,131,.22);}
+    .record-hero.is-recording .mic-hold-circle::before{width:34px;height:34px;border-radius:3px;top:54px;background:#fff;}
+    .record-hero.is-recording .mic-hold-circle::after{display:none}
+    .record-hero.is-processing .mic-hold-circle{background:linear-gradient(135deg,#9f99ff,#837cf2);opacity:.62;box-shadow:none;pointer-events:none;}
+    .mic-photo{display:none}
+    .tips-main{color:var(--muted);font-size:17px;margin:0 0 18px;line-height:1.7;}
+    .tips-sub{color:#747a76;font-size:16px;line-height:1.7;margin-top:0;}
 
     .section-title{
       margin:0 0 14px;
@@ -578,8 +575,8 @@
       <div class="hero-head">
         <div style="flex:1;min-width:0">
           <div class="tag">语气测试</div>
-          <h1>有些话，<br><span class="hero-accent">听着会变味。</span></h1>
-          <div class="desc">读一句，看看别人听到的是什么味道。</div>
+          <h1>同一句话，<br><span class="hero-accent">你说出来就变了味。</span></h1>
+          <div class="desc">读一句，看看是不是你也这样。</div>
         </div>
         <div class="orb" aria-hidden="true"></div>
       </div>
@@ -599,15 +596,16 @@
         <div id="sentenceBox" class="sentence-box">“你开心就好。”</div>
         </div>
 
-      <div class="record-hero">
-        <div class="tips-main">读一句，别演。</div>
-        <div class="wave" aria-hidden="true"></div>
-        <button id="micHoldBtn" class="mic-hold-btn" type="button" aria-label="按住录音">
-          <span class="mic-hold-circle">
-            <span class="mic-photo" aria-hidden="true"></span>
-          </span>
+      <div id="recordHero" class="record-hero">
+        <div id="recordState" class="rec-state"><span class="dot"></span><span id="recordStateText">点击开始录音</span></div>
+        <div class="rec-progress"><span></span></div>
+        <div id="recordTimer" class="rec-timer">00:00</div>
+        <div class="wave" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+        <button id="micHoldBtn" class="mic-hold-btn" type="button" aria-label="点击开始录音">
+          <span class="mic-hold-circle"><span class="mic-photo" aria-hidden="true"></span></span>
         </button>
-        <div class="tips-sub">按住说，说完松手。</div>
+        <div class="tips-main">读一句，别演。</div>
+        <div class="tips-sub">点击开始录音</div>
         <div id="status" class="status">等待录音</div>
         <audio id="audioPlayer" controls playsinline style="display:none;"></audio>
         <div id="error" class="error"></div>
@@ -631,7 +629,7 @@
         </div>
 
         <div class="tone-card">
-          <div class="tone-eyebrow">别人听到的可能是</div>
+          <div class="tone-eyebrow">别人可能听成这样</div>
           <div id="resultTitle" class="human-title"></div>
           <p id="resultSub" class="human-sub"></p>
           <div class="quiet-line">
@@ -640,16 +638,16 @@
           </div>
         </div>
 
-        <div class="badge">这次测试的句子</div>
+        <div class="badge">你刚刚说的是</div>
         <div id="resultSentence" class="result-sentence"></div>
 
         <div class="challenge-box human-share">
-          <div class="challenge-label">发给TA看看</div>
+          <div class="challenge-label">你敢发给TA吗</div>
           <div class="challenge-content">
             <div class="challenge-left">
               <div id="challengeText" class="challenge-text"></div>
-              <div class="challenge-sub">别解释，直接发给TA。让TA自己听。</div>
-              <div class="challenge-mini">扫码也读一句</div>
+              <div class="challenge-sub">别解释，发出去，看TA怎么回。</div>
+              <div class="challenge-mini">也让TA读一句</div>
             </div>
             <div class="qr-wrap">
               <img id="liveQr" class="challenge-qr" src="" alt="挑战二维码" onerror="this.style.display='none';this.nextElementSibling.style.display='grid';" />
@@ -659,16 +657,16 @@
         </div>
 
         <div class="share-actions">
-          <button id="copyLinkBtn" class="btn-primary">发给TA</button>
-          <button id="generateCardBtn" class="btn-secondary">保存卡片</button>
+          <button id="copyLinkBtn" class="btn-primary">发给一个人试试</button>
+          <button id="generateCardBtn" class="btn-secondary">保存这张图</button>
         </div>
 
         <details class="fold-box">
-          <summary>为什么会这样</summary>
+          <summary>你想知道为什么吗</summary>
           <ul id="consequenceList"></ul>
         </details>
 
-        <div class="note">内容只是语气娱乐测试，不代表真实关系判断。</div>
+        <div class="note">只是语气娱乐测试，别拿它当关系判决。但有些话，确实会被听偏。</div>
       </div>
     </div>
     </div>
@@ -821,6 +819,52 @@
     let chunks = [];
     const micHoldBtn = document.getElementById("micHoldBtn");
     const micHoldCircle = document.querySelector(".mic-hold-circle");
+    const recordHero = document.getElementById("recordHero");
+    const recordStateText = document.getElementById("recordStateText");
+    const recordTimer = document.getElementById("recordTimer");
+    const recordHint = document.querySelector(".record-hero .tips-sub");
+    let recordStartedAt = 0;
+    let recordTimerId = null;
+
+    function formatRecordTime(ms) {
+      const total = Math.max(0, Math.floor(ms / 1000));
+      const mm = String(Math.floor(total / 60)).padStart(2, "0");
+      const ss = String(total % 60).padStart(2, "0");
+      return `${mm}:${ss}`;
+    }
+
+    function setRecordMode(mode) {
+      if (!recordHero) return;
+      recordHero.classList.toggle("is-recording", mode === "recording");
+      recordHero.classList.toggle("is-processing", mode === "processing");
+      if (mode === "idle") {
+        if (recordStateText) recordStateText.textContent = "点击开始录音";
+        if (recordHint) recordHint.textContent = "点击开始录音";
+        if (recordTimer) recordTimer.textContent = "00:00";
+      }
+      if (mode === "recording") {
+        if (recordStateText) recordStateText.textContent = "录音中";
+        if (recordHint) recordHint.textContent = "点击停止并分析";
+      }
+      if (mode === "processing") {
+        if (recordStateText) recordStateText.textContent = "正在识别语气...";
+        if (recordHint) recordHint.textContent = "处理中，请稍候...";
+      }
+    }
+
+    function startRecordTimer() {
+      clearInterval(recordTimerId);
+      recordStartedAt = Date.now();
+      if (recordTimer) recordTimer.textContent = "00:00";
+      recordTimerId = setInterval(() => {
+        if (recordTimer) recordTimer.textContent = formatRecordTime(Date.now() - recordStartedAt);
+      }, 250);
+    }
+
+    function stopRecordTimer() {
+      clearInterval(recordTimerId);
+      recordTimerId = null;
+    }
     let selectedSentence = "你开心就好。";
     let latestCardData = null;
     let latestToxicMeta = null;
@@ -832,19 +876,19 @@
     const sharedAudioUrl = urlParams.get("audio");
 
     const verdictMap = {
-      "热情外放型": { title: "这句话，听起来有点用力。", sub: "像是：你希望别人马上接住你的情绪。", consequences: ["你自己觉得只是热情，别人可能觉得压力忽然靠近。","语气太满时，对方会先防御，再回应。","不是错，只是容易让人觉得没地方躲。"], challengePool: ["你刚刚那句话，是不是有点用力？","这句听起来有点压过来了，你觉得呢？","别解释，你听听是不是有点满。"] },
-      "冷静控制型": { title: "这句话，听起来有点压人。", sub: "像是：你已经有答案，只是在等别人同意。", consequences: ["你觉得自己很冷静，别人可能觉得空间被收窄了。","越平稳，越容易像是在控场。","对方可能不是不想说，而是不知道怎么反驳。"], challengePool: ["你刚刚那句话，是不是有点压人？","这句听起来像已经定了，你觉得呢？","别解释，你听听像不像在控场。"] },
-      "试探犹豫型": { title: "这句话，听起来有点累。", sub: "像是：你不说透，但又希望别人猜到。", consequences: ["模糊不是没表达，它会把压力留给对方。","你越绕，对方越容易开始猜你到底想要什么。","这种句子最容易让人觉得：我是不是又要读空气。"], challengePool: ["你刚刚那句话，是不是有点让人累？","这句听起来像要我猜，你觉得呢？","别解释，你听听是不是没说透。"] },
-      "直接强势型": { title: "这句话，听起来有点硬。", sub: "像是：别人最好别反驳。", consequences: ["直接不是问题，但太利落会让人先退一步。","对方可能还没想好，就已经感觉结论被推过来了。","它听起来更像一句决定，不像一句沟通。"], challengePool: ["你刚刚那句话，是不是有点硬？","这句听起来不太好反驳，你觉得呢？","别解释，你听听是不是太直接了。"] },
-      "平稳克制型": { title: "这句话，听起来有点远。", sub: "像是：你很客气，但没有真的靠近。", consequences: ["太平的语气，有时会被听成敷衍。","你可能只是克制，但别人会觉得你在保持距离。","没有情绪不等于舒服，也可能让人更猜不透。"], challengePool: ["你刚刚那句话，是不是有点远？","这句听起来像不太想聊，你觉得呢？","别解释，你听听是不是太客气了。"] }
+      "热情外放型": { title: "这句话，有点在逼别人回应。", sub: "像是：你把情绪推到对方面前，等TA马上接住。", consequences: ["你自己觉得只是热情，别人可能觉得压力忽然靠近。","语气太满时，对方会先防御，再回应。","不是错，只是容易让人觉得没地方躲。"], challengePool: ["你刚刚那句话，是不是有点在逼人回应？","这句听起来有点压过来了，你觉得呢？","别解释，你听听是不是有点满。"] },
+      "冷静控制型": { title: "这句话，不像商量，像通知。", sub: "像是：你已经有答案，只是在等别人点头。", consequences: ["你觉得自己很冷静，别人可能觉得空间被收窄了。","越平稳，越容易像是在控场。","对方可能不是不想说，而是不知道怎么反驳。"], challengePool: ["你刚刚那句话，是不是不像商量？","这句听起来像已经定了，你觉得呢？","别解释，你听听像不像在控场。"] },
+      "试探犹豫型": { title: "这句话，像是在让别人猜。", sub: "像是：你没说出口，但希望对方自己懂。", consequences: ["模糊不是没表达，它会把压力留给对方。","你越绕，对方越容易开始猜你到底想要什么。","这种句子最容易让人觉得：我是不是又要读空气。"], challengePool: ["你刚刚那句话，是不是在让我猜？","这句听起来像要我猜，你觉得呢？","别解释，你听听是不是没说透。"] },
+      "直接强势型": { title: "这句话，有点让人想退后。", sub: "像是：别人最好别反驳，也别多问。", consequences: ["直接不是问题，但太利落会让人先退一步。","对方可能还没想好，就已经感觉结论被推过来了。","它听起来更像一句决定，不像一句沟通。"], challengePool: ["你刚刚那句话，是不是让人想退后？","这句听起来不太好反驳，你觉得呢？","别解释，你听听是不是太直接了。"] },
+      "平稳克制型": { title: "这句话，像是不太想聊了。", sub: "像是：你很客气，但距离已经拉开了。", consequences: ["太平的语气，有时会被听成敷衍。","你可能只是克制，但别人会觉得你在保持距离。","没有情绪不等于舒服，也可能让人更猜不透。"], challengePool: ["你刚刚那句话，是不是像不想聊了？","这句听起来像不太想聊，你觉得呢？","别解释，你听听是不是太客气了。"] }
     };
 
     function getVerdict(label) {
       const base = verdictMap[label] || {
-        title: "这句话，听起来有点怪。",
-        sub: "像是：你说得不重，但味道不太对。",
+        title: "这句话，味道不太对。",
+        sub: "像是：你没有说重话，但别人已经听偏了。",
         consequences: ["别人未必按你的本意来听。","越轻描淡写，越容易被听成别的意思。","这类句子适合发给熟人，让TA直接说真实感受。"],
-        challengePool: ["你刚刚那句话，是不是有点怪？","这句听起来味道不太对，你觉得呢？"]
+        challengePool: ["你刚刚那句话，是不是味道不太对？","这句听起来味道不太对，你觉得呢？"]
       };
       const challenge = base.challengePool[Math.floor(Math.random() * base.challengePool.length)];
       return { ...base, challenge };
@@ -912,7 +956,8 @@
 
         mediaRecorder.onstop = async () => {
           try {
-            statusEl.textContent = "正在生成判词...";
+            setRecordMode("processing");
+            statusEl.textContent = "正在识别语气...";
             const blob = new Blob(chunks, { type: "audio/webm" });
 
             if (latestAudioObjectUrl) URL.revokeObjectURL(latestAudioObjectUrl);
@@ -967,6 +1012,7 @@
 
             if (resultCardEl) resultCardEl.style.display = "block";
             resultEl.style.display = "block";
+            setRecordMode("idle");
             statusEl.textContent = "松手完成，判词已生成";
           } catch (err) {
             statusEl.textContent = "分析失败";
@@ -974,16 +1020,23 @@
           } finally {
             if (mediaStream) mediaStream.getTracks().forEach((t) => t.stop());
             micHoldCircle.classList.remove("recording");
+            stopRecordTimer();
             isPressing = false;
           }
         };
 
         mediaRecorder.start();
         micHoldCircle.classList.add("recording");
-        statusEl.textContent = "按住录音中，松手后自动分析...";
+        setRecordMode("recording");
+        startRecordTimer();
+        statusEl.textContent = "录音中";
       } catch (err) {
         isPressing = false;
         micHoldCircle.classList.remove("recording");
+        stopRecordTimer();
+        setRecordMode("idle");
+        stopRecordTimer();
+        setRecordMode("idle");
         errorEl.textContent = "无法打开麦克风，请检查浏览器权限。";
       }
     }
@@ -991,23 +1044,26 @@
     function endRecording() {
       if (!isPressing) return;
       if (mediaRecorder && mediaRecorder.state !== "inactive") {
-        statusEl.textContent = "已松手，正在分析...";
+        stopRecordTimer();
+        setRecordMode("processing");
+        statusEl.textContent = "正在识别语气...";
         mediaRecorder.stop();
       } else {
         isPressing = false;
         micHoldCircle.classList.remove("recording");
+        stopRecordTimer();
+        setRecordMode("idle");
       }
     }
 
-    micHoldBtn.addEventListener("pointerdown", async (e) => {
+    micHoldBtn.addEventListener("click", async (e) => {
       e.preventDefault();
-      await beginRecording();
+      if (isPressing) {
+        endRecording();
+      } else {
+        await beginRecording();
+      }
     });
-    micHoldBtn.addEventListener("pointerup", endRecording);
-    micHoldBtn.addEventListener("pointerleave", endRecording);
-    micHoldBtn.addEventListener("pointercancel", endRecording);
-    micHoldBtn.addEventListener("touchend", endRecording);
-    micHoldBtn.addEventListener("mouseup", endRecording);
 
     copyLinkBtn.addEventListener("click", async () => {
       try {
@@ -1045,7 +1101,7 @@
 
       ctx.fillStyle = "#111111";
       ctx.font = "bold 28px sans-serif";
-      ctx.fillText("这句话，别人可能不是这样听的", 96, 118);
+      ctx.fillText("你刚刚那句话，别人可能不是这样听的", 96, 118);
 
       ctx.fillStyle = "#efefec";
       roundRect(ctx, 96, 150, w - 192, 92, 22);
@@ -1057,11 +1113,11 @@
 
       ctx.fillStyle = "#111111";
       ctx.font = "bold 58px sans-serif";
-      ctx.fillText("别解释，先听听。", 96, 318);
+      ctx.fillText("别解释，发给TA听听。", 96, 318);
 
       ctx.fillStyle = "#555555";
       ctx.font = "30px sans-serif";
-      ctx.fillText("有些话，本意没错，听感会偏。", 96, 366);
+      ctx.fillText("同一句话，你说出来就变了味。", 96, 366);
 
       ctx.fillStyle = "#d3362d";
       ctx.font = "bold 24px sans-serif";
@@ -1081,7 +1137,7 @@
 
       ctx.fillStyle = "#111111";
       ctx.font = "bold 26px sans-serif";
-      ctx.fillText("发给TA看看", 96, 1110);
+      ctx.fillText("你敢发给TA吗", 96, 1110);
 
       ctx.fillStyle = "#333333";
       ctx.font = "28px sans-serif";
