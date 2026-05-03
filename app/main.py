@@ -73,7 +73,7 @@ def _load_share(share_id: str) -> dict:
 
 @app.get("/health")
 def health() -> dict:
-    return {"ok": True, "version": "v1.6.3-polish-fix", "static": str(STATIC_DIR)}
+    return {"ok": True, "version": "v1.6.4-stability-fix", "static": str(STATIC_DIR)}
 
 
 @app.get("/")
