@@ -23,7 +23,7 @@
     <div class="grain"></div>
 
     <section class="screen active" id="homeScreen">
-      <div class="top"><div class="brand">TOXIC VOICE TEST</div><div class="pill">V1.6 裂变版</div></div>
+      <div class="top"><div class="brand">TOXIC VOICE TEST</div><div class="pill">V1.6.1 修复版</div></div>
       <div class="hero recordOnly">
         <div class="badge">☣️ 毒气检测启动</div>
         <h1>说一句话<br>测你有多毒</h1>
@@ -105,7 +105,7 @@ async function startRec(){try{if(isRecording)return;if(!window.isSecureContext){
 function stopRec(){if(!mediaRecorder||mediaRecorder.state!=='recording')return;const dur=Date.now()-recordStarted;if(dur<900){setTimeout(stopRec,900-dur);return}mediaRecorder.stop();$('recordBtn').classList.remove('recording');$('holdText').textContent='按住说话，松开检测'}
 async function finishRec(){audioBlob=new Blob(chunks,{type:'audio/webm'});audioUrl=URL.createObjectURL(audioBlob);show('scanScreen');runScan();let score=seedScore();try{const fd=new FormData();fd.append('audio',audioBlob,'voice.webm');fd.append('sentence','');const res=await fetch('/api/analyze-voice',{method:'POST',body:fd});const data=await res.json();if(data&&data.ok){audioUrl=data.audio_url||audioUrl;const len=(data.duration_ms||0);if(len>0)score=Math.min(92,Math.max(72,score+(len>4000?3:0)));}}catch(e){}setTimeout(()=>renderResult(generateResult(score)),1650)}
 function runScan(){['s1','s2','s3'].forEach((id,i)=>setTimeout(()=>$(id).classList.add('hot'),i*520));makeBars()}
-function renderResult(r){result=r;shareId='';shareReady=false;$('scoreNum').textContent=r.score;$('typeTag').textContent=r.type;$('quoteText').textContent=r.quote;$('ingredients').innerHTML=r.ings.map((x,i)=>`<div class="ing"><span>${x}</span><span>${(r.pcts||PCTS[0])[i]}</span></div>`).join('');$('audioPlayer').src=audioUrl;show('resultScreen');ensureShareReady().then(()=>history.replaceState(null,'',getShareUrl())).catch(()=>{})}
+function renderResult(r){result=r;shareId='';shareReady=false;$('scoreNum').textContent=r.score;$('typeTag').textContent=r.type;$('quoteText').textContent=r.quote;$('ingredients').innerHTML=r.ings.map((x,i)=>`<div class="ing"><span>${x}</span><span>${(r.pcts||PCTS[0])[i]}</span></div>`).join('');$('audioPlayer').src=audioUrl;show('resultScreen');ensureShareReady().then(()=>toast('听声音链接已准备好')).catch(()=>{})}
 
 async function ensureShareReady(){
   if(shareId)return shareId;
@@ -147,7 +147,7 @@ function bindRecordButton(){
 }
 bindRecordButton();
 window.addEventListener('error',e=>toast('页面脚本错误：'+(e.message||'unknown')));
-$('restartBtn').onclick=()=>{history.replaceState(null,'',location.pathname);location.reload()};$('playBtn').onclick=()=>$('audioPlayer').play();$('shareBtn').onclick=createShareCard;$('copyBtn').onclick=async()=>{try{await ensureShareReady();await navigator.clipboard.writeText(getShareUrl());history.replaceState(null,'',getShareUrl());toast('听声音链接已复制，发给朋友试试')}catch(e){toast('链接生成失败，请重试')}};$('qrBtn').onclick=async()=>{try{await ensureShareReady();const url=getShareUrl();$('qrImg').src='/qr?url='+encodeURIComponent(url);$('qrCard').style.display='flex';history.replaceState(null,'',url)}catch(e){toast('二维码生成失败，请重试')}};loadShare();
+$('restartBtn').onclick=()=>{location.href='/'};$('playBtn').onclick=()=>$('audioPlayer').play();$('shareBtn').onclick=createShareCard;$('copyBtn').onclick=async()=>{try{await ensureShareReady();const url=getShareUrl();if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(url);toast('听声音链接已复制，发给朋友试试')}else{prompt('复制这个听声音链接',url)}}catch(e){console.error(e);toast('链接生成失败，请重试')}};$('qrBtn').onclick=async()=>{try{await ensureShareReady();const url=getShareUrl();$('qrImg').src='/qr?url='+encodeURIComponent(url);$('qrCard').style.display='flex';toast('二维码已生成，截图发给朋友')}catch(e){console.error(e);toast('二维码生成失败，请重试')}};loadShare();
 </script>
 </body>
 </html>
