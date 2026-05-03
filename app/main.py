@@ -21,7 +21,7 @@ SHARES_DIR = BASE_DIR / "shares"
 UPLOADS_DIR.mkdir(parents=True, exist_ok=True)
 SHARES_DIR.mkdir(parents=True, exist_ok=True)
 
-app = FastAPI(title="Voice Expression MVP V1.6.3")
+app = FastAPI(title="Voice Expression MVP V1.6.5 QR Fix")
 
 app.add_middleware(
     CORSMiddleware,
@@ -73,7 +73,7 @@ def _load_share(share_id: str) -> dict:
 
 @app.get("/health")
 def health() -> dict:
-    return {"ok": True, "version": "v1.6.4-stability-fix", "static": str(STATIC_DIR)}
+    return {"ok": True, "version": "v1.6.5-qr-play-fix", "static": str(STATIC_DIR)}
 
 
 @app.get("/")
@@ -93,6 +93,7 @@ def share_page() -> FileResponse:
     )
 
 
+@app.get("/api/qr")
 @app.get("/qr")
 def qr(url: str = Query(..., min_length=1)) -> Response:
     final_url = unquote(url)
