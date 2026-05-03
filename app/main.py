@@ -21,7 +21,7 @@ SHARES_DIR = BASE_DIR / "shares"
 UPLOADS_DIR.mkdir(parents=True, exist_ok=True)
 SHARES_DIR.mkdir(parents=True, exist_ok=True)
 
-app = FastAPI(title="Voice Expression MVP V1.6")
+app = FastAPI(title="Voice Expression MVP V1.6.2")
 
 app.add_middleware(
     CORSMiddleware,
@@ -73,7 +73,7 @@ def _load_share(share_id: str) -> dict:
 
 @app.get("/health")
 def health() -> dict:
-    return {"ok": True, "version": "v1.6-viral", "static": str(STATIC_DIR)}
+    return {"ok": True, "version": "v1.6.2-viral-fix", "static": str(STATIC_DIR)}
 
 
 @app.get("/")
@@ -84,6 +84,7 @@ def home() -> FileResponse:
     )
 
 
+@app.get("/s")
 @app.get("/s.html")
 def share_page() -> FileResponse:
     return FileResponse(
@@ -186,6 +187,6 @@ def get_audio(id: str = Query(..., min_length=1)) -> FileResponse:
         raise HTTPException(status_code=404, detail="音频不存在。")
     return FileResponse(
         audio_path,
-        media_type="audio/webm",
+        media_type=("audio/webm" if filename.endswith(".webm") else "audio/mp4" if filename.endswith((".m4a",".mp4")) else "audio/mpeg" if filename.endswith(".mp3") else "audio/wav" if filename.endswith(".wav") else "application/octet-stream"),
         headers={"Cache-Control": "public, max-age=604800"},
     )
