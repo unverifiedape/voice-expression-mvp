@@ -1,4 +1,5 @@
 <!doctype html>
+<!-- toxic-voice-final-launch-v1.1-touchfix -->
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8" />
@@ -92,9 +93,9 @@ let mediaRecorder,chunks=[],audioBlob=null,audioUrl='',result=null,recordStarted
 function show(id){screens.forEach(s=>$(s).classList.toggle('active',s===id))}
 function toast(t){$('toast').textContent=t;$('toast').classList.add('show');setTimeout(()=>$('toast').classList.remove('show'),2100)}
 function seedScore(){return Math.floor(58+Math.random()*38)}
-function pick(score){return templates.find(t=>score>=t.min)||templates.at(-1)}
+function pick(score){return templates.find(t=>score>=t.min)||templates[templates.length-1]}
 function makeBars(){let html='';for(let i=0;i<28;i++)html+=`<div class="bar" style="height:${20+Math.random()*70}px"></div>`;$('wave').innerHTML=html}makeBars();
-async function startRec(){try{const stream=await navigator.mediaDevices.getUserMedia({audio:true});chunks=[];mediaRecorder=new MediaRecorder(stream);mediaRecorder.ondataavailable=e=>{if(e.data.size)chunks.push(e.data)};mediaRecorder.onstop=()=>{stream.getTracks().forEach(t=>t.stop());finishRec()};recordStarted=Date.now();mediaRecorder.start();$('recordBtn').classList.add('recording');$('holdText').textContent='正在录音，松开开始检测';}catch(e){toast('请允许麦克风权限后再试')}}
+async function startRec(){try{if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){toast('当前浏览器无法调用麦克风，请确认使用 HTTPS 打开');return}const stream=await navigator.mediaDevices.getUserMedia({audio:true});chunks=[];mediaRecorder=new MediaRecorder(stream);mediaRecorder.ondataavailable=e=>{if(e.data.size)chunks.push(e.data)};mediaRecorder.onstop=()=>{stream.getTracks().forEach(t=>t.stop());finishRec()};recordStarted=Date.now();mediaRecorder.start();$('recordBtn').classList.add('recording');$('holdText').textContent='正在录音，松开开始检测';}catch(e){toast('请允许麦克风权限后再试')}}
 function stopRec(){if(!mediaRecorder||mediaRecorder.state!=='recording')return;const dur=Date.now()-recordStarted;if(dur<900){setTimeout(stopRec,900-dur);return}mediaRecorder.stop();$('recordBtn').classList.remove('recording');$('holdText').textContent='按住说话，松开检测'}
 async function finishRec(){audioBlob=new Blob(chunks,{type:'audio/webm'});audioUrl=URL.createObjectURL(audioBlob);show('scanScreen');runScan();let score=seedScore();try{const fd=new FormData();fd.append('audio',audioBlob,'voice.webm');fd.append('sentence','');const res=await fetch('/api/analyze-voice',{method:'POST',body:fd});const data=await res.json();if(data&&data.ok){audioUrl=data.audio_url||audioUrl;const title=data.result?.title||'';score=Math.min(95,Math.max(55,score + (title.includes('强势')?5:title.includes('冷静')?2:0)));}}catch(e){}setTimeout(()=>renderResult(score),1650)}
 function runScan(){['s1','s2','s3'].forEach((id,i)=>setTimeout(()=>$(id).classList.add('hot'),i*520));makeBars()}
@@ -103,8 +104,31 @@ async function createShareCard(){const canvas=document.createElement('canvas'),w
 function round(c,x,y,w,h,r){c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath()}function wrap(c,text,x,y,max,lh){let line='';for(const ch of text){const test=line+ch;if(c.measureText(test).width>max){c.fillText(line,x,y);line=ch;y+=lh}else line=test}c.fillText(line,x,y)}
 function shareUrl(){const u=new URL(location.href);u.searchParams.set('share','1');u.searchParams.set('score',result?.score||$('scoreNum').textContent);u.searchParams.set('type',result?.type||$('typeTag').textContent);u.searchParams.set('quote',result?.quote||$('quoteText').textContent);if(audioUrl&&audioUrl.startsWith('/'))u.searchParams.set('audio',audioUrl);return u.toString()}
 function loadShare(){const p=new URLSearchParams(location.search);if(p.get('share')==='1'&&p.get('score')){const score=+p.get('score');const t={type:p.get('type')||pick(score).type,quote:p.get('quote')||pick(score).quote,ings:pick(score).ings};result={score,...t};$('scoreNum').textContent=score;$('typeTag').textContent=t.type;$('quoteText').textContent=t.quote;$('ingredients').innerHTML=t.ings.map((x,i)=>`<div class="ing"><span>${x}</span><span>${['31%','24%','17%'][i]}</span></div>`).join('');audioUrl=p.get('audio')||'';if(audioUrl)$('audioPlayer').src=audioUrl;document.body.classList.add('shareOnly');show('resultScreen');}}
-$('recordBtn').addEventListener('pointerdown',startRec);['pointerup','pointercancel','pointerleave'].forEach(e=>$('recordBtn').addEventListener(e,stopRec));
-$('restartBtn').onclick=()=>{history.replaceState(null,'',location.pathname);location.reload()};$('playBtn').onclick=()=>$('audioPlayer').play();$('shareBtn').onclick=createShareCard;$('copyBtn').onclick=async()=>{await navigator.clipboard.writeText(shareUrl());toast('链接已复制')};$('qrBtn').onclick=()=>{$('qrImg').src='/qr?url='+encodeURIComponent(shareUrl());$('qrCard').style.display='flex'};loadShare();
+function bindRecordButton(){
+  const btn=$('recordBtn');
+  if(!btn)return;
+  let active=false;
+  const down=(ev)=>{
+    if(ev){ev.preventDefault();ev.stopPropagation();}
+    if(active)return;
+    active=true;
+    startRec();
+  };
+  const up=(ev)=>{
+    if(ev){ev.preventDefault();ev.stopPropagation();}
+    if(!active)return;
+    active=false;
+    stopRec();
+  };
+  btn.addEventListener('touchstart',down,{passive:false});
+  btn.addEventListener('touchend',up,{passive:false});
+  btn.addEventListener('touchcancel',up,{passive:false});
+  btn.addEventListener('mousedown',down);
+  window.addEventListener('mouseup',up);
+  btn.addEventListener('contextmenu',e=>e.preventDefault());
+}
+bindRecordButton();
+$('restartBtn').onclick=()=>{history.replaceState(null,'',location.pathname);location.reload()};$('playBtn').onclick=()=>$('audioPlayer').play();$('shareBtn').onclick=createShareCard;$('copyBtn').onclick=async()=>{try{await navigator.clipboard.writeText(shareUrl());toast('链接已复制')}catch(e){toast('复制失败，请手动复制地址栏链接')}};$('qrBtn').onclick=()=>{$('qrImg').src='/qr?url='+encodeURIComponent(shareUrl());$('qrCard').style.display='flex'};loadShare();
 </script>
 </body>
 </html>
