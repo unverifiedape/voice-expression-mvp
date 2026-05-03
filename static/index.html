@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- toxic-voice-final-launch-v1.2-hardfix-20260503 -->
+<!-- toxic-voice-final-launch-v1.3-functionfix-20260503 -->
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8" />
@@ -23,18 +23,18 @@
     <div class="grain"></div>
 
     <section class="screen active" id="homeScreen">
-      <div class="top"><div class="brand">TOXIC VOICE TEST</div><div class="pill">V1.2 修复版</div></div>
+      <div class="top"><div class="brand">TOXIC VOICE TEST</div><div class="pill">V1.3 功能版</div></div>
       <div class="hero recordOnly">
         <div class="badge">☣️ 毒气检测启动</div>
         <h1>说一句话<br>测你有多毒</h1>
-        <p class="sub">别想太多。点一下麦克风开始录音，再点一下完成。<br>系统会检测你的语气、压迫感和隐藏攻击性。</p>
+        <p class="sub">别想太多。按住麦克风说一句，松开自动检测。<br>系统会检测你的语气、压迫感和隐藏攻击性。</p>
         <div class="micWrap">
           <div class="ring"></div><div class="ring2"></div>
-          <button class="mic" id="recordBtn" aria-label="按住录音">
+          <button class="mic" id="recordBtn" aria-label="按住录音，松开检测">
             <svg viewBox="0 0 24 24"><path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 1 0-6 0v6a3 3 0 0 0 3 3Zm5-3a1 1 0 1 1 2 0 7 7 0 0 1-6 6.93V21a1 1 0 1 1-2 0v-3.07A7 7 0 0 1 5 11a1 1 0 1 1 2 0 5 5 0 0 0 10 0Z"/></svg>
           </button>
         </div>
-        <div class="holdText" id="holdText">点一下开始录音，再点一下检测</div>
+        <div class="holdText" id="holdText">按住说话，松开检测</div>
       </div>
       <p class="bottomNote recordOnly">娱乐测试，不代表真实人格判断。<br>但你的朋友可能会觉得很准。</p>
     </section>
@@ -95,8 +95,8 @@ function toast(t){$('toast').textContent=t;$('toast').classList.add('show');setT
 function seedScore(){return Math.floor(58+Math.random()*38)}
 function pick(score){return templates.find(t=>score>=t.min)||templates[templates.length-1]}
 function makeBars(){let html='';for(let i=0;i<28;i++)html+=`<div class="bar" style="height:${20+Math.random()*70}px"></div>`;$('wave').innerHTML=html}makeBars();
-async function startRec(){try{if(isRecording)return;if(!window.isSecureContext){toast('麦克风需要 HTTPS 或 localhost 环境');return}if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){toast('当前浏览器无法调用麦克风，请换 Chrome/Safari 或确认 HTTPS');return}const stream=await navigator.mediaDevices.getUserMedia({audio:true});chunks=[];const mime=MediaRecorder.isTypeSupported('audio/webm;codecs=opus')?'audio/webm;codecs=opus':(MediaRecorder.isTypeSupported('audio/mp4')?'audio/mp4':'');mediaRecorder=mime?new MediaRecorder(stream,{mimeType:mime}):new MediaRecorder(stream);mediaRecorder.ondataavailable=e=>{if(e.data&&e.data.size)chunks.push(e.data)};mediaRecorder.onstop=()=>{stream.getTracks().forEach(t=>t.stop());isRecording=false;finishRec()};recordStarted=Date.now();mediaRecorder.start();isRecording=true;$('recordBtn').classList.add('recording');$('holdText').textContent='正在录音，再点一下开始检测';toast('开始录音了，说一句话')}catch(e){console.error(e);isRecording=false;toast('麦克风没有启动：请允许权限后再试')}}
-function stopRec(){if(!mediaRecorder||mediaRecorder.state!=='recording')return;const dur=Date.now()-recordStarted;if(dur<900){setTimeout(stopRec,900-dur);return}mediaRecorder.stop();$('recordBtn').classList.remove('recording');$('holdText').textContent='点一下开始录音，再点一下检测'}
+async function startRec(){try{if(isRecording)return;if(!window.isSecureContext){toast('麦克风需要 HTTPS 或 localhost 环境');return}if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){toast('当前浏览器无法调用麦克风，请换 Chrome/Safari 或确认 HTTPS');return}const stream=await navigator.mediaDevices.getUserMedia({audio:true});chunks=[];const mime=MediaRecorder.isTypeSupported('audio/webm;codecs=opus')?'audio/webm;codecs=opus':(MediaRecorder.isTypeSupported('audio/mp4')?'audio/mp4':'');mediaRecorder=mime?new MediaRecorder(stream,{mimeType:mime}):new MediaRecorder(stream);mediaRecorder.ondataavailable=e=>{if(e.data&&e.data.size)chunks.push(e.data)};mediaRecorder.onstop=()=>{stream.getTracks().forEach(t=>t.stop());isRecording=false;finishRec()};recordStarted=Date.now();mediaRecorder.start();isRecording=true;$('recordBtn').classList.add('recording');$('holdText').textContent='正在录音，松开开始检测';toast('开始录音了，说一句话')}catch(e){console.error(e);isRecording=false;toast('麦克风没有启动：请允许权限后再试')}}
+function stopRec(){if(!mediaRecorder||mediaRecorder.state!=='recording')return;const dur=Date.now()-recordStarted;if(dur<900){setTimeout(stopRec,900-dur);return}mediaRecorder.stop();$('recordBtn').classList.remove('recording');$('holdText').textContent='按住说话，松开检测'}
 async function finishRec(){audioBlob=new Blob(chunks,{type:'audio/webm'});audioUrl=URL.createObjectURL(audioBlob);show('scanScreen');runScan();let score=seedScore();try{const fd=new FormData();fd.append('audio',audioBlob,'voice.webm');fd.append('sentence','');const res=await fetch('/api/analyze-voice',{method:'POST',body:fd});const data=await res.json();if(data&&data.ok){audioUrl=data.audio_url||audioUrl;const title=data.result?.title||'';score=Math.min(95,Math.max(55,score + (title.includes('强势')?5:title.includes('冷静')?2:0)));}}catch(e){}setTimeout(()=>renderResult(score),1650)}
 function runScan(){['s1','s2','s3'].forEach((id,i)=>setTimeout(()=>$(id).classList.add('hot'),i*520));makeBars()}
 function renderResult(score){const t=pick(score);result={score,...t};$('scoreNum').textContent=score;$('typeTag').textContent=t.type;$('quoteText').textContent=t.quote;$('ingredients').innerHTML=t.ings.map((x,i)=>`<div class="ing"><span>${x}</span><span>${['31%','24%','17%'][i]}</span></div>`).join('');$('audioPlayer').src=audioUrl;show('resultScreen');history.replaceState(null,'',location.pathname+`?share=1&score=${score}&type=${encodeURIComponent(t.type)}&quote=${encodeURIComponent(t.quote)}&audio=${encodeURIComponent(audioUrl.startsWith('/')?audioUrl:'')}`)}
@@ -107,13 +107,28 @@ function loadShare(){const p=new URLSearchParams(location.search);if(p.get('shar
 function bindRecordButton(){
   const btn=$('recordBtn');
   if(!btn)return;
-  const toggle=(ev)=>{
+  let down=false;
+  const begin=(ev)=>{
     if(ev){ev.preventDefault();ev.stopPropagation();}
-    if(isRecording) stopRec(); else startRec();
+    down=true;
+    startRec();
   };
-  // 最稳方案：移动端/桌面统一点击切换，避免长按事件被浏览器地址栏、手势或 passive touch 吞掉。
-  btn.addEventListener('click',toggle);
-  btn.addEventListener('pointerup',toggle);
+  const end=(ev)=>{
+    if(ev){ev.preventDefault();ev.stopPropagation();}
+    if(!down && !isRecording)return;
+    down=false;
+    stopRec();
+  };
+  // 关键修复：恢复真正的录音手势。pointerdown 启动麦克风，pointerup/touchend 松手提交。
+  // 不再绑定 click，避免 Android Chrome 一次点击触发 pointerup + click 导致立即抵消。
+  btn.addEventListener('pointerdown',begin,{passive:false});
+  btn.addEventListener('pointerup',end,{passive:false});
+  btn.addEventListener('pointercancel',end,{passive:false});
+  btn.addEventListener('pointerleave',end,{passive:false});
+  btn.addEventListener('touchstart',begin,{passive:false});
+  btn.addEventListener('touchend',end,{passive:false});
+  btn.addEventListener('mousedown',begin);
+  btn.addEventListener('mouseup',end);
   btn.addEventListener('contextmenu',e=>e.preventDefault());
 }
 bindRecordButton();
