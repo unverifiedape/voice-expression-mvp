@@ -17,12 +17,13 @@
     body{overflow-y:auto}.app{position:relative;min-height:100dvh;width:100%;max-width:520px;margin:0 auto;overflow:visible;background:radial-gradient(circle at 50% -10%,rgba(215,255,63,.18),transparent 33%),radial-gradient(circle at 20% 90%,rgba(143,216,255,.11),transparent 34%),#050505;}
     .grain{pointer-events:none;position:absolute;inset:0;opacity:.13;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 220 220' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.95' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E")}.screen{position:relative;min-height:100dvh;padding:18px 18px calc(28px + env(safe-area-inset-bottom));display:none;flex-direction:column;overflow:visible;-webkit-overflow-scrolling:touch;opacity:0;transform:translateY(18px) scale(.985);pointer-events:none;transition:.35s cubic-bezier(.2,.9,.15,1)}.screen.active{display:flex;opacity:1;transform:none;pointer-events:auto}.top{display:flex;align-items:center;justify-content:space-between;height:42px;z-index:2}.brand{font-size:13px;letter-spacing:.18em;color:rgba(247,242,234,.72);font-weight:700}.pill{border:1px solid var(--line);border-radius:999px;padding:8px 11px;color:var(--muted);font-size:12px;background:rgba(255,255,255,.035);backdrop-filter:blur(10px)}.hero{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:18px}.badge{font-size:12px;color:#171717;background:var(--acid);border-radius:999px;padding:8px 12px;font-weight:800;box-shadow:0 0 28px rgba(215,255,63,.28)}h1{margin:0;font-size:48px;line-height:.96;letter-spacing:-.065em;font-weight:900}.sub{margin:0;color:rgba(247,242,234,.68);font-size:16px;line-height:1.55}.micWrap{position:relative;width:190px;height:190px;display:grid;place-items:center;margin:18px auto}.ring,.ring2{pointer-events:none;position:absolute;inset:0;border-radius:50%;border:1px solid rgba(215,255,63,.18);animation:pulse 2.6s infinite}.ring2{inset:22px;animation-delay:.7s;border-color:rgba(255,255,255,.12)}@keyframes pulse{0%{transform:scale(.8);opacity:.9}70%{transform:scale(1.2);opacity:.05}100%{transform:scale(1.2);opacity:0}}.mic{width:124px;height:124px;border-radius:50%;border:1px solid rgba(255,255,255,.14);background:linear-gradient(180deg,#1b1b1e,#09090a);box-shadow:inset 0 1px 0 rgba(255,255,255,.15),0 22px 70px rgba(215,255,63,.15);display:grid;place-items:center;cursor:pointer;touch-action:none;user-select:none;transition:.18s}.mic:active,.mic.recording{transform:scale(.94);box-shadow:0 0 0 12px rgba(255,77,77,.09),0 22px 70px rgba(255,77,77,.28)}.mic svg{width:44px;height:44px;fill:var(--text)}.holdText{font-size:13px;color:var(--muted);margin-top:-4px}.bottomNote{font-size:12px;color:rgba(247,242,234,.42);line-height:1.5;text-align:center}.wave{width:100%;height:118px;border-radius:24px;background:rgba(255,255,255,.04);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;gap:5px;overflow:hidden}.bar{width:5px;border-radius:999px;background:linear-gradient(var(--acid),rgba(215,255,63,.2));animation:wave 1.05s ease-in-out infinite}.bar:nth-child(2n){animation-delay:.13s}.bar:nth-child(3n){animation-delay:.25s}.bar:nth-child(4n){animation-delay:.38s}@keyframes wave{0%,100%{height:18px;opacity:.45}50%{height:82px;opacity:1}}.scanTitle{font-size:32px;font-weight:900;letter-spacing:-.04em;margin:0}.scanLine{height:1px;width:100%;background:linear-gradient(90deg,transparent,var(--acid),transparent);box-shadow:0 0 20px var(--acid);animation:scan 1.7s linear infinite}@keyframes scan{0%{transform:translateY(-70px);opacity:0}20%{opacity:1}100%{transform:translateY(70px);opacity:0}}.steps{width:100%;display:grid;gap:10px}.step{padding:14px 16px;border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.035);color:rgba(247,242,234,.66);font-size:14px}.step.hot{color:var(--text);border-color:rgba(215,255,63,.35);background:rgba(215,255,63,.07)}.resultCard{position:relative;width:100%;border-radius:34px;padding:24px;background:linear-gradient(180deg,rgba(255,255,255,.095),rgba(255,255,255,.035));border:1px solid rgba(255,255,255,.13);box-shadow:var(--shadow);overflow:hidden}.resultCard:before{content:"";position:absolute;right:-60px;top:-60px;width:180px;height:180px;border-radius:50%;background:rgba(215,255,63,.14);filter:blur(22px)}.scoreLabel{font-size:13px;color:var(--muted);letter-spacing:.18em;font-weight:800}.score{font-size:86px;line-height:.95;font-weight:950;letter-spacing:-.08em;margin:6px 0 0}.type{display:inline-flex;align-items:center;gap:8px;margin:14px 0 18px;padding:8px 12px;border-radius:999px;background:rgba(215,255,63,.1);border:1px solid rgba(215,255,63,.25);color:var(--acid);font-size:13px;font-weight:800}.quote{font-size:25px;line-height:1.18;letter-spacing:-.045em;font-weight:900;margin:0 0 18px}.ingredients{display:grid;gap:9px;margin:0 0 20px}.ing{display:flex;justify-content:space-between;gap:12px;padding:13px 14px;border-radius:16px;background:rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.07);font-size:14px}.ing span:last-child{color:var(--gold);white-space:nowrap}.audioBox{display:block;padding:12px;border-radius:18px;background:#050505;border:1px solid rgba(255,255,255,.1)}.audioBox audio{display:none}.audioBtn{width:100%;border:0;border-radius:16px;padding:15px 12px;background:var(--acid);color:#080808;font-size:15px;font-weight:950;cursor:pointer}.btn[disabled]{opacity:.58;filter:grayscale(.25);pointer-events:none}.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}.btn{border:0;border-radius:18px;padding:15px 14px;font-size:15px;font-weight:900;color:#0b0b0b;background:var(--acid);cursor:pointer}.btn.secondary{background:rgba(255,255,255,.08);color:var(--text);border:1px solid var(--line)}.btn.full{grid-column:1/-1}.qrCard{display:none;margin-top:12px;align-items:center;gap:12px;border-radius:20px;padding:12px;background:rgba(255,255,255,.055);border:1px solid var(--line)}.qrCard img{width:86px;height:86px;border-radius:14px;background:white}.qrCard p{margin:0;font-size:13px;color:var(--muted);line-height:1.45}.toast{position:absolute;left:18px;right:18px;bottom:calc(18px + env(safe-area-inset-bottom));padding:14px 16px;background:rgba(247,242,234,.94);color:#090909;border-radius:18px;font-weight:800;text-align:center;opacity:0;transform:translateY(12px);transition:.25s;z-index:10}.toast.show{opacity:1;transform:none}.shareOnly .recordOnly{display:none}.shareOnly .screen{padding-top:18px}.miniBack{border:0;background:transparent;color:var(--muted);font-size:13px}.legal{font-size:11px;color:rgba(247,242,234,.34);line-height:1.45;text-align:center;margin-top:10px}@media (max-height:720px){h1{font-size:42px}.micWrap{width:154px;height:154px;margin:8px auto}.mic{width:108px;height:108px}.score{font-size:70px}.quote{font-size:22px}.resultCard{padding:20px;border-radius:28px}.actions{margin-bottom:18px}}
   
-/* V1.6.6 copy + warning-line UI polish */
+/* V1.6.9 share-card warning-line polish */
 .hazardBar{position:relative;z-index:2;margin:0 -18px 12px;height:42px;display:flex;align-items:center;justify-content:center;overflow:hidden;border-top:1px solid rgba(255,209,41,.34);border-bottom:1px solid rgba(255,209,41,.24);box-shadow:0 8px 24px rgba(0,0,0,.32),0 0 18px rgba(215,255,63,.08);background:linear-gradient(180deg,rgba(20,18,10,.96),rgba(6,6,5,.94))}
 .hazardBar:before,.hazardBar:after{content:"";position:absolute;left:0;right:0;height:5px;background:repeating-linear-gradient(135deg,rgba(255,209,41,.9) 0 12px,rgba(255,209,41,.9) 12px 18px,rgba(5,5,5,.96) 18px 30px,rgba(5,5,5,.96) 30px 36px);opacity:.72}
 .hazardBar:before{top:0}.hazardBar:after{bottom:0}.hazardBar span{position:relative;z-index:1;color:#f2d04b;font-weight:950;font-size:17px;letter-spacing:.04em;text-shadow:0 0 14px rgba(215,255,63,.12)}
 #homeScreen{padding-top:0}.homeTitle{font-size:46px}.resultCard .scoreLabel{letter-spacing:.08em}.quote{color:#fff8e8}.shareOnly .hazardBar{margin-top:0}
 @media (max-width:380px){.hazardBar span{font-size:16px}.homeTitle{font-size:42px}.quote{font-size:23px}}
+.thresholdNote{margin:8px 0 14px;color:rgba(255,209,41,.78);font-size:12px;font-weight:800;letter-spacing:.02em;text-align:center}
 </style>
 </head>
 <body>
@@ -88,13 +89,13 @@
 <script>
 const $=id=>document.getElementById(id);const screens=['homeScreen','scanScreen','resultScreen'];
 const TYPES=[
-  '☣️ 轻度伤人型','🧊 冷气扩散型','🔪 慢性刺痛型','⚡ 隐性攻击型','🌫️ 礼貌伤人型','🧯 情绪压制型','👀 低频嫌弃型','📦 克制爆发型','🧪 出口带刺型','🌪️ 阴阳扩散型'
+  '🧊 冷场制造机','📴 群聊终结者','🧯 情绪灭火器','⚡ 隐性放电型','🔪 温柔补刀手','🚫 回复终止型','👀 已读不回触发器','🌫️ 气氛降温器','☣️ 语气污染源','🧪 出口带刺型','🧱 聊天堵墙型','💣 沉默引爆器'
 ];
 const LINES=[
-  '你是那种语气没变，但气氛已经变冷的人','你是那种没骂人，但让人不想继续聊的人','你是那种表面正常，其实在伤人的人','你是那种一句话说完，空气变安静的人','你是那种语气很轻，但后劲很重的人','你是那种自己没感觉，对方已经难受的人','你是那种不解释，但让人反复回想的人','你是那种话不多，但每句都不太舒服的人','你是那种听起来没问题，但哪里都不对的人','你是那种没有攻击，但全是压迫感的人','你是那种嘴上说没事，但空气已经开始变冷的人','你是那种没发火，但已经让人想撤退的人','你是那种越礼貌，越让人不敢靠近的人','你是那种不说重话，但每个字都有重量的人','你是那种一句话能让群聊安静的人','你是那种看似讲道理，其实在给人下毒的人'
+  '你一开口，气氛就凉了','你发完消息，大家都在装没看到','群聊死掉的那一刻，是你说完那句','你说话不是直，是带刺','你一句话，能让空气安静三秒','你嘴上没骂人，但句句都在扎人','你说话像没事，其实每个字都有刺','你一解释，别人更想撤退','你是那种越礼貌，越让人不舒服的人','你一句“随便”，杀伤力比吵架还大','你说完那句，对方已经开始自我反省','你不发火，但你让所有人都不敢接话','你是那种听起来没问题，但哪里都不对的人','你一句话，能让朋友开始怀疑人生','你不是在聊天，你是在释放低浓度毒气','你说话像通知，不像沟通','你一开口，别人就想结束对话','你是那种能把热场聊成冷场的人','你说话没脏字，但杀伤力很脏','你随口一句，别人要消化半天','你不是话少，你是每句都很重','你一认真说话，别人就开始紧张','你一句“没事”，听起来最有事','你说的是事实，但听起来像审判','你说完之后，场面只剩礼貌'
 ];
 const COMPONENTS=[
-  '阴阳怪气残留','不耐烦挥发物','假装礼貌涂层','隐藏嫌弃颗粒','情绪压缩气体','轻微翻白眼因子','延迟回应毒素','冷处理扩散物','社交疲惫雾气','被动攻击微粒','不想解释沉淀物','选择性耐心残渣','低频烦躁信号','强忍不爽压缩包','轻度看不惯分子','礼貌性降温剂','已读不回蒸汽','嘴硬保护膜','表面平静涂层','内心翻桌粉尘'
+  '阴阳怪气残留（持续挥发中）','已读不回蒸汽（高温冷处理）','嘴硬保护膜（厚度超标）','礼貌性降温剂（表面文明）','不想解释沉淀物（沉底多年）','被动攻击微粒（肉眼难见）','空气变冷因子（扩散速度快）','轻微翻白眼粉尘（随语气飘散）','不耐烦挥发物（开口即散）','隐藏嫌弃颗粒（浓度稳定）','情绪压缩装置（随时漏气）','冷处理扩散物（半径三米）','社交疲惫气溶胶（吸入即沉默）','选择性耐心残渣（仅对少数人有效）','低频烦躁信号（持续发射）','强忍不爽压缩包（即将解压）','表面平静涂层（内含爆炸物）','内心翻桌粉尘（轻拍即起）','假装配合粉尘（伪装良好）','沉默式反击分子（毒性慢热）','冷笑残留液（附着力极强）','句尾带刺结晶（不易察觉）','好好说话抗体缺失（建议隔离）','群聊退潮素（使热场瞬间降温）','解释越多越毒反应剂（遇水加剧）'
 ];
 const PCTS=[['37%','29%','18%'],['34%','25%','21%'],['31%','27%','19%'],['39%','22%','17%'],['35%','30%','16%']];
 let mediaRecorder,chunks=[],audioBlob=null,audioUrl='',result=null,recordStarted=0,isRecording=false,shareId='',shareReady=false,uploadPromise=null;
@@ -104,7 +105,7 @@ function seedScore(){return Math.floor(72+Math.random()*21)}
 function rand(arr){return arr[Math.floor(Math.random()*arr.length)]}
 function sample(arr,n){const copy=[...arr],out=[];while(out.length<n&&copy.length){out.push(copy.splice(Math.floor(Math.random()*copy.length),1)[0])}return out}
 function generateResult(score){return{score,type:rand(TYPES),quote:rand(LINES),ings:sample(COMPONENTS,3),pcts:rand(PCTS)}}
-function fallbackByScore(score){const level=score>=84?'🔪 慢性刺痛型':score>=76?'🧊 冷气扩散型':score>=68?'🌫️ 礼貌伤人型':'☣️ 轻度伤人型';return{score,type:level,quote:rand(LINES),ings:sample(COMPONENTS,3),pcts:rand(PCTS)}}
+function fallbackByScore(score){const level=score>=84?'📴 群聊终结者':score>=76?'🧊 冷场制造机':score>=68?'⚡ 隐性放电型':'☣️ 语气污染源';return{score,type:level,quote:rand(LINES),ings:sample(COMPONENTS,3),pcts:rand(PCTS)}}
 function makeBars(){let html='';for(let i=0;i<28;i++)html+=`<div class="bar" style="height:${20+Math.random()*70}px"></div>`;$('wave').innerHTML=html}makeBars();
 async function startRec(){try{if(isRecording)return;if(!window.isSecureContext){toast('麦克风需要 HTTPS 或 localhost 环境');return}if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){toast('当前浏览器无法调用麦克风，请换 Chrome/Safari 或确认 HTTPS');return}const stream=await navigator.mediaDevices.getUserMedia({audio:true});chunks=[];const mime=MediaRecorder.isTypeSupported('audio/webm;codecs=opus')?'audio/webm;codecs=opus':(MediaRecorder.isTypeSupported('audio/mp4')?'audio/mp4':'');mediaRecorder=mime?new MediaRecorder(stream,{mimeType:mime}):new MediaRecorder(stream);mediaRecorder.ondataavailable=e=>{if(e.data&&e.data.size)chunks.push(e.data)};mediaRecorder.onstop=()=>{stream.getTracks().forEach(t=>t.stop());isRecording=false;finishRec()};recordStarted=Date.now();mediaRecorder.start();isRecording=true;$('recordBtn').classList.add('recording');$('holdText').textContent='正在录音，松开开始检测';toast('开始录音了，说一句话')}catch(e){console.error(e);isRecording=false;toast('麦克风没有启动：请允许权限后再试')}}
 function stopRec(){if(!mediaRecorder||mediaRecorder.state!=='recording')return;const dur=Date.now()-recordStarted;if(dur<900){setTimeout(stopRec,900-dur);return}mediaRecorder.stop();$('recordBtn').classList.remove('recording');$('holdText').textContent='按住说话，松开检测'}
@@ -142,16 +143,17 @@ async function createShareCard(){
     c.fillStyle='#050505';c.fillRect(0,0,w,h);
     let g=c.createRadialGradient(540,40,20,540,40,760);g.addColorStop(0,'rgba(215,255,63,.32)');g.addColorStop(.42,'rgba(30,44,14,.26)');g.addColorStop(1,'rgba(5,5,5,0)');c.fillStyle=g;c.fillRect(0,0,w,h);
     c.fillStyle='rgba(255,255,255,.045)';round(c,54,54,972,1332,46);c.fill();c.strokeStyle='rgba(255,255,255,.08)';c.lineWidth=2;c.stroke();
-    drawHazard(c,0,72,w);
-    c.fillStyle='rgba(247,242,234,.72)';c.font='900 34px Arial';c.fillText('我的伤人指数 '+(result?.score||88)+'%',86,206);
-    c.fillStyle='#f7f2ea';c.font='950 238px Arial';c.fillText((result?.score||88)+'%',82,444);
-    c.fillStyle='#d7ff3f';c.font='900 38px Arial';c.fillText(result?.type||'☣️ 轻度伤人型',92,522);
-    c.fillStyle='#f7f2ea';c.font='900 70px Arial';let quoteBottom=wrap(c,result?.quote||'你是那种没骂人，但让人不想继续聊的人',86,636,900,82);
+    drawHazard(c,0,60,w);
+    c.fillStyle='rgba(247,242,234,.78)';c.font='900 36px Arial';c.fillText('我的毒气伤人指数',86,212);
+    c.fillStyle='#f7f2ea';c.font='950 238px Arial';c.fillText((result?.score||88)+'%',82,456);
+    c.fillStyle='#d7ff3f';c.font='900 38px Arial';c.fillText(result?.type||'☣️ 语气污染源',92,534);
+    c.fillStyle='rgba(255,209,41,.76)';c.font='800 26px Arial';c.fillText('⚠ 已超过68%人类安全阈值',92,580);
+    c.fillStyle='#f7f2ea';c.font='900 70px Arial';let quoteBottom=wrap(c,result?.quote||'你一开口，气氛就凉了',86,685,900,82);
     const boxY=Math.max(805, quoteBottom+80), boxH=330;
     c.fillStyle='rgba(255,255,255,.105)';round(c,86,boxY,908,boxH,36);c.fill();
     c.fillStyle='#f7f2ea';c.font='900 38px Arial';c.fillText('主要成分',126,boxY+70);
     c.font='500 38px Arial';(result?.ings||[]).slice(0,3).forEach((x,i)=>c.fillText('• '+x,126,boxY+145+i*62));
-    c.fillStyle='rgba(255,255,255,.78)';c.font='900 34px Arial';c.fillText('扫码听我说的话，哪里不对？',86,1220);
+    c.fillStyle='rgba(255,255,255,.78)';c.font='900 34px Arial';c.fillText('扫码听我声音，哪里有错？',86,1220);
     c.fillStyle='rgba(255,255,255,.52)';c.font='500 28px Arial';c.fillText('顺便测测你自己有多毒',86,1266);
     const qrUrl='/api/qr?url='+encodeURIComponent(getShareUrl())+'&t='+Date.now();
     let img=null;
@@ -162,7 +164,7 @@ async function createShareCard(){
     c.fillStyle='#fff';round(c,754,1160,216,216,24);c.fill();
     if(img){c.drawImage(img,774,1180,176,176)}else{c.fillStyle='#111';c.font='900 32px Arial';c.fillText('二维码生成中',774,1240);c.font='500 22px Arial';c.fillText('请同时复制链接',790,1284)}
     const blob=await new Promise((resolve,reject)=>canvas.toBlob(b=>b?resolve(b):reject(new Error('canvas blob failed')),'image/png'));
-    const url=URL.createObjectURL(blob);const a=document.createElement('a');a.download='toxic-voice-hurt-index-card-v166.png';a.href=url;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),2000);
+    const url=URL.createObjectURL(blob);const a=document.createElement('a');a.download='toxic-voice-viral-card-v169.png';a.href=url;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),2000);
     toast('分享图已生成，请保存或发送');
   }catch(e){console.error(e);toast('分享图生成失败，请重试')}
   finally{btn.disabled=false;btn.textContent=old}
@@ -171,7 +173,7 @@ function imageFromUrl(url,timeout=3500){return new Promise((resolve,reject)=>{co
 function imageFromFetch(url,timeout=8000){return new Promise((resolve,reject)=>{const ctrl=new AbortController();const timer=setTimeout(()=>{ctrl.abort();reject(new Error('qr fetch timeout'))},timeout);fetch(url,{cache:'no-store',signal:ctrl.signal}).then(r=>{if(!r.ok)throw new Error('qr http '+r.status);return r.blob()}).then(b=>{const obj=URL.createObjectURL(b);const img=new Image();img.onload=()=>{clearTimeout(timer);URL.revokeObjectURL(obj);resolve(img)};img.onerror=()=>{clearTimeout(timer);URL.revokeObjectURL(obj);reject(new Error('qr object image failed'))};img.src=obj}).catch(e=>{clearTimeout(timer);reject(e)})})}
 function drawHazard(c,x,y,w){
   c.save();
-  const h=54;
+  const h=76;
   c.fillStyle='#0a0a08';
   c.fillRect(x,y,w,h);
   c.strokeStyle='rgba(255,209,41,.38)';
@@ -179,15 +181,15 @@ function drawHazard(c,x,y,w){
   c.beginPath();c.moveTo(x,y+.5);c.lineTo(x+w,y+.5);c.stroke();
   c.beginPath();c.moveTo(x,y+h-.5);c.lineTo(x+w,y+h-.5);c.stroke();
   c.fillStyle='rgba(255,209,41,.9)';
-  for(let yy of [y,y+h-6]){
-    for(let i=x-40;i<x+w+40;i+=34){
-      c.beginPath();c.moveTo(i,yy);c.lineTo(i+16,yy);c.lineTo(i+7,yy+6);c.lineTo(i-9,yy+6);c.closePath();c.fill();
+  for(let yy of [y,y+h-10]){
+    for(let i=x-52;i<x+w+52;i+=44){
+      c.beginPath();c.moveTo(i,yy);c.lineTo(i+24,yy);c.lineTo(i+10,yy+10);c.lineTo(i-14,yy+10);c.closePath();c.fill();
     }
   }
   c.fillStyle='#f2d04b';
-  c.font='950 27px Arial';
+  c.font='950 38px Arial';
   c.textAlign='center';
-  c.fillText('⚠️ 语气有毒，出口伤人 ⚠️',x+w/2,y+36);
+  c.fillText('⚠️ 语气有毒，出口伤人 ⚠️',x+w/2,y+50);
   c.textAlign='left';
   c.restore()
 }
