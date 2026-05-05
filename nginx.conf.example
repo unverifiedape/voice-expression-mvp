@@ -1,11 +1,12 @@
 server {
     listen 80;
-    server_name _;
+    server_name showmecard.com www.showmecard.com _;
 
-    client_max_body_size 10m;
+    client_max_body_size 20M;
 
+    # 后端 FastAPI 统一处理页面、API、uploads、admin，避免 /admin/analytics 被静态首页吞掉
     location / {
-        proxy_pass http://127.0.0.1:8000;
+        proxy_pass http://127.0.0.1:8010;
         proxy_http_version 1.1;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;

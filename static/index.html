@@ -88,27 +88,6 @@
 
 <script>
 const $=id=>document.getElementById(id);const screens=['homeScreen','scanScreen','resultScreen'];
-// ===== first-party analytics v1.6.9 =====
-const ANALYTICS_SESSION_ID = (() => {
-  try {
-    let id = localStorage.getItem('rt_session_id');
-    if (!id) { id = 'sess_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2,8); localStorage.setItem('rt_session_id', id); }
-    return id;
-  } catch(e) { return 'sess_' + Date.now().toString(36); }
-})();
-function analyticsParams(){ return new URLSearchParams(location.search); }
-function track(event, data = {}) {
-  try {
-    const p = analyticsParams();
-    const payload = Object.assign({page:'home', session_id:ANALYTICS_SESSION_ID, path:location.pathname, from:p.get('from') || p.get('utm_source') || '', sid:p.get('sid') || p.get('id') || ''}, data || {});
-    fetch('/api/track', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({event, data:payload}), keepalive:true}).catch(()=>{});
-  } catch(e) {}
-}
-track('page_view', {page:'home'});
-track('home_view', {page:'home'});
-if ((analyticsParams().get('from') === 'share') || analyticsParams().get('sid')) track('visit_from_share', {page:'home'});
-// ===== /first-party analytics =====
-
 const TYPES=[
   '🧊 冷场制造机','📴 群聊终结者','🧯 情绪灭火器','⚡ 隐性放电型','🔪 温柔补刀手','🚫 回复终止型','👀 已读不回触发器','🌫️ 气氛降温器','☣️ 语气污染源','🧪 出口带刺型','🧱 聊天堵墙型','💣 沉默引爆器'
 ];
@@ -128,11 +107,11 @@ function sample(arr,n){const copy=[...arr],out=[];while(out.length<n&&copy.lengt
 function generateResult(score){return{score,type:rand(TYPES),quote:rand(LINES),ings:sample(COMPONENTS,3),pcts:rand(PCTS)}}
 function fallbackByScore(score){const level=score>=84?'📴 群聊终结者':score>=76?'🧊 冷场制造机':score>=68?'⚡ 隐性放电型':'☣️ 语气污染源';return{score,type:level,quote:rand(LINES),ings:sample(COMPONENTS,3),pcts:rand(PCTS)}}
 function makeBars(){let html='';for(let i=0;i<28;i++)html+=`<div class="bar" style="height:${20+Math.random()*70}px"></div>`;$('wave').innerHTML=html}makeBars();
-async function startRec(){try{if(isRecording)return;track('record_start',{page:'home'});if(!window.isSecureContext){toast('麦克风需要 HTTPS 或 localhost 环境');return}if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){toast('当前浏览器无法调用麦克风，请换 Chrome/Safari 或确认 HTTPS');return}const stream=await navigator.mediaDevices.getUserMedia({audio:true});chunks=[];const mime=MediaRecorder.isTypeSupported('audio/webm;codecs=opus')?'audio/webm;codecs=opus':(MediaRecorder.isTypeSupported('audio/mp4')?'audio/mp4':'');mediaRecorder=mime?new MediaRecorder(stream,{mimeType:mime}):new MediaRecorder(stream);mediaRecorder.ondataavailable=e=>{if(e.data&&e.data.size)chunks.push(e.data)};mediaRecorder.onstop=()=>{stream.getTracks().forEach(t=>t.stop());isRecording=false;finishRec()};recordStarted=Date.now();mediaRecorder.start();isRecording=true;$('recordBtn').classList.add('recording');$('holdText').textContent='正在录音，松开开始检测';toast('开始录音了，说一句话')}catch(e){console.error(e);isRecording=false;toast('麦克风没有启动：请允许权限后再试')}}
-function stopRec(){if(!mediaRecorder||mediaRecorder.state!=='recording')return;track('record_stop',{page:'home'});const dur=Date.now()-recordStarted;if(dur<900){setTimeout(stopRec,900-dur);return}mediaRecorder.stop();$('recordBtn').classList.remove('recording');$('holdText').textContent='按住说话，松开检测'}
-async function finishRec(){track('analysis_start',{page:'home'});audioBlob=new Blob(chunks,{type:'audio/webm'});audioUrl=URL.createObjectURL(audioBlob);show('scanScreen');runScan();let score=seedScore();try{const fd=new FormData();fd.append('audio',audioBlob,'voice.webm');fd.append('sentence','');const res=await fetch('/api/analyze-voice',{method:'POST',body:fd});const data=await res.json();if(data&&data.ok){const len=(data.duration_ms||0);if(len>0)score=Math.min(92,Math.max(72,score+(len>4000?3:0)));}}catch(e){}setTimeout(()=>renderResult(generateResult(score)),1650)}
+async function startRec(){try{if(isRecording)return;if(!window.isSecureContext){toast('麦克风需要 HTTPS 或 localhost 环境');return}if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){toast('当前浏览器无法调用麦克风，请换 Chrome/Safari 或确认 HTTPS');return}const stream=await navigator.mediaDevices.getUserMedia({audio:true});chunks=[];const mime=MediaRecorder.isTypeSupported('audio/webm;codecs=opus')?'audio/webm;codecs=opus':(MediaRecorder.isTypeSupported('audio/mp4')?'audio/mp4':'');mediaRecorder=mime?new MediaRecorder(stream,{mimeType:mime}):new MediaRecorder(stream);mediaRecorder.ondataavailable=e=>{if(e.data&&e.data.size)chunks.push(e.data)};mediaRecorder.onstop=()=>{stream.getTracks().forEach(t=>t.stop());isRecording=false;finishRec()};recordStarted=Date.now();mediaRecorder.start();isRecording=true;$('recordBtn').classList.add('recording');$('holdText').textContent='正在录音，松开开始检测';toast('开始录音了，说一句话')}catch(e){console.error(e);isRecording=false;toast('麦克风没有启动：请允许权限后再试')}}
+function stopRec(){if(!mediaRecorder||mediaRecorder.state!=='recording')return;const dur=Date.now()-recordStarted;if(dur<900){setTimeout(stopRec,900-dur);return}mediaRecorder.stop();$('recordBtn').classList.remove('recording');$('holdText').textContent='按住说话，松开检测'}
+async function finishRec(){audioBlob=new Blob(chunks,{type:'audio/webm'});audioUrl=URL.createObjectURL(audioBlob);show('scanScreen');runScan();let score=seedScore();try{const fd=new FormData();fd.append('audio',audioBlob,'voice.webm');fd.append('sentence','');const res=await fetch('/api/analyze-voice',{method:'POST',body:fd});const data=await res.json();if(data&&data.ok){const len=(data.duration_ms||0);if(len>0)score=Math.min(92,Math.max(72,score+(len>4000?3:0)));}}catch(e){}setTimeout(()=>renderResult(generateResult(score)),1650)}
 function runScan(){['s1','s2','s3'].forEach((id,i)=>setTimeout(()=>$(id).classList.add('hot'),i*520));makeBars()}
-function renderResult(r){track('analysis_complete',{page:'result',score:r&&r.score,type:r&&r.type});result=r;shareId='';shareReady=false;uploadPromise=null;$('scoreNum').textContent=r.score;$('typeTag').textContent=r.type;$('quoteText').textContent=r.quote;$('ingredients').innerHTML=r.ings.map((x,i)=>`<div class="ing"><span>${x}</span><span>${(r.pcts||PCTS[0])[i]}</span></div>`).join('');const ap=$('audioPlayer');ap.src=audioUrl;ap.load();$('playBtn').textContent='▶ 播放我的原声';show('resultScreen');ensureShareReady().then(()=>toast('听声音链接已准备好')).catch(()=>{})}
+function renderResult(r){result=r;shareId='';shareReady=false;uploadPromise=null;$('scoreNum').textContent=r.score;$('typeTag').textContent=r.type;$('quoteText').textContent=r.quote;$('ingredients').innerHTML=r.ings.map((x,i)=>`<div class="ing"><span>${x}</span><span>${(r.pcts||PCTS[0])[i]}</span></div>`).join('');const ap=$('audioPlayer');ap.src=audioUrl;ap.load();$('playBtn').textContent='▶ 播放我的原声';show('resultScreen');ensureShareReady().then(()=>toast('听声音链接已准备好')).catch(()=>{})}
 
 async function ensureShareReady(){
   if(shareId)return shareId;
@@ -148,7 +127,6 @@ async function ensureShareReady(){
     if(!data.id)throw new Error('missing id');
     shareId=data.id;
     shareReady=true;
-    track('share_ready',{page:'result',sid:shareId,score:result&&result.score,type:result&&result.type});
     return shareId;
   })();
   try{return await uploadPromise}finally{uploadPromise=null}
@@ -156,7 +134,6 @@ async function ensureShareReady(){
 function getShareUrl(){return shareId?`${location.origin}/s.html?id=${encodeURIComponent(shareId)}`:location.href}
 
 async function createShareCard(){
-  track('share_card_click',{page:'result',score:result&&result.score,type:result&&result.type});
   const btn=$('shareBtn');
   const old=btn.textContent;
   btn.disabled=true;btn.textContent='正在生成…';toast('正在生成分享图');
@@ -188,7 +165,6 @@ async function createShareCard(){
     if(img){c.drawImage(img,774,1180,176,176)}else{c.fillStyle='#111';c.font='900 32px Arial';c.fillText('二维码生成中',774,1240);c.font='500 22px Arial';c.fillText('请同时复制链接',790,1284)}
     const blob=await new Promise((resolve,reject)=>canvas.toBlob(b=>b?resolve(b):reject(new Error('canvas blob failed')),'image/png'));
     const url=URL.createObjectURL(blob);const a=document.createElement('a');a.download='toxic-voice-viral-card-v169.png';a.href=url;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),2000);
-    track('share_card_generated',{page:'result',sid:shareId,score:result&&result.score,type:result&&result.type});
     toast('分享图已生成，请保存或发送');
   }catch(e){console.error(e);toast('分享图生成失败，请重试')}
   finally{btn.disabled=false;btn.textContent=old}
@@ -238,7 +214,25 @@ function bindRecordButton(){
 }
 bindRecordButton();
 window.addEventListener('error',e=>toast('页面脚本错误：'+(e.message||'unknown')));
-$('playBtn').onclick=()=>{track('result_audio_play',{page:'result',sid:shareId});const a=$('audioPlayer');if(!a.src){toast('声音还在准备中');return}if(a.paused){a.play().then(()=>{$('playBtn').textContent='暂停播放'}).catch(()=>toast('请再点一次播放'))}else{a.pause();$('playBtn').textContent='▶ 播放我的原声'}};$('audioPlayer').addEventListener('ended',()=>{$('playBtn').textContent='▶ 播放我的原声'});$('restartBtn').onclick=()=>{location.href='/'};$('shareBtn').onclick=createShareCard;$('copyBtn').onclick=async()=>{track('copy_share_link',{page:'result',sid:shareId});const btn=$('copyBtn');const old=btn.textContent;btn.disabled=true;btn.textContent='正在复制…';toast('正在生成听声音链接');try{await ensureShareReady();const url=getShareUrl();if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(url);toast('听声音链接已复制，发给朋友试试')}else{prompt('复制这个听声音链接',url);toast('链接已生成')}}catch(e){console.error(e);toast('链接生成失败，请重试')}finally{btn.disabled=false;setTimeout(()=>btn.textContent=old,900)}};loadShare();
+$('playBtn').onclick=()=>{const a=$('audioPlayer');if(!a.src){toast('声音还在准备中');return}if(a.paused){a.play().then(()=>{$('playBtn').textContent='暂停播放'}).catch(()=>toast('请再点一次播放'))}else{a.pause();$('playBtn').textContent='▶ 播放我的原声'}};$('audioPlayer').addEventListener('ended',()=>{$('playBtn').textContent='▶ 播放我的原声'});$('restartBtn').onclick=()=>{location.href='/'};$('shareBtn').onclick=createShareCard;$('copyBtn').onclick=async()=>{const btn=$('copyBtn');const old=btn.textContent;btn.disabled=true;btn.textContent='正在复制…';toast('正在生成听声音链接');try{await ensureShareReady();const url=getShareUrl();if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(url);toast('听声音链接已复制，发给朋友试试')}else{prompt('复制这个听声音链接',url);toast('链接已生成')}}catch(e){console.error(e);toast('链接生成失败，请重试')}finally{btn.disabled=false;setTimeout(()=>btn.textContent=old,900)}};loadShare();
 </script>
+
+<script>
+(function(){
+  const qs=new URLSearchParams(location.search);
+  const sid=qs.get('sid')||qs.get('id')||'';
+  function send(event,data={}){
+    try{navigator.sendBeacon&&navigator.sendBeacon('/api/track',new Blob([JSON.stringify({event,data,path:location.pathname,sid})],{type:'application/json'}))||fetch('/api/track',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({event,data,path:location.pathname,sid}),keepalive:true});}catch(e){}
+  }
+  window.analyticsTrack=send;
+  send(qs.get('from')==='share'?'visit_from_share':'page_view',{query:location.search,referrer:document.referrer});
+  document.addEventListener('DOMContentLoaded',function(){
+    const bind=(id,event)=>{const el=document.getElementById(id); if(el) el.addEventListener('click',()=>send(event,{id}));};
+    bind('recordBtn','record_button_click'); bind('shareBtn','share_button_click'); bind('copyBtn','copy_link_click'); bind('restartBtn','restart_click');
+    const rec=document.getElementById('recordBtn'); if(rec){rec.addEventListener('pointerdown',()=>send('record_start')); rec.addEventListener('pointerup',()=>send('record_stop'));}
+  });
+})();
+</script>
+
 </body>
 </html>

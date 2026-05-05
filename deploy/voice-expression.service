@@ -8,6 +8,7 @@ Group=ubuntu
 WorkingDirectory=/opt/voice-expression-mvp
 Environment="PATH=/usr/bin:/usr/local/bin:/opt/voice-expression-mvp/venv/bin"
 Environment="FFMPEG_BINARY=/usr/bin/ffmpeg"
+Environment="ANALYTICS_ADMIN_TOKEN=change-this-token"
 ExecStart=/opt/voice-expression-mvp/venv/bin/python -m uvicorn app.main:app --host 127.0.0.1 --port 8010
 Restart=always
 RestartSec=3
