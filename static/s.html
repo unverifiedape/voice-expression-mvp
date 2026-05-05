@@ -38,13 +38,23 @@
 </main>
 <script>
 const $=id=>document.getElementById(id);const p=new URLSearchParams(location.search);const id=p.get('id')||'';
+const ANALYTICS_SESSION_ID = (() => {
+  try { let v = localStorage.getItem('rt_session_id'); if (!v) { v = 'sess_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2,8); localStorage.setItem('rt_session_id', v); } return v; }
+  catch(e) { return 'sess_' + Date.now().toString(36); }
+})();
+function track(event, data = {}) {
+  try { fetch('/api/track', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({event, data:Object.assign({page:'share', session_id:ANALYTICS_SESSION_ID, path:location.pathname, sid:id}, data || {})}), keepalive:true}).catch(()=>{}); } catch(e) {}
+}
+track('page_view',{page:'share'});
+track('share_page_view',{page:'share',sid:id});
+
 function fallback(){return{score:88,type:'☣️ 伤人样本',quote:'这句话不一定很重，但很容易让人不舒服'}}
 async function init(){
   if(!id){const f=fallback();render(f);$('quote').textContent='链接缺少声音ID';return}
   try{
     const r=await fetch('/api/share?id='+encodeURIComponent(id),{cache:'no-store'});
     if(!r.ok)throw new Error('not found');
-    const data=await r.json();render(data.meta||fallback());
+    const data=await r.json();track('share_loaded',{page:'share',sid:id});render(data.meta||fallback());
     $('audio').src=data.audio_url||('/api/audio?id='+encodeURIComponent(id));
     
   }catch(e){render(fallback());$('quote').textContent='这段原声可能已经过期，但你还可以测自己';}
@@ -53,6 +63,7 @@ function render(m){$('score').textContent=m.score||88;$('type').textContent=m.ty
 function setBtnIdle(){ $('tapBtn').textContent='▶ 点击播放TA的毒气原声'; }
 function setBtnPlaying(){ $('tapBtn').textContent='暂停播放'; }
 $('tapBtn').onclick=async()=>{
+  track('share_audio_play',{page:'share',sid:id});
   const a=$('audio');
   if(!a.src){ $('tapBtn').textContent='声音还在加载'; return; }
   if(!a.paused && !a.ended){ a.pause(); setBtnIdle(); return; }
@@ -62,7 +73,7 @@ $('tapBtn').onclick=async()=>{
 $('audio').addEventListener('play',setBtnPlaying);
 $('audio').addEventListener('pause',()=>{ if(!$('audio').ended) setBtnIdle(); });
 $('audio').addEventListener('ended',()=>{ $('audio').currentTime=0; setBtnIdle(); });
-$('testBtn').onclick=()=>{location.href='/'};
+$('testBtn').onclick=()=>{track('click_test_from_share',{page:'share',sid:id});location.href='/?from=share&sid='+encodeURIComponent(id)};
 
 init();
 </script>
