@@ -148,6 +148,40 @@ def _load_share(share_id: str) -> dict:
         raise HTTPException(status_code=500, detail="分享数据损坏。") from exc
 
 
+def _share_rank_item(meta_path: Path) -> dict | None:
+    try:
+        payload = json.loads(meta_path.read_text(encoding="utf-8"))
+        if not isinstance(payload, dict):
+            return None
+        share_id = str(payload.get("id") or meta_path.stem)[:80]
+        filename = str(payload.get("filename") or "")
+        if not filename or "/" in filename or ".." in filename:
+            return None
+        audio_path = UPLOADS_DIR / filename
+        if not audio_path.exists():
+            return None
+        meta = payload.get("meta") if isinstance(payload.get("meta"), dict) else {}
+        try:
+            score = int(meta.get("score") or 0)
+        except Exception:
+            score = 0
+        if score <= 0:
+            score = 88
+        created_at = int(payload.get("created_at") or meta_path.stat().st_mtime)
+        return {
+            "id": share_id,
+            "sid": share_id,
+            "score": max(0, min(100, score)),
+            "type": str(meta.get("type") or "☣️ 高危发言")[:80],
+            "quote": str(meta.get("quote") or "这句话听起来不重，但很容易让人不舒服")[:160],
+            "audio_url": f"/api/audio?id={share_id}",
+            "share_url": f"/s.html?id={share_id}",
+            "created_at": created_at,
+        }
+    except Exception:
+        return None
+
+
 @app.get("/health")
 def health() -> dict:
     return {"ok": True, "version": "v1.6.9-secure-analytics", "static": str(STATIC_DIR), "analytics": True}
@@ -243,6 +277,7 @@ async def upload_share_audio(
         "filename": filename,
         "audio_url": f"/api/audio?id={share_id}",
         "meta": meta_obj,
+        "created_at": int(time.time()),
     }
     (SHARES_DIR / f"{share_id}.json").write_text(
         json.dumps(payload, ensure_ascii=False, separators=(",", ":")),
@@ -274,6 +309,28 @@ def get_audio(request: Request, id: str = Query(..., min_length=1)) -> FileRespo
         media_type=("audio/webm" if filename.endswith(".webm") else "audio/mp4" if filename.endswith((".m4a",".mp4")) else "audio/mpeg" if filename.endswith(".mp3") else "audio/wav" if filename.endswith(".wav") else "application/octet-stream"),
         headers={"Cache-Control": "public, max-age=604800"},
     )
+
+
+@app.get("/ranking")
+@app.get("/ranking.html")
+def ranking_page() -> FileResponse:
+    return FileResponse(
+        STATIC_DIR / "ranking.html",
+        headers={"Cache-Control": "no-cache, no-store, must-revalidate"},
+    )
+
+
+@app.get("/api/ranking")
+def api_ranking(request: Request, limit: int = Query(default=30, ge=1, le=100)) -> dict:
+    items: list[dict] = []
+    for meta_path in SHARES_DIR.glob("*.json"):
+        item = _share_rank_item(meta_path)
+        if item:
+            items.append(item)
+    items.sort(key=lambda x: (int(x.get("score") or 0), int(x.get("created_at") or 0)), reverse=True)
+    items = items[:limit]
+    _record_event("ranking_api_loaded", {"count": len(items)}, request=request)
+    return {"ok": True, "items": items, "count": len(items)}
 
 
 @app.post("/api/track")
