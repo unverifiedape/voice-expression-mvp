@@ -168,122 +168,123 @@ async function createShareCard(){
     const ings=rawIngs.map(x=>String(x).replace(/^主要成分[:：]?\s*/,'').replace(/^毒气配方[:：]?\s*/,'').replace(/^伤人配方[:：]?\s*/,''));
     const pcts=(result?.pcts&&result.pcts.length?result.pcts:['35%','30%','16%']).slice(0,3);
 
-    // ===== V1.7.9: 按“图2”海报方向重做：全屏传播海报，不再是结果页卡片 =====
-    c.fillStyle='#030402';c.fillRect(0,0,w,h);
+    // ===== V1.8.2 档三裂变海报：贴近参考图2，修正遮挡、偏移、可读性 =====
+    c.fillStyle='#020302';c.fillRect(0,0,w,h);
 
     // 背景：毒雾、颗粒、脏海报质感
-    const g1=c.createRadialGradient(780,235,20,760,235,760);
-    g1.addColorStop(0,'rgba(213,255,44,.35)');g1.addColorStop(.26,'rgba(116,171,16,.22)');g1.addColorStop(.72,'rgba(22,38,6,.10)');g1.addColorStop(1,'rgba(0,0,0,0)');
-    c.fillStyle=g1;c.fillRect(0,0,w,h);
-    const g2=c.createRadialGradient(120,710,20,120,710,620);
-    g2.addColorStop(0,'rgba(185,255,36,.22)');g2.addColorStop(.45,'rgba(67,122,20,.14)');g2.addColorStop(1,'rgba(0,0,0,0)');
-    c.fillStyle=g2;c.fillRect(0,0,w,h);
+    const bg=c.createRadialGradient(760,315,10,760,315,760);
+    bg.addColorStop(0,'rgba(209,255,40,.34)');bg.addColorStop(.28,'rgba(87,141,16,.20)');bg.addColorStop(.78,'rgba(10,22,6,.11)');bg.addColorStop(1,'rgba(0,0,0,0)');
+    c.fillStyle=bg;c.fillRect(0,0,w,h);
+    const leftFog=c.createRadialGradient(120,640,20,120,640,430);
+    leftFog.addColorStop(0,'rgba(190,255,35,.25)');leftFog.addColorStop(.5,'rgba(80,150,18,.13)');leftFog.addColorStop(1,'rgba(0,0,0,0)');
+    c.fillStyle=leftFog;c.fillRect(0,0,w,h);
     c.save();
-    for(let i=0;i<1300;i++){
-      const x=Math.random()*w,y=Math.random()*h,r=Math.random()*2.4;
-      c.globalAlpha=Math.random()*0.13;
-      c.fillStyle=i%5===0?'#d7ff3f':(i%11===0?'#f5d047':'#ffffff');
+    for(let i=0;i<1450;i++){
+      const x=Math.random()*w,y=Math.random()*h,r=Math.random()*2.2;
+      c.globalAlpha=Math.random()*0.12;
+      c.fillStyle=i%7===0?'#d7ff3f':(i%13===0?'#f4d64b':'#fff7df');
       c.beginPath();c.arc(x,y,r,0,Math.PI*2);c.fill();
     }
     c.restore();
 
-    // 顶部斜向警示带：先把事件讲清楚
-    drawSlantedHazard(c,-35,16,w+70,122,`⚠ 我随口录了一句话，伤人指数 ${score}% ⚠`);
+    // 顶部斜向警示带：解释事件，避免用户看不懂
+    drawSlantedHazard(c,-45,18,w+90,118,`⚠ 我随口录了一句话，伤人指数 ${score}% ⚠`);
 
-    // 左侧烟雾点缀
-    c.save();c.globalAlpha=.20;c.fillStyle='#9fd52c';
-    for(let i=0;i<16;i++){c.beginPath();c.arc(55+Math.random()*120,420+Math.random()*420,30+Math.random()*70,0,Math.PI*2);c.fill();}
+    // 左侧毒雾圆斑
+    c.save();c.globalAlpha=.22;c.fillStyle='#a8e22d';
+    for(let i=0;i<18;i++){c.beginPath();c.arc(55+Math.random()*145,430+Math.random()*420,28+Math.random()*76,0,Math.PI*2);c.fill();}
     c.restore();
 
-    // 巨大分数：第一视觉中心
+    // 大分数：第一视觉中心，位置更高，避免压住主标题
     c.save();
-    c.translate(78,155);c.rotate(-0.055);
-    c.shadowColor='rgba(215,255,63,.35)';c.shadowBlur=28;
-    c.fillStyle='#f7f2ea';c.font='950 315px Arial, sans-serif';
-    c.fillText(score+'%',0,332);
-    c.globalAlpha=.22;c.fillStyle='#ffffff';c.fillText(score+'%',-8,326);c.globalAlpha=1;
+    c.translate(68,162);c.rotate(-0.045);
+    c.shadowColor='rgba(215,255,63,.38)';c.shadowBlur=28;
+    c.fillStyle='#f7f2ea';
+    fitText(c,score+'%',0,306,750,302,'950');
+    c.globalAlpha=.18;c.fillStyle='#ffffff';fitText(c,score+'%',-7,299,750,302,'950');
     c.restore();
 
-    // 高危表达小章
+    // 高危表达章：贴纸化，但不盖住分数主体
     c.save();
-    c.translate(55,268);c.rotate(-0.075);
-    c.strokeStyle='rgba(244,205,45,.95)';c.lineWidth=4;c.fillStyle='rgba(5,5,5,.62)';
-    round(c,0,0,170,64,10);c.fill();c.stroke();
-    c.fillStyle='#f2d04b';c.font='950 34px Arial, sans-serif';c.fillText('高危表达',22,43);
+    c.translate(56,268);c.rotate(-0.065);
+    c.strokeStyle='rgba(244,205,45,.96)';c.lineWidth=4;c.fillStyle='rgba(5,5,5,.66)';
+    round(c,0,0,168,62,10);c.fill();c.stroke();
+    c.fillStyle='#f2d04b';c.font='950 33px Arial, sans-serif';c.fillText('高危表达',22,42);
     c.restore();
 
-    // 类型贴纸：右侧荧光脏贴纸
+    // 类型贴纸：参考图2的右侧荧光标签，避开主标题
     c.save();
-    c.translate(700,345);c.rotate(-0.08);
-    c.fillStyle='rgba(215,255,63,.94)';round(c,0,0,286,78,12);c.fill();
+    c.translate(710,390);c.rotate(-0.075);
+    c.fillStyle='rgba(215,255,63,.96)';round(c,0,0,292,78,12);c.fill();
     c.strokeStyle='rgba(0,0,0,.35)';c.lineWidth=3;c.stroke();
-    c.fillStyle='#080b05';c.font='950 40px Arial, sans-serif';
-    fitText(c,type,30,52,232,40);
-    [45,137,230].forEach((dx,i)=>{c.fillStyle='rgba(215,255,63,.94)';c.fillRect(dx,76,11,22+i*6);c.beginPath();c.arc(dx+5.5,98+i*6,5.5,0,Math.PI*2);c.fill();});
+    c.fillStyle='#070905';fitText(c,type,34,52,230,40,'950');
+    [48,140,232].forEach((dx,i)=>{c.fillStyle='rgba(215,255,63,.96)';c.fillRect(dx,75,12,22+i*5);c.beginPath();c.arc(dx+6,98+i*5,6,0,Math.PI*2);c.fill();});
     c.restore();
 
-    // 主结果：参考图2，大而粗，视觉中心第二层
+    // 主判词：下移并分层，彻底避开百分比遮挡
     const qLines=posterHeadlineLines(quote);
     c.save();
-    c.translate(70,545);c.rotate(-0.025);
-    c.shadowColor='rgba(0,0,0,.6)';c.shadowBlur=3;
-    c.fillStyle='#f7f2ea';c.font='950 112px Arial, sans-serif';
-    fitText(c,qLines[0]||'你一解释，',0,0,940,112);
-    c.fillStyle='#d7ff3f';c.font='950 125px Arial, sans-serif';
-    fitText(c,qLines[1]||'别人更想撤退',0,128,940,125);
+    c.translate(66,598);c.rotate(-0.022);
+    c.shadowColor='rgba(0,0,0,.75)';c.shadowBlur=5;
+    c.fillStyle='#f8f4e8';
+    fitText(c,qLines[0]||'你一解释，',0,0,955,96,'950');
+    c.fillStyle='#d7ff3f';
+    fitText(c,qLines[1]||'别人更想撤退',0,126,955,118,'950');
     c.restore();
 
-    // 粗刷线
-    c.save();c.strokeStyle='rgba(215,255,63,.82)';c.lineWidth=6;c.lineCap='round';
-    c.beginPath();c.moveTo(78,792);c.quadraticCurveTo(470,845,1010,770);c.stroke();
-    c.globalAlpha=.34;c.beginPath();c.moveTo(430,812);c.quadraticCurveTo(610,840,770,792);c.stroke();c.restore();
+    // 扫刷线，形成参考图2的海报动势
+    c.save();c.strokeStyle='rgba(215,255,63,.84)';c.lineWidth=6;c.lineCap='round';
+    c.beginPath();c.moveTo(82,810);c.quadraticCurveTo(470,852,1010,778);c.stroke();
+    c.globalAlpha=.30;c.beginPath();c.moveTo(430,826);c.quadraticCurveTo(630,850,780,802);c.stroke();c.restore();
 
-    // 伤人配方卡：左下，像海报里的证据标签
-    const boxX=70, boxY=835, boxW=650, boxH=305;
+    // 伤人配方证据卡：放大字体，避免朋友圈压缩看不清
+    const boxX=68, boxY=848, boxW=668, boxH=300;
     c.save();
-    c.fillStyle='rgba(4,6,4,.70)';round(c,boxX,boxY,boxW,boxH,18);c.fill();
-    c.strokeStyle='rgba(215,255,63,.72)';c.lineWidth=2.8;c.stroke();
-    c.fillStyle='rgba(215,255,63,.95)';round(c,boxX+4,boxY-35,210,62,12);c.fill();
+    c.fillStyle='rgba(4,6,4,.76)';round(c,boxX,boxY,boxW,boxH,18);c.fill();
+    c.strokeStyle='rgba(215,255,63,.76)';c.lineWidth=3;c.stroke();
+    c.fillStyle='rgba(215,255,63,.97)';round(c,boxX+4,boxY-35,214,62,12);c.fill();
     c.fillStyle='#071006';c.font='950 39px Arial, sans-serif';c.fillText('伤人配方',boxX+58,boxY+8);
     const icons=['✦','〰','✚'];
     ings.forEach((txt,i)=>{
       const yy=boxY+91+i*75;
-      c.strokeStyle='rgba(255,255,255,.16)';c.lineWidth=1.4;c.beginPath();c.moveTo(boxX+35,yy+34);c.lineTo(boxX+boxW-40,yy+34);c.stroke();
-      c.fillStyle='#d7ff3f';c.font='950 34px Arial, sans-serif';c.fillText(icons[i],boxX+38,yy);
-      c.fillStyle='#f7f2ea';c.font='850 31px Arial, sans-serif';
-      fitText(c,txt,boxX+92,yy,395,31);
-      c.fillStyle='#ffd25c';c.textAlign='right';c.font='950 42px Arial, sans-serif';c.fillText(pcts[i]||'',boxX+boxW-38,yy);c.textAlign='left';
+      c.strokeStyle='rgba(255,255,255,.17)';c.lineWidth=1.5;c.beginPath();c.moveTo(boxX+34,yy+35);c.lineTo(boxX+boxW-38,yy+35);c.stroke();
+      c.fillStyle='#d7ff3f';c.font='950 35px Arial, sans-serif';c.fillText(icons[i],boxX+36,yy);
+      c.fillStyle='#f7f2ea';fitText(c,txt,boxX+91,yy,400,31,'850');
+      c.fillStyle='#ffd25c';c.textAlign='right';c.font='950 43px Arial, sans-serif';c.fillText(pcts[i]||'',boxX+boxW-38,yy);c.textAlign='left';
     });
     c.restore();
 
-    // QR：右下强光，箭头明确指向
+    // QR：右下强光，放大并保证不被 CTA 覆盖
     const qrUrl='/api/qr?url='+encodeURIComponent(getShareUrl())+'&t='+Date.now();
     let img=null;
     try{img=await imageFromUrl(qrUrl,12000)}catch(e){try{img=await imageFromFetch(qrUrl,12000)}catch(e2){console.warn('QR failed',e2)}}
-    const qrX=770, qrY=1008, qrSize=250;
+    const qrX=765, qrY=1018, qrSize=256;
 
-    // QR 外发光爆炸
+    // CTA 文案：左下大字，箭头指向 QR
     c.save();
-    const qg=c.createRadialGradient(qrX+qrSize/2,qrY+qrSize/2,20,qrX+qrSize/2,qrY+qrSize/2,210);
-    qg.addColorStop(0,'rgba(215,255,63,.36)');qg.addColorStop(.55,'rgba(215,255,63,.18)');qg.addColorStop(1,'rgba(0,0,0,0)');
-    c.fillStyle=qg;c.fillRect(qrX-120,qrY-120,qrSize+240,qrSize+240);
+    c.fillStyle='#f7f2ea';c.font='950 57px Arial, sans-serif';c.fillText('扫码听我说，',70,1262);
+    c.fillStyle='#d7ff3f';c.font='950 78px Arial, sans-serif';c.fillText('冤不冤？！',386,1262);
     c.restore();
 
-    c.fillStyle='#f7f2ea';c.font='950 58px Arial, sans-serif';c.fillText('扫码听我说，',72,1252);
-    c.fillStyle='#d7ff3f';c.font='950 78px Arial, sans-serif';c.fillText('冤不冤？！',388,1252);
-
-    c.save();c.strokeStyle='#d7ff3f';c.lineWidth=18;c.lineCap='round';c.lineJoin='round';c.shadowColor='rgba(215,255,63,.72)';c.shadowBlur=22;
-    c.beginPath();c.moveTo(625,1245);c.quadraticCurveTo(705,1212,756,1172);c.stroke();
-    c.beginPath();c.moveTo(718,1154);c.lineTo(760,1169);c.lineTo(733,1206);c.stroke();
+    c.save();c.strokeStyle='#d7ff3f';c.lineWidth=18;c.lineCap='round';c.lineJoin='round';c.shadowColor='rgba(215,255,63,.76)';c.shadowBlur=24;
+    c.beginPath();c.moveTo(615,1248);c.quadraticCurveTo(690,1216,752,1176);c.stroke();
+    c.beginPath();c.moveTo(714,1156);c.lineTo(758,1172);c.lineTo(730,1210);c.stroke();
     c.restore();
 
-    c.save();c.shadowColor='rgba(215,255,63,.9)';c.shadowBlur=36;c.fillStyle='#fff';round(c,qrX,qrY,qrSize,qrSize,14);c.fill();c.restore();
-    if(img){c.drawImage(img,qrX+16,qrY+16,qrSize-32,qrSize-32)}else{c.fillStyle='#111';c.font='900 28px Arial';c.fillText('二维码生成中',qrX+26,qrY+120)}
-
-    // 底部原声提示条
+    // QR 外发光背景
     c.save();
-    c.fillStyle='rgba(0,0,0,.72)';round(c,110,1322,420,52,24);c.fill();
-    c.fillStyle='#d7ff3f';c.font='950 28px Arial, sans-serif';c.fillText('听原声，再判断我冤不冤 ▶',140,1356);
+    const qg=c.createRadialGradient(qrX+qrSize/2,qrY+qrSize/2,20,qrX+qrSize/2,qrY+qrSize/2,220);
+    qg.addColorStop(0,'rgba(215,255,63,.40)');qg.addColorStop(.55,'rgba(215,255,63,.20)');qg.addColorStop(1,'rgba(0,0,0,0)');
+    c.fillStyle=qg;c.fillRect(qrX-125,qrY-125,qrSize+250,qrSize+250);
+    c.restore();
+
+    c.save();c.shadowColor='rgba(215,255,63,.95)';c.shadowBlur=34;c.fillStyle='#fff';round(c,qrX,qrY,qrSize,qrSize,14);c.fill();c.restore();
+    if(img){c.drawImage(img,qrX+17,qrY+17,qrSize-34,qrSize-34)}else{c.fillStyle='#111';c.font='900 28px Arial';c.fillText('二维码生成中',qrX+26,qrY+122)}
+
+    // 二维码辅助说明：不抢主视觉，但说明扫码动作
+    c.save();
+    c.fillStyle='rgba(0,0,0,.76)';round(c,112,1330,438,54,25);c.fill();
+    c.fillStyle='#d7ff3f';c.font='950 28px Arial, sans-serif';c.fillText('听原声，再判断我冤不冤 ▶',142,1365);
     c.restore();
 
     const blob=await new Promise((resolve,reject)=>canvas.toBlob(b=>b?resolve(b):reject(new Error('canvas blob failed')),'image/png'));
@@ -294,19 +295,19 @@ async function createShareCard(){
 }
 
 function posterHeadlineLines(t){
-  t=String(t||'你一解释，别人更想撤退');
-  const targets=['别人更想撤退','场面只剩礼貌','所有人都不敢接话','不敢接话','更想撤退'];
-  for(const k of targets){const i=t.indexOf(k);if(i>0)return [t.slice(0,i).replace(/[，,]$/,'，'),t.slice(i)]}
+  t=String(t||'你一解释，别人更想撤退').trim();
+  const targets=['别人更想撤退','别人就想结束对话','听起来最有事','场面只剩礼貌','所有人都不敢接话','不敢接话','更想撤退','结束对话'];
+  for(const k of targets){const i=t.indexOf(k);if(i>0){let a=t.slice(0,i);if(!/[，,。！？!?]$/.test(a))a+='，';return [a,t.slice(i)]}}
   if(t.includes('，')){const a=t.split(/[，,]/);return [a[0]+'，',a.slice(1).join('，')]}
-  return [t.slice(0,Math.ceil(t.length/2)),t.slice(Math.ceil(t.length/2))];
+  if(t.length>12)return [t.slice(0,Math.ceil(t.length/2)),t.slice(Math.ceil(t.length/2))];
+  return [t,''];
 }
 
-function fitText(c,text,x,y,maxWidth,baseSize){
+function fitText(c,text,x,y,maxWidth,baseSize,weight='950'){
   text=String(text||'');
   let size=baseSize;
   const family='Arial, sans-serif';
-  const weight='950';
-  while(size>20){c.font=`${weight} ${size}px ${family}`;if(c.measureText(text).width<=maxWidth)break;size-=2;}
+  while(size>18){c.font=`${weight} ${size}px ${family}`;if(c.measureText(text).width<=maxWidth)break;size-=2;}
   c.fillText(text,x,y);
 }
 
