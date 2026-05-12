@@ -1,409 +1,1289 @@
 <!doctype html>
-<!-- relationshiptest-v1.7.9-final-viral-share-card-reference2-20260512 -->
+<!-- relationship-final-press-hold-mic-v1 -->
 <html lang="zh-CN">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#050505" />
-  <title>你说的话有多伤人？｜RelationshipTest</title>
-  <meta name="description" content="按住说一句，松手看结果。测测你说的话有多伤人。" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>毒气测试</title>
   <style>
     :root{
-      --bg:#050505;--panel:#0d0d0f;--panel2:#141417;--text:#f7f2ea;--muted:#8e8a83;--line:rgba(255,255,255,.1);
-      --acid:#d7ff3f;--warn:#ff4d4d;--gold:#ffcf66;--blue:#8fd8ff;--shadow:0 24px 80px rgba(0,0,0,.65);
-      --r:28px;
+      --bg:#f3f4f1;
+      --card:#ffffff;
+      --soft:#f8faf7;
+      --line:#e6e8e3;
+      --text:#111111;
+      --muted:#70756f;
+      --green:#3f7b52;
+      --green-2:#eaf4ed;
+      --green-3:#cfe7d6;
+      --black:#0d1110;
+      --danger:#c75743;
+      --shadow:0 10px 35px rgba(22,30,24,.06);
+      --radius:28px;
     }
-    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{min-height:100%;margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","PingFang SC","Microsoft YaHei",Arial,sans-serif;}
-    body{overflow-y:auto}.app{position:relative;min-height:100dvh;width:100%;max-width:520px;margin:0 auto;overflow:visible;background:radial-gradient(circle at 50% -10%,rgba(215,255,63,.18),transparent 33%),radial-gradient(circle at 20% 90%,rgba(143,216,255,.11),transparent 34%),#050505;}
-    .grain{pointer-events:none;position:absolute;inset:0;opacity:.13;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 220 220' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.95' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E")}.screen{position:relative;min-height:100dvh;padding:18px 18px calc(28px + env(safe-area-inset-bottom));display:none;flex-direction:column;overflow:visible;-webkit-overflow-scrolling:touch;opacity:0;transform:translateY(18px) scale(.985);pointer-events:none;transition:.35s cubic-bezier(.2,.9,.15,1)}.screen.active{display:flex;opacity:1;transform:none;pointer-events:auto}.top{display:flex;align-items:center;justify-content:space-between;height:42px;z-index:2}.brand{font-size:13px;letter-spacing:.18em;color:rgba(247,242,234,.72);font-weight:700}.pill{border:1px solid var(--line);border-radius:999px;padding:8px 11px;color:var(--muted);font-size:12px;background:rgba(255,255,255,.035);backdrop-filter:blur(10px)}.hero{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:18px}.badge{font-size:12px;color:#171717;background:var(--acid);border-radius:999px;padding:8px 12px;font-weight:800;box-shadow:0 0 28px rgba(215,255,63,.28)}h1{margin:0;font-size:48px;line-height:.96;letter-spacing:-.065em;font-weight:900}.sub{margin:0;color:rgba(247,242,234,.68);font-size:16px;line-height:1.55}.micWrap{position:relative;width:190px;height:190px;display:grid;place-items:center;margin:18px auto}.ring,.ring2{pointer-events:none;position:absolute;inset:0;border-radius:50%;border:1px solid rgba(215,255,63,.18);animation:pulse 2.6s infinite}.ring2{inset:22px;animation-delay:.7s;border-color:rgba(255,255,255,.12)}@keyframes pulse{0%{transform:scale(.8);opacity:.9}70%{transform:scale(1.2);opacity:.05}100%{transform:scale(1.2);opacity:0}}.mic{width:124px;height:124px;border-radius:50%;border:1px solid rgba(255,255,255,.14);background:linear-gradient(180deg,#1b1b1e,#09090a);box-shadow:inset 0 1px 0 rgba(255,255,255,.15),0 22px 70px rgba(215,255,63,.15);display:grid;place-items:center;cursor:pointer;touch-action:none;user-select:none;transition:.18s}.mic:active,.mic.recording{transform:scale(.94);box-shadow:0 0 0 12px rgba(255,77,77,.09),0 22px 70px rgba(255,77,77,.28)}.mic svg{width:44px;height:44px;fill:var(--text)}.holdText{font-size:13px;color:var(--muted);margin-top:-4px}.bottomNote{font-size:12px;color:rgba(247,242,234,.42);line-height:1.5;text-align:center}.wave{width:100%;height:118px;border-radius:24px;background:rgba(255,255,255,.04);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;gap:5px;overflow:hidden}.bar{width:5px;border-radius:999px;background:linear-gradient(var(--acid),rgba(215,255,63,.2));animation:wave 1.05s ease-in-out infinite}.bar:nth-child(2n){animation-delay:.13s}.bar:nth-child(3n){animation-delay:.25s}.bar:nth-child(4n){animation-delay:.38s}@keyframes wave{0%,100%{height:18px;opacity:.45}50%{height:82px;opacity:1}}.scanTitle{font-size:32px;font-weight:900;letter-spacing:-.04em;margin:0}.scanLine{height:1px;width:100%;background:linear-gradient(90deg,transparent,var(--acid),transparent);box-shadow:0 0 20px var(--acid);animation:scan 1.7s linear infinite}@keyframes scan{0%{transform:translateY(-70px);opacity:0}20%{opacity:1}100%{transform:translateY(70px);opacity:0}}.steps{width:100%;display:grid;gap:10px}.step{padding:14px 16px;border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.035);color:rgba(247,242,234,.66);font-size:14px}.step.hot{color:var(--text);border-color:rgba(215,255,63,.35);background:rgba(215,255,63,.07)}.resultCard{position:relative;width:100%;border-radius:34px;padding:24px;background:linear-gradient(180deg,rgba(255,255,255,.095),rgba(255,255,255,.035));border:1px solid rgba(255,255,255,.13);box-shadow:var(--shadow);overflow:hidden}.resultCard:before{content:"";position:absolute;right:-60px;top:-60px;width:180px;height:180px;border-radius:50%;background:rgba(215,255,63,.14);filter:blur(22px)}.scoreLabel{font-size:13px;color:var(--muted);letter-spacing:.18em;font-weight:800}.score{font-size:86px;line-height:.95;font-weight:950;letter-spacing:-.08em;margin:6px 0 0}.type{display:inline-flex;align-items:center;gap:8px;margin:14px 0 18px;padding:8px 12px;border-radius:999px;background:rgba(215,255,63,.1);border:1px solid rgba(215,255,63,.25);color:var(--acid);font-size:13px;font-weight:800}.quote{font-size:25px;line-height:1.18;letter-spacing:-.045em;font-weight:900;margin:0 0 18px}.ingredients{display:grid;gap:9px;margin:0 0 20px}.ing{display:flex;justify-content:space-between;gap:12px;padding:13px 14px;border-radius:16px;background:rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.07);font-size:14px}.ing span:last-child{color:var(--gold);white-space:nowrap}.audioBox{display:block;padding:12px;border-radius:18px;background:#050505;border:1px solid rgba(255,255,255,.1)}.audioBox audio{display:none}.audioBtn{width:100%;border:0;border-radius:16px;padding:15px 12px;background:var(--acid);color:#080808;font-size:15px;font-weight:950;cursor:pointer}.btn[disabled]{opacity:.58;filter:grayscale(.25);pointer-events:none}.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}.btn{border:0;border-radius:18px;padding:15px 14px;font-size:15px;font-weight:900;color:#0b0b0b;background:var(--acid);cursor:pointer}.btn.secondary{background:rgba(255,255,255,.08);color:var(--text);border:1px solid var(--line)}.btn.full{grid-column:1/-1}.qrCard{display:none;margin-top:12px;align-items:center;gap:12px;border-radius:20px;padding:12px;background:rgba(255,255,255,.055);border:1px solid var(--line)}.qrCard img{width:86px;height:86px;border-radius:14px;background:white}.qrCard p{margin:0;font-size:13px;color:var(--muted);line-height:1.45}.toast{position:absolute;left:18px;right:18px;bottom:calc(18px + env(safe-area-inset-bottom));padding:14px 16px;background:rgba(247,242,234,.94);color:#090909;border-radius:18px;font-weight:800;text-align:center;opacity:0;transform:translateY(12px);transition:.25s;z-index:10}.toast.show{opacity:1;transform:none}.shareOnly .recordOnly{display:none}.shareOnly .screen{padding-top:18px}.miniBack{border:0;background:transparent;color:var(--muted);font-size:13px}.legal{font-size:11px;color:rgba(247,242,234,.34);line-height:1.45;text-align:center;margin-top:10px}@media (max-height:720px){h1{font-size:42px}.micWrap{width:154px;height:154px;margin:8px auto}.mic{width:108px;height:108px}.score{font-size:70px}.quote{font-size:22px}.resultCard{padding:20px;border-radius:28px}.actions{margin-bottom:18px}}
-  
-/* V1.6.9 share-card warning-line polish */
-.hazardBar{position:relative;z-index:2;margin:0 -18px 12px;height:42px;display:flex;align-items:center;justify-content:center;overflow:hidden;border-top:1px solid rgba(255,209,41,.34);border-bottom:1px solid rgba(255,209,41,.24);box-shadow:0 8px 24px rgba(0,0,0,.32),0 0 18px rgba(215,255,63,.08);background:linear-gradient(180deg,rgba(20,18,10,.96),rgba(6,6,5,.94))}
-.hazardBar:before,.hazardBar:after{content:"";position:absolute;left:0;right:0;height:5px;background:repeating-linear-gradient(135deg,rgba(255,209,41,.9) 0 12px,rgba(255,209,41,.9) 12px 18px,rgba(5,5,5,.96) 18px 30px,rgba(5,5,5,.96) 30px 36px);opacity:.72}
-.hazardBar:before{top:0}.hazardBar:after{bottom:0}.hazardBar span{position:relative;z-index:1;color:#f2d04b;font-weight:950;font-size:17px;letter-spacing:.04em;text-shadow:0 0 14px rgba(215,255,63,.12)}
-#homeScreen{padding-top:0}.homeTitle{font-size:46px}.resultCard .scoreLabel{letter-spacing:.08em}.quote{color:#fff8e8}.shareOnly .hazardBar{margin-top:0}
-@media (max-width:380px){.hazardBar span{font-size:16px}.homeTitle{font-size:42px}.quote{font-size:23px}}
-.thresholdNote{margin:8px 0 14px;color:rgba(255,209,41,.78);font-size:12px;font-weight:800;letter-spacing:.02em;text-align:center}
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--text);
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang SC","Noto Sans SC",sans-serif;
+    }
+    .wrap{
+      max-width:780px;
+      margin:0 auto;
+      padding:18px 14px 42px;
+    }
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:32px;
+      padding:22px 18px;
+      margin-bottom:18px;
+      box-shadow:var(--shadow);
+    }
 
-/* V1.7.0 minimal conversion home */
-#homeScreen{padding-top:0;justify-content:center}
-.homeMinimal{min-height:calc(100dvh - 92px);justify-content:center;gap:28px;padding:4vh 0 0}
-.homeMinimal .homeTitle{font-size:56px;line-height:.94;letter-spacing:-.075em;text-shadow:0 16px 60px rgba(0,0,0,.7)}
-.homeMicWrap{width:212px;height:212px;margin:8px auto 0}
-.homeMicWrap .mic{width:136px;height:136px;background:radial-gradient(circle at 50% 32%,#26262b,#09090a 68%);box-shadow:inset 0 1px 0 rgba(255,255,255,.16),0 0 0 1px rgba(255,255,255,.05),0 26px 90px rgba(215,255,63,.18)}
-.homeAction{font-size:18px;line-height:1.45;color:rgba(247,242,234,.78);font-weight:800;letter-spacing:-.02em;margin-top:0}
-.rankLink{position:relative;z-index:3;display:block;width:max-content;max-width:calc(100% - 36px);margin:0 auto calc(16px + env(safe-area-inset-bottom));border:1px solid rgba(215,255,63,.24);background:rgba(215,255,63,.06);color:rgba(215,255,63,.88);border-radius:999px;padding:12px 16px;font-size:14px;font-weight:900;letter-spacing:-.01em;box-shadow:0 12px 38px rgba(0,0,0,.25);cursor:pointer}
-.rankLink:active{transform:scale(.97)}
-@media (max-height:720px){.homeMinimal{gap:18px;min-height:calc(100dvh - 78px)}.homeMinimal .homeTitle{font-size:48px}.homeMicWrap{width:176px;height:176px}.homeMicWrap .mic{width:118px;height:118px}.homeAction{font-size:16px}.rankLink{margin-bottom:10px}}
-@media (max-width:380px){.homeMinimal .homeTitle{font-size:50px}.homeAction{font-size:16px}}
+    .hero-head{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:14px;
+      margin-bottom:18px;
+    }
+    .tag{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 14px;
+      border-radius:999px;
+      background:var(--green-2);
+      color:var(--green);
+      font-size:14px;
+      font-weight:800;
+      margin-bottom:14px;
+    }
+    h1{
+      margin:0;
+      font-size:34px;
+      line-height:1.08;
+      letter-spacing:-0.05em;
+      font-weight:900;
+    }
+    .hero-accent{color:var(--green)}
+    .desc{
+      color:var(--muted);
+      font-size:15px;
+      line-height:1.8;
+      margin-top:12px;
+    }
+    .orb{
+      width:92px;height:92px;flex:0 0 92px;border-radius:50%;
+      background:
+        radial-gradient(circle at 34% 32%, #8cffb3 0 7%, transparent 8%),
+        radial-gradient(circle at 62% 34%, #8cffb3 0 7%, transparent 8%),
+        radial-gradient(circle at 50% 60%, #8cffb3 0 5%, transparent 6%),
+        radial-gradient(circle at 50% 50%, #0d1110 0 58%, transparent 59%),
+        radial-gradient(circle at 50% 50%, rgba(83,204,120,.28) 0 68%, transparent 69%);
+      position:relative;
+      box-shadow:0 12px 30px rgba(54,127,74,.18);
+      margin-top:22px;
+    }
+    .orb:before{
+      content:"";
+      position:absolute;right:-6px;top:-10px;width:18px;height:18px;border-radius:999px;
+      background:#53c66f;box-shadow:-8px 12px 0 2px #53c66f;
+      transform:rotate(18deg);
+    }
 
-/* V1.7.2 unified conversion pages */
-#resultScreen .actions{grid-template-columns:1fr;gap:12px;width:100%}
-#resultScreen .btn{font-size:16px;padding:17px 14px;border-radius:20px}
-#resultScreen .btn.secondary{opacity:.86}
-#scanScreen .scanTitle{font-size:34px;line-height:1.08}
-#scanScreen .step{font-weight:800;color:rgba(247,242,234,.78)}
-#scanScreen .step.hot{color:var(--text)}
+    .challenge-banner{
+      display:none;
+      margin-bottom:12px;
+      padding:14px 16px;
+      border-radius:18px;
+      background:#101313;
+      color:#fff;
+      font-size:14px;
+      line-height:1.75;
+    }
+    .incoming-audio-box{
+      display:none;
+      margin-bottom:14px;
+      padding:14px;
+      border-radius:22px;
+      background:#101313;
+      color:#fff;
+    }
+    .incoming-audio-title{
+      font-size:14px;
+      opacity:.85;
+      margin-bottom:8px;
+      font-weight:700;
+    }
+    .incoming-audio-desc{
+      font-size:13px;
+      line-height:1.7;
+      color:rgba(255,255,255,.78);
+      margin-top:8px;
+    }
 
-</style>
+    .sentence-shell{
+      background:var(--soft);
+      border:1px solid var(--line);
+      border-radius:28px;
+      padding:14px;
+      margin-top:8px;
+    }
+    .sentence-top{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      margin-bottom:10px;
+    }
+    .micro-label{
+      display:inline-flex;align-items:center;
+      padding:6px 12px;border-radius:999px;
+      background:#f0f3ef;color:#7a817b;font-size:13px;font-weight:700;
+    }
+    .switch-btn{
+      border:none;
+      background:var(--green-2);
+      color:var(--green);
+      border-radius:999px;
+      padding:8px 14px;
+      font-size:14px;
+      font-weight:800;
+      cursor:pointer;
+    }
+    .sentence-box{
+      background:#f4faf5;
+      border:1px solid var(--line);
+      border-radius:22px;
+      padding:18px 16px;
+      text-align:center;
+      font-size:30px;
+      line-height:1.28;
+      margin-bottom:14px;
+      font-weight:800;
+      letter-spacing:-.03em;
+    }
+    .chips{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-bottom:0;
+    }
+    .chip{
+      border:1px solid var(--line);
+      background:#fff;
+      border-radius:999px;
+      padding:12px 16px;
+      font-size:14px;
+      cursor:pointer;
+      color:#1a1d1a;
+      box-shadow:none;
+    }
+    .chip.active{
+      border-color:var(--green);
+      box-shadow:inset 0 0 0 1px var(--green);
+      color:var(--green);
+      font-weight:800;
+      background:#fbfffc;
+    }
+
+    .record-hero{
+      margin-top:18px;
+      background:linear-gradient(180deg,#fcfdfb 0%, #f7faf7 100%);
+      border:1px solid var(--line);
+      border-radius:30px;
+      padding:22px 18px;
+      text-align:center;
+      position:relative;
+      overflow:hidden;
+    }
+    .record-hero:before,.record-hero:after{
+      content:"";
+      position:absolute;
+      width:140px;height:140px;border-radius:50%;
+      background:radial-gradient(circle, rgba(63,123,82,.10) 0%, rgba(63,123,82,0) 70%);
+      z-index:0;
+    }
+    .record-hero:before{left:-40px;bottom:-50px}
+    .record-hero:after{right:-40px;top:-50px}
+    .record-hero > *{position:relative;z-index:1}
+    .tips-main{
+      color:var(--muted);
+      font-size:16px;
+      margin-bottom:18px;
+    }
+    .tips-sub{
+      color:#9aa098;
+      font-size:14px;
+      margin-top:8px;
+    }
+    .mic-hero{
+      width:118px;height:118px;border-radius:999px;
+      margin:0 auto 14px;
+      display:flex;align-items:center;justify-content:center;
+      background:radial-gradient(circle at 30% 25%, #4a975f 0%, #3f7b52 60%, #336444 100%);
+      box-shadow:0 16px 34px rgba(63,123,82,.28);
+      color:#fff;font-size:46px;font-weight:700;
+    }
+    .wave{
+      height:16px;
+      margin:0 auto 18px;
+      max-width:220px;
+      background:
+        radial-gradient(circle, #cfe7d6 1px, transparent 2px) center/18px 8px repeat-x;
+      opacity:.9;
+    }
+
+
+    .mic-hold-btn{
+      border:none;
+      background:transparent;
+      padding:0;
+      margin:0 auto 10px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      cursor:pointer;
+    }
+    .mic-hold-btn:active{transform:scale(.985)}
+    .mic-hold-circle{
+      width:138px;height:138px;border-radius:999px;
+      display:flex;align-items:center;justify-content:center;
+      background:radial-gradient(circle at 30% 25%, #4a975f 0%, #3f7b52 60%, #336444 100%);
+      box-shadow:0 16px 34px rgba(63,123,82,.28);
+      overflow:hidden;
+      position:relative;
+    }
+    .mic-hold-circle.recording{
+      box-shadow:0 0 0 10px rgba(63,123,82,.10), 0 18px 36px rgba(63,123,82,.32);
+    }
+    .mic-photo{
+      width:112px;height:112px;border-radius:999px;
+      background:
+        radial-gradient(circle at 50% 50%, rgba(255,255,255,.16), rgba(255,255,255,0) 65%),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Ccircle cx='60' cy='60' r='60' fill='none'/%3E%3Cg transform='translate(18 16)'%3E%3Crect x='27' y='40' width='18' height='30' rx='6' fill='%23373737' transform='rotate(38 36 55)'/%3E%3Ccircle cx='47' cy='53' r='4' fill='%23080808'/%3E%3Crect x='54' y='24' width='32' height='28' rx='12' fill='%23a8a8ad' transform='rotate(38 70 38)'/%3E%3Crect x='57' y='34' width='34' height='8' rx='4' fill='%2390c8db' transform='rotate(38 74 38)'/%3E%3Crect x='49' y='28' width='10' height='30' rx='4' fill='%23707074' transform='rotate(38 54 43)'/%3E%3Crect x='18' y='54' width='34' height='10' rx='5' fill='%23474a4a' transform='rotate(38 35 59)'/%3E%3C/g%3E%3C/svg%3E") center/84px 84px no-repeat;
+      filter:drop-shadow(0 10px 18px rgba(0,0,0,.12));
+      display:block;
+    }
+
+    .section-title{
+      margin:0 0 14px;
+      font-size:22px;
+      font-weight:900;
+    }
+    .controls{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-bottom:10px;
+    }
+    button{
+      border:none;
+      border-radius:18px;
+      padding:16px 22px;
+      font-size:15px;
+      cursor:pointer;
+      transition:.18s ease;
+    }
+    .btn-primary{background:var(--green);color:#fff}
+    .btn-secondary{background:#ececea;color:#555}
+    .btn-danger{background:var(--black);color:#fff}
+    .record-actions{
+      display:flex;
+      gap:12px;
+      margin-top:14px;
+    }
+    .record-actions button{flex:1}
+    .status{
+      min-height:22px;
+      color:var(--muted);
+      font-size:14px;
+      margin:6px 0 8px;
+    }
+    .error{
+      color:var(--danger);
+      font-size:14px;
+      line-height:1.7;
+      margin-top:8px;
+      white-space:pre-wrap;
+    }
+    audio{
+      width:100%;
+      margin-top:8px;
+      border-radius:14px;
+    }
+
+    .result{
+      margin-top:18px;
+      border-top:1px solid var(--line);
+      padding-top:18px;
+    }
+    .result-audio-box,.dare-box{
+      display:none;
+      margin-bottom:18px;
+      padding:16px;
+      border-radius:24px;
+      background:#f8faf7;
+      border:1px solid var(--line);
+    }
+    .result-audio-title{
+      font-size:15px;
+      font-weight:800;
+      margin-bottom:8px;
+    }
+    .dare-title{
+      font-size:22px;
+      font-weight:900;
+      line-height:1.3;
+      margin-bottom:8px;
+    }
+    .dare-desc{
+      font-size:15px;
+      color:#444;
+      line-height:1.75;
+    }
+
+    .toxic-meta-card{
+      display:none;
+      margin-bottom:18px;
+      padding:18px;
+      border-radius:28px;
+      background:#fbfcfa;
+      border:1px solid var(--line);
+    }
+    .toxic-head{
+      display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap;
+      margin-bottom:8px;
+    }
+    .result-title{
+      font-size:40px;
+      line-height:1.08;
+      font-weight:950;
+      margin:0;
+      letter-spacing:-0.05em;
+    }
+    .toxic-pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 14px;
+      border-radius:999px;
+      background:var(--green-2);
+      color:#1f4a38;
+      font-size:13px;
+      font-weight:800;
+      flex:0 0 auto;
+    }
+    .result-sub{
+      font-size:16px;
+      line-height:1.85;
+      color:#444;
+      margin:10px 0 0;
+    }
+    .toxic-elements-line{
+      font-size:18px;
+      line-height:1.8;
+      color:#2f2f2f;
+      margin-top:12px;
+    }
+
+    .badge{
+      display:inline-block;
+      font-size:12px;
+      letter-spacing:.08em;
+      color:var(--danger);
+      margin-bottom:10px;
+      font-weight:800;
+      text-transform:uppercase;
+    }
+    .result-sentence{
+      font-size:26px;
+      line-height:1.35;
+      font-weight:800;
+      margin-bottom:14px;
+    }
+    .verdict-card{
+      padding:18px;
+      border-radius:26px;
+      background:linear-gradient(180deg,#f7faf7 0%, #eef6f0 100%);
+      border:1px solid var(--line);
+      margin-bottom:16px;
+    }
+
+    .consequences{
+      margin-bottom:18px;
+    }
+    .list-title{
+      font-size:20px;
+      font-weight:900;
+      margin-bottom:10px;
+    }
+    #consequenceList{
+      padding-left:22px;
+      margin:0;
+      color:#444;
+      line-height:1.9;
+      font-size:16px;
+    }
+
+    .challenge-box{
+      margin-top:14px;
+      background:linear-gradient(180deg,#0a0f0c 0%, #121816 100%);
+      border-radius:26px;
+      padding:16px;
+      color:#fff;
+      position:relative;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.06);
+    }
+    .challenge-box:before{
+      content:"";
+      position:absolute;
+      inset:auto auto -50px -20px;
+      width:220px;height:120px;
+      background:radial-gradient(circle at center, rgba(85,116,95,.28), rgba(85,116,95,0));
+      pointer-events:none;
+    }
+    .challenge-label{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:7px 12px;
+      border-radius:999px;
+      background:rgba(122,188,146,.14);
+      color:#d0efd9;
+      font-size:13px;
+      font-weight:800;
+      margin-bottom:12px;
+    }
+    .challenge-content{
+      display:flex;
+      gap:14px;
+      align-items:flex-end;
+      justify-content:space-between;
+    }
+    .challenge-left{flex:1; min-width:0}
+    .challenge-text{
+      font-size:22px;
+      line-height:1.28;
+      font-weight:900;
+      letter-spacing:-.03em;
+      margin-bottom:12px;
+    }
+    .challenge-sub{
+      font-size:14px;
+      line-height:1.7;
+      color:rgba(255,255,255,.75);
+      margin-bottom:10px;
+    }
+    .challenge-mini{
+      font-size:14px;
+      line-height:1.7;
+      color:#b7e8c4;
+      font-weight:700;
+    }
+    .challenge-qr{
+      width:112px;height:112px;border-radius:14px;background:#fff;padding:8px;object-fit:cover;flex:0 0 112px;
+    }
+
+    .share-actions{
+      display:flex;
+      gap:12px;
+      margin-top:14px;
+    }
+    .share-actions button{
+      flex:1;
+      border-radius:18px;
+      font-weight:800;
+    }
+    .note{
+      margin-top:12px;
+      color:#7a817b;
+      font-size:13px;
+      line-height:1.8;
+    }
+
+    #shareCanvas{display:none}
+
+    @media (min-width:760px){
+      .wrap{padding-top:26px}
+    }
+  </style>
 </head>
 <body>
-  <main class="app" id="app">
-    <div class="grain"></div>
-
-    <section class="screen active" id="homeScreen">
-      <div class="hero recordOnly homeMinimal">
-        <h1 class="homeTitle">你说的话<br>有多伤人？</h1>
-        <div class="micWrap homeMicWrap">
-          <div class="ring"></div><div class="ring2"></div>
-          <button class="mic" id="recordBtn" aria-label="按住说一句，松手看结果">
-            <svg viewBox="0 0 24 24"><path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 1 0-6 0v6a3 3 0 0 0 3 3Zm5-3a1 1 0 1 1 2 0 7 7 0 0 1-6 6.93V21a1 1 0 1 1-2 0v-3.07A7 7 0 0 1 5 11a1 1 0 1 1 2 0 5 5 0 0 0 10 0Z"/></svg>
-          </button>
+  <div class="wrap">
+    <div class="card">
+      <div class="hero-head">
+        <div style="flex:1;min-width:0">
+          <div class="tag">毒气测试</div>
+          <h1>你说话，<br><span class="hero-accent">其实挺有毒的。</span></h1>
+          <div class="desc">同一句话，你说出来就变了味。</div>
         </div>
-        <div class="holdText homeAction" id="holdText">按住说一句，松手看结果</div>
+        <div class="orb" aria-hidden="true"></div>
       </div>
-      <button class="rankLink recordOnly" id="rankLink" type="button" onclick="location.href='/ranking.html'">查看今日高危发言 →</button>
-    </section>
 
-    <section class="screen" id="scanScreen">
-      <div class="top"><div class="brand">ANALYZING</div><div class="pill">请勿离开</div></div>
-      <div class="hero">
-        <h2 class="scanTitle">正在检测<br>你的伤人感</h2>
-        <div class="wave" id="wave"></div>
-        <div class="scanLine"></div>
-        <div class="steps">
-          <div class="step hot" id="s1">正在回放你的语气…</div>
-          <div class="step" id="s2">识别哪一句最刺耳…</div>
-          <div class="step" id="s3">生成伤人指数…</div>
+      <div id="challengeBanner" class="challenge-banner">有人把这句话发给你，想听你怎么说。</div>
+      <div id="incomingAudioBox" class="incoming-audio-box">
+        <div class="incoming-audio-title">TA刚刚是这样说的</div>
+        <audio id="incomingAudio" controls playsinline></audio>
+        <div class="incoming-audio-desc">先听这句是怎么被说出来的，再决定你要不要用你的语气说一遍。</div>
+      </div>
+
+      <div class="sentence-shell">
+        <div class="sentence-top">
+          <span class="micro-label">试试这句</span>
+          <button type="button" class="switch-btn" id="switchSentenceBtn">换一句</button>
         </div>
-      </div>
-      <p class="bottomNote">⚠️ 检测结果可能引发朋友转发、质疑或沉默。</p>
-    </section>
+        <div id="sentenceBox" class="sentence-box">“你开心就好。”</div>
+        </div>
 
-    <section class="screen" id="resultScreen">
-      <div class="top"><button class="miniBack" id="restartBtn">重新测一次</button><div class="pill">结果已生成</div></div>
-      <div class="hero" style="justify-content:flex-start;gap:12px;padding-top:4px">
-        <article class="resultCard" id="resultCard">
-          <div class="scoreLabel">你的伤人指数</div>
-          <div class="score"><span id="scoreNum">89</span>%</div>
-          <div class="type" id="typeTag">☣️ 隐性攻击型</div>
-          <p class="quote" id="quoteText">你是那种没骂人，但让人不想继续聊的人</p>
-          <div class="ingredients" id="ingredients"></div>
-          <div class="audioBox" id="audioBox">
-            <button class="audioBtn" id="playBtn">▶ 播放我的原声</button>
-            <audio id="audioPlayer" playsinline></audio>
+      <div class="record-hero">
+        <div class="tips-main">读一句就行，很简单。</div>
+        <div class="wave" aria-hidden="true"></div>
+        <button id="micHoldBtn" class="mic-hold-btn" type="button" aria-label="按住录音">
+          <span class="mic-hold-circle">
+            <span class="mic-photo" aria-hidden="true"></span>
+          </span>
+        </button>
+        <div class="tips-sub">按住上面的麦克风，说完松手就分析</div>
+        <div id="status" class="status">等待录音</div>
+        <audio id="audioPlayer" controls playsinline style="display:none;"></audio>
+        <div id="error" class="error"></div>
+      </div>
+
+      <div id="dareBox" class="dare-box">
+        <div class="dare-title">听完了。你敢用你的语气说一遍吗？</div>
+        <div class="dare-desc">别模仿，直接用你自己的说法录一句，看看系统会不会骂得更狠。</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div id="result" class="result" style="display:none;">
+<audio id="resultAudio" controls playsinline></audio>
+        </div>
+
+        <div id="toxicMeta" class="toxic-meta-card">
+          <div class="toxic-head">
+            <div id="toxicScore" class="result-title">毒气指数：87</div>
+            <div id="toxicLevel" class="toxic-pill">偏高</div>
           </div>
-        </article>
-        <div class="actions">
-          <button class="btn" id="shareBtn">生成可扫码分享图</button>
-          <button class="btn secondary" id="copyBtn">复制听原声链接</button>
+          <div class="result-sub">话不对味，语气有毒。</div>
+          <div id="toxicElements" class="toxic-elements-line">检测到的毒气：氟乙酸钠 · 氯气 · 情绪悬浮物 · 轻微阴阳怪气</div>
         </div>
-        <p class="legal">本测试仅用于娱乐与社交分享，不构成心理、医学或人格评估。</p>
+
+        <div class="badge">SYSTEM VERDICT</div>
+        <div id="resultSentence" class="result-sentence"></div>
+        <div class="verdict-card">
+          <div id="resultTitle" class="result-title"></div>
+          <div id="resultSub" class="result-sub"></div>
+        </div>
+
+        <div class="consequences">
+          <div class="list-title">别人可能会怎么感受</div>
+          <ul id="consequenceList"></ul>
+        </div>
+
+        <div class="challenge-box">
+          <div class="challenge-label">拿去问别人</div>
+          <div class="challenge-content">
+            <div class="challenge-left">
+              <div id="challengeText" class="challenge-text"></div>
+              <div class="challenge-sub">别解释，直接发给朋友听听他会怎么说。</div>
+              <div class="challenge-mini">扫码你也说一句</div>
+            </div>
+            <img id="liveQr" class="challenge-qr" src="" alt="挑战二维码" />
+          </div>
+        </div>
+
+        <div class="share-actions">
+          <button id="generateCardBtn" class="btn-danger">生成毒气卡</button>
+          <button id="copyLinkBtn" class="btn-primary">发起毒气挑战</button>
+        </div>
+
+        <div class="note">一张是结果图，一张是挑战入口。越像在“点名”，越容易被点开。</div>
       </div>
-    </section>
-    <div class="toast" id="toast"></div>
-  </main>
+    </div>
+  </div>
+
+  <canvas id="shareCanvas" width="1080" height="1450"></canvas>
 
 <script>
-const $=id=>document.getElementById(id);const screens=['homeScreen','scanScreen','resultScreen'];
-const TYPES=[
-  '🧊 冷场制造机','📴 群聊终结者','🧯 情绪灭火器','⚡ 隐性放电型','🔪 温柔补刀手','🚫 回复终止型','👀 已读不回触发器','🌫️ 气氛降温器','☣️ 语气污染源','🧪 出口带刺型','🧱 聊天堵墙型','💣 沉默引爆器'
-];
-const LINES=[
-  '你一开口，气氛就凉了','你发完消息，大家都在装没看到','群聊死掉的那一刻，是你说完那句','你说话不是直，是带刺','你一句话，能让空气安静三秒','你嘴上没骂人，但句句都在扎人','你说话像没事，其实每个字都有刺','你一解释，别人更想撤退','你是那种越礼貌，越让人不舒服的人','你一句“随便”，杀伤力比吵架还大','你说完那句，对方已经开始自我反省','你不发火，但你让所有人都不敢接话','你是那种听起来没问题，但哪里都不对的人','你一句话，能让朋友开始怀疑人生','你不是在聊天，你是在释放低浓度毒气','你说话像通知，不像沟通','你一开口，别人就想结束对话','你是那种能把热场聊成冷场的人','你说话没脏字，但杀伤力很脏','你随口一句，别人要消化半天','你不是话少，你是每句都很重','你一认真说话，别人就开始紧张','你一句“没事”，听起来最有事','你说的是事实，但听起来像审判','你说完之后，场面只剩礼貌'
-];
-const COMPONENTS=[
-  '阴阳怪气残留（持续挥发中）','已读不回蒸汽（高温冷处理）','嘴硬保护膜（厚度超标）','礼貌性降温剂（表面文明）','不想解释沉淀物（沉底多年）','被动攻击微粒（肉眼难见）','空气变冷因子（扩散速度快）','轻微翻白眼粉尘（随语气飘散）','不耐烦挥发物（开口即散）','隐藏嫌弃颗粒（浓度稳定）','情绪压缩装置（随时漏气）','冷处理扩散物（半径三米）','社交疲惫气溶胶（吸入即沉默）','选择性耐心残渣（仅对少数人有效）','低频烦躁信号（持续发射）','强忍不爽压缩包（即将解压）','表面平静涂层（内含爆炸物）','内心翻桌粉尘（轻拍即起）','假装配合粉尘（伪装良好）','沉默式反击分子（毒性慢热）','冷笑残留液（附着力极强）','句尾带刺结晶（不易察觉）','好好说话抗体缺失（建议隔离）','群聊退潮素（使热场瞬间降温）','解释越多越毒反应剂（遇水加剧）'
-];
-const PCTS=[['37%','29%','18%'],['34%','25%','21%'],['31%','27%','19%'],['39%','22%','17%'],['35%','30%','16%']];
-let mediaRecorder,chunks=[],audioBlob=null,audioUrl='',result=null,recordStarted=0,isRecording=false,shareId='',shareReady=false,uploadPromise=null;
-function show(id){screens.forEach(s=>$(s).classList.toggle('active',s===id))}
-function toast(t){$('toast').textContent=t;$('toast').classList.add('show');setTimeout(()=>$('toast').classList.remove('show'),2100)}
-function seedScore(){return Math.floor(72+Math.random()*21)}
-function rand(arr){return arr[Math.floor(Math.random()*arr.length)]}
-function sample(arr,n){const copy=[...arr],out=[];while(out.length<n&&copy.length){out.push(copy.splice(Math.floor(Math.random()*copy.length),1)[0])}return out}
-function generateResult(score){return{score,type:rand(TYPES),quote:rand(LINES),ings:sample(COMPONENTS,3),pcts:rand(PCTS)}}
-function fallbackByScore(score){const level=score>=84?'📴 群聊终结者':score>=76?'🧊 冷场制造机':score>=68?'⚡ 隐性放电型':'☣️ 语气污染源';return{score,type:level,quote:rand(LINES),ings:sample(COMPONENTS,3),pcts:rand(PCTS)}}
-function makeBars(){let html='';for(let i=0;i<28;i++)html+=`<div class="bar" style="height:${20+Math.random()*70}px"></div>`;$('wave').innerHTML=html}makeBars();
-async function startRec(){try{if(isRecording)return;if(!window.isSecureContext){toast('麦克风需要 HTTPS 或 localhost 环境');return}if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){toast('当前浏览器无法调用麦克风，请换 Chrome/Safari 或确认 HTTPS');return}const stream=await navigator.mediaDevices.getUserMedia({audio:true});chunks=[];const mime=MediaRecorder.isTypeSupported('audio/webm;codecs=opus')?'audio/webm;codecs=opus':(MediaRecorder.isTypeSupported('audio/mp4')?'audio/mp4':'');mediaRecorder=mime?new MediaRecorder(stream,{mimeType:mime}):new MediaRecorder(stream);mediaRecorder.ondataavailable=e=>{if(e.data&&e.data.size)chunks.push(e.data)};mediaRecorder.onstop=()=>{stream.getTracks().forEach(t=>t.stop());isRecording=false;finishRec()};recordStarted=Date.now();mediaRecorder.start();isRecording=true;$('recordBtn').classList.add('recording');$('holdText').textContent='正在录音，松手看结果';toast('开始录音了，大胆说')}catch(e){console.error(e);isRecording=false;toast('麦克风没有启动：请允许权限后再试')}}
-function stopRec(){if(!mediaRecorder||mediaRecorder.state!=='recording')return;const dur=Date.now()-recordStarted;if(dur<900){setTimeout(stopRec,900-dur);return}mediaRecorder.stop();$('recordBtn').classList.remove('recording');$('holdText').textContent='按住说一句，松手看结果'}
-async function finishRec(){audioBlob=new Blob(chunks,{type:'audio/webm'});audioUrl=URL.createObjectURL(audioBlob);show('scanScreen');runScan();let score=seedScore();try{const fd=new FormData();fd.append('audio',audioBlob,'voice.webm');fd.append('sentence','');const res=await fetch('/api/analyze-voice',{method:'POST',body:fd});const data=await res.json();if(data&&data.ok){const len=(data.duration_ms||0);if(len>0)score=Math.min(92,Math.max(72,score+(len>4000?3:0)));}}catch(e){}setTimeout(()=>renderResult(generateResult(score)),1650)}
-function runScan(){['s1','s2','s3'].forEach((id,i)=>setTimeout(()=>$(id).classList.add('hot'),i*520));makeBars()}
-function renderResult(r){result=r;shareId='';shareReady=false;uploadPromise=null;$('scoreNum').textContent=r.score;$('typeTag').textContent=r.type;$('quoteText').textContent=r.quote;$('ingredients').innerHTML=r.ings.map((x,i)=>`<div class="ing"><span>${x}</span><span>${(r.pcts||PCTS[0])[i]}</span></div>`).join('');const ap=$('audioPlayer');ap.src=audioUrl;ap.load();$('playBtn').textContent='▶ 播放我的原声';show('resultScreen');}
+    const sentenceBox = document.getElementById("sentenceBox");
+    const challengeBanner = document.getElementById("challengeBanner");
+    const incomingAudioBox = document.getElementById("incomingAudioBox");
+    const incomingAudio = document.getElementById("incomingAudio");
+    const statusEl = document.getElementById("status");
+    const errorEl = document.getElementById("error");
+    const audioPlayer = document.getElementById("audioPlayer");
+    const dareBox = document.getElementById("dareBox");
+    const resultEl = document.getElementById("result");
+    const resultSentenceEl = document.getElementById("resultSentence");
+    const resultTitleEl = document.getElementById("resultTitle");
+    const resultSubEl = document.getElementById("resultSub");
+    const consequenceListEl = document.getElementById("consequenceList");
+    const challengeTextEl = document.getElementById("challengeText");
+    const liveQrEl = document.getElementById("liveQr");
+    const generateCardBtn = document.getElementById("generateCardBtn");
+    const copyLinkBtn = document.getElementById("copyLinkBtn");
 
-async function ensureShareReady(){
-  if(shareId)return shareId;
-  if(uploadPromise)return uploadPromise;
-  if(!audioBlob){throw new Error('no audio blob')}
-  uploadPromise=(async()=>{
-    const fd=new FormData();
-    fd.append('audio',audioBlob,'voice.webm');
-    fd.append('meta',JSON.stringify(result||{}));
-    const res=await fetch('/api/upload',{method:'POST',body:fd});
-    if(!res.ok)throw new Error('upload failed');
-    const data=await res.json();
-    if(!data.id)throw new Error('missing id');
-    shareId=data.id;
-    shareReady=true;
-    return shareId;
-  })();
-  try{return await uploadPromise}finally{uploadPromise=null}
-}
-function getShareUrl(){return shareId?`${location.origin}/s.html?id=${encodeURIComponent(shareId)}`:location.href}
+    const toxicMeta = document.getElementById("toxicMeta");
+    const toxicScoreEl = document.getElementById("toxicScore");
+    const toxicLevelEl = document.getElementById("toxicLevel");
+    const toxicElementsEl = document.getElementById("toxicElements");
 
-async function createShareCard(){
-  const btn=$('shareBtn');const old=btn.textContent;btn.disabled=true;btn.textContent='正在生成分享图…';
-  try{
-    await ensureShareReady();
-    const canvas=document.createElement('canvas'),w=1080,h=1440;canvas.width=w;canvas.height=h;const c=canvas.getContext('2d');
-    const score=result?.score||90;
-    const typeRaw=(result?.type||'🌫️ 气氛降温器').replace(/^\s+/,'');
-    const type=typeRaw.replace(/^([\u{1F300}-\u{1FAFF}\u2600-\u27BF]+\s*)/u,'') || typeRaw;
-    const quote=result?.quote||'你一解释，别人更想撤退';
-    const rawIngs=(result?.ings&&result.ings.length?result.ings:[
-      '句尾带刺结晶（不易察觉）',
-      '低频烦躁信号（持续发射）',
-      '好好说话抗体缺失（建议隔离）'
-    ]).slice(0,3);
-    const ings=rawIngs.map(x=>String(x).replace(/^主要成分[:：]?\s*/,'').replace(/^毒气配方[:：]?\s*/,'').replace(/^伤人配方[:：]?\s*/,''));
-    const pcts=(result?.pcts&&result.pcts.length?result.pcts:['35%','30%','16%']).slice(0,3);
-
-    // ===== V1.7.9: 按“图2”海报方向重做：全屏传播海报，不再是结果页卡片 =====
-    c.fillStyle='#030402';c.fillRect(0,0,w,h);
-
-    // 背景：毒雾、颗粒、脏海报质感
-    const g1=c.createRadialGradient(780,235,20,760,235,760);
-    g1.addColorStop(0,'rgba(213,255,44,.35)');g1.addColorStop(.26,'rgba(116,171,16,.22)');g1.addColorStop(.72,'rgba(22,38,6,.10)');g1.addColorStop(1,'rgba(0,0,0,0)');
-    c.fillStyle=g1;c.fillRect(0,0,w,h);
-    const g2=c.createRadialGradient(120,710,20,120,710,620);
-    g2.addColorStop(0,'rgba(185,255,36,.22)');g2.addColorStop(.45,'rgba(67,122,20,.14)');g2.addColorStop(1,'rgba(0,0,0,0)');
-    c.fillStyle=g2;c.fillRect(0,0,w,h);
-    c.save();
-    for(let i=0;i<1300;i++){
-      const x=Math.random()*w,y=Math.random()*h,r=Math.random()*2.4;
-      c.globalAlpha=Math.random()*0.13;
-      c.fillStyle=i%5===0?'#d7ff3f':(i%11===0?'#f5d047':'#ffffff');
-      c.beginPath();c.arc(x,y,r,0,Math.PI*2);c.fill();
+    function randomPick(arr) {
+      return arr[Math.floor(Math.random() * arr.length)];
     }
-    c.restore();
 
-    // 顶部斜向警示带：先把事件讲清楚
-    drawSlantedHazard(c,-35,16,w+70,122,`⚠ 我随口录了一句话，伤人指数 ${score}% ⚠`);
+    function scoreToLevel(score) {
+      if (score >= 90) return "超标";
+      if (score >= 80) return "偏高";
+      if (score >= 70) return "有点毒";
+      return "轻微变味";
+    }
 
-    // 左侧烟雾点缀
-    c.save();c.globalAlpha=.20;c.fillStyle='#9fd52c';
-    for(let i=0;i<16;i++){c.beginPath();c.arc(55+Math.random()*120,420+Math.random()*420,30+Math.random()*70,0,Math.PI*2);c.fill();}
-    c.restore();
+    const toxicChem = [
+      "氟乙酸钠",
+      "氯气",
+      "二氧化氮",
+      "硫化氢",
+      "氨气",
+      "一氧化碳",
+      "二氧化硫",
+      "氰化物残留",
+      "低剂量神经毒素",
+      "未知挥发性化合物"
+    ];
 
-    // 巨大分数：第一视觉中心
-    c.save();
-    c.translate(78,155);c.rotate(-0.055);
-    c.shadowColor='rgba(215,255,63,.35)';c.shadowBlur=28;
-    c.fillStyle='#f7f2ea';c.font='950 315px Arial, sans-serif';
-    c.fillText(score+'%',0,332);
-    c.globalAlpha=.22;c.fillStyle='#ffffff';c.fillText(score+'%',-8,326);c.globalAlpha=1;
-    c.restore();
+    const toxicEmotion = [
+      "情绪悬浮物",
+      "轻度控制欲",
+      "表达含糊",
+      "语气偏冷",
+      "被动攻击倾向",
+      "不确定性扩散",
+      "情绪延迟释放",
+      "轻微压迫感",
+      "让人猜测倾向",
+      "回避式表达"
+    ];
 
-    // 高危表达小章
-    c.save();
-    c.translate(55,268);c.rotate(-0.075);
-    c.strokeStyle='rgba(244,205,45,.95)';c.lineWidth=4;c.fillStyle='rgba(5,5,5,.62)';
-    round(c,0,0,170,64,10);c.fill();c.stroke();
-    c.fillStyle='#f2d04b';c.font='950 34px Arial, sans-serif';c.fillText('高危表达',22,43);
-    c.restore();
+    const toxicFun = [
+      "臭鸡蛋气味",
+      "隔夜情绪残留",
+      "微妙阴阳怪气",
+      "说了但没说清气体",
+      "你应该懂残留",
+      "空气突然安静颗粒",
+      "懂的人已经累了",
+      "轻微翻白眼气流",
+      "情绪憋着不说蒸汽",
+      "话说一半就撤离气体",
+      "人没事但气氛有事",
+      "礼貌但有距离感气味",
+      "你开心就好但不太开心气体",
+      "表面无事内心翻涌气流"
+    ];
 
-    // 类型贴纸：右侧荧光脏贴纸
-    c.save();
-    c.translate(700,345);c.rotate(-0.08);
-    c.fillStyle='rgba(215,255,63,.94)';round(c,0,0,286,78,12);c.fill();
-    c.strokeStyle='rgba(0,0,0,.35)';c.lineWidth=3;c.stroke();
-    c.fillStyle='#080b05';c.font='950 40px Arial, sans-serif';
-    fitText(c,type,30,52,232,40);
-    [45,137,230].forEach((dx,i)=>{c.fillStyle='rgba(215,255,63,.94)';c.fillRect(dx,76,11,22+i*6);c.beginPath();c.arc(dx+5.5,98+i*6,5.5,0,Math.PI*2);c.fill();});
-    c.restore();
+    function pickDistinct(arr, used) {
+      const pool = arr.filter(item => !used.has(item));
+      const item = pool.length ? randomPick(pool) : randomPick(arr);
+      used.add(item);
+      return item;
+    }
 
-    // 主结果：参考图2，大而粗，视觉中心第二层
-    const qLines=posterHeadlineLines(quote);
-    c.save();
-    c.translate(70,545);c.rotate(-0.025);
-    c.shadowColor='rgba(0,0,0,.6)';c.shadowBlur=3;
-    c.fillStyle='#f7f2ea';c.font='950 112px Arial, sans-serif';
-    fitText(c,qLines[0]||'你一解释，',0,0,940,112);
-    c.fillStyle='#d7ff3f';c.font='950 125px Arial, sans-serif';
-    fitText(c,qLines[1]||'别人更想撤退',0,128,940,125);
-    c.restore();
+    function getWeakBoundElements(label, sentence) {
+      const used = new Set();
+      let chemPool = toxicChem;
+      let emotionPool = toxicEmotion;
+      let funPool = toxicFun;
 
-    // 粗刷线
-    c.save();c.strokeStyle='rgba(215,255,63,.82)';c.lineWidth=6;c.lineCap='round';
-    c.beginPath();c.moveTo(78,792);c.quadraticCurveTo(470,845,1010,770);c.stroke();
-    c.globalAlpha=.34;c.beginPath();c.moveTo(430,812);c.quadraticCurveTo(610,840,770,792);c.stroke();c.restore();
+      const text = `${label || ""} ${sentence || ""}`;
 
-    // 伤人配方卡：左下，像海报里的证据标签
-    const boxX=70, boxY=835, boxW=650, boxH=305;
-    c.save();
-    c.fillStyle='rgba(4,6,4,.70)';round(c,boxX,boxY,boxW,boxH,18);c.fill();
-    c.strokeStyle='rgba(215,255,63,.72)';c.lineWidth=2.8;c.stroke();
-    c.fillStyle='rgba(215,255,63,.95)';round(c,boxX+4,boxY-35,210,62,12);c.fill();
-    c.fillStyle='#071006';c.font='950 39px Arial, sans-serif';c.fillText('伤人配方',boxX+58,boxY+8);
-    const icons=['✦','〰','✚'];
-    ings.forEach((txt,i)=>{
-      const yy=boxY+91+i*75;
-      c.strokeStyle='rgba(255,255,255,.16)';c.lineWidth=1.4;c.beginPath();c.moveTo(boxX+35,yy+34);c.lineTo(boxX+boxW-40,yy+34);c.stroke();
-      c.fillStyle='#d7ff3f';c.font='950 34px Arial, sans-serif';c.fillText(icons[i],boxX+38,yy);
-      c.fillStyle='#f7f2ea';c.font='850 31px Arial, sans-serif';
-      fitText(c,txt,boxX+92,yy,395,31);
-      c.fillStyle='#ffd25c';c.textAlign='right';c.font='950 42px Arial, sans-serif';c.fillText(pcts[i]||'',boxX+boxW-38,yy);c.textAlign='left';
+      if (text.includes("试探") || text.includes("不确定") || text.includes("猜")) {
+        emotionPool = ["不确定性扩散", "表达含糊", "让人猜测倾向", "回避式表达", "情绪悬浮物"];
+        funPool = ["你应该懂残留", "懂的人已经累了", "说了但没说清气体", "空气突然安静颗粒", "臭鸡蛋气味"];
+      } else if (text.includes("冷静") || text.includes("控场") || text.includes("平和")) {
+        emotionPool = ["语气偏冷", "轻度控制欲", "轻微压迫感", "情绪延迟释放", "回避式表达"];
+        funPool = ["礼貌但有距离感气味", "轻微翻白眼气流", "人没事但气氛有事", "隔夜情绪残留", "表面无事内心翻涌气流"];
+      } else if (text.includes("直接") || text.includes("强势")) {
+        emotionPool = ["轻微压迫感", "轻度控制欲", "被动攻击倾向", "语气偏冷", "情绪悬浮物"];
+        funPool = ["空气突然安静颗粒", "人没事但气氛有事", "微妙阴阳怪气", "臭鸡蛋气味", "话说一半就撤离气体"];
+      } else if (text.includes("你开心就好")) {
+        emotionPool = ["被动攻击倾向", "表达含糊", "不确定性扩散", "情绪悬浮物", "让人猜测倾向"];
+        funPool = ["你开心就好但不太开心气体", "臭鸡蛋气味", "你应该懂残留", "懂的人已经累了", "微妙阴阳怪气"];
+      }
+
+      return [
+        pickDistinct(chemPool, used),
+        pickDistinct(chemPool, used),
+        pickDistinct(emotionPool, used),
+        pickDistinct(funPool, used)
+      ].join(" · ");
+    }
+
+    function buildToxicMeta(label, sentence) {
+      const score = Math.floor(Math.random() * 31) + 65;
+      return {
+        score,
+        level: scoreToLevel(score),
+        elements: getWeakBoundElements(label, sentence)
+      };
+    }
+
+    let mediaRecorder = null;
+    let mediaStream = null;
+    let chunks = [];
+    const micHoldBtn = document.getElementById("micHoldBtn");
+    const micHoldCircle = document.querySelector(".mic-hold-circle");
+    let selectedSentence = "你开心就好。";
+    let latestCardData = null;
+    let latestToxicMeta = null;
+    let latestAudioObjectUrl = "";
+    let latestShareAudioUrl = "";
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const challengeSentence = urlParams.get("challenge");
+    const sharedAudioUrl = urlParams.get("audio");
+
+    const verdictMap = {
+      "热情外放型": { title: "你不是热情，你是在把情绪直接推给别人。", sub: "你自己会觉得这是自然表达，但别人可能会感觉到，你在要求TA立刻接住你的状态，而不是单纯听你说完。", consequences: ["别人可能会觉得你希望TA马上表态","会被误听成：你不是在说话，你是在推动对方回应","情绪存在感一旦太强，别人会先防御再沟通"], challengePool: ["它说我总是用力过猛，你怎么说？","它说我说话会给人压力，你认吗？","它说我不是在沟通，是在逼人表态，你觉得像吗？"] },
+      "冷静控制型": { title: "你不是冷静，你是在把情绪藏起来控场。", sub: "你表面上不急不躁，但别人很可能会觉得，节奏已经被你拿走了，自己只剩下接招的空间。", consequences: ["别人可能会觉得你不是在讨论，而是在控场","你越稳，越容易被误读成：结论已经有了","这种表达会让人感觉自己没有太多余地"], challengePool: ["它说我说话很像在控场，你认吗？","它说我不是冷静，是控制，你觉得过分吗？","它说我一稳下来，别人就不太敢说真话，你认不认？"] },
+      "试探犹豫型": { title: "你不是在试探，你是在把不确定甩给别人消化。", sub: "你没有直接说透，但停顿、犹豫和语气里的悬着，会让别人下意识开始猜你到底想要什么。", consequences: ["别人可能会觉得要不停猜你到底是什么意思","停顿太多时，会被误听成你在等别人先让步","模糊表达本身就是一种压力"], challengePool: ["它说我总把不确定丢给别人，你认不认？","它说我不是含蓄，是让人猜得累，你怎么看？","它说我每次都不说透，只把压力留给别人，像吗？"] },
+      "直接强势型": { title: "你不是直接，你是让人很难不顺着你说。", sub: "你会觉得自己只是干脆，但别人听到的可能是一种边界太硬、很难轻松反驳的推进感。", consequences: ["别人可能会觉得你不是在沟通，而是在定方向","语气太利落时，容易让人先退一步","这种说法最容易让人觉得最好不要反着来"], challengePool: ["它说我一开口就给人压力，你敢说不像？","它说我不是直接，是压人，你觉得呢？","它说我说话让人很难反驳，你认吗？"] },
+      "平稳克制型": { title: "你不是平和，你是在把情绪压得太干净了。", sub: "系统给你的不是成熟感，而是一种压得太平、平到别人不知道你真正站在哪边的表达方式。", consequences: ["别人可能会觉得你看似好说话，其实很难判断真实态度","太平的说法容易被听成敷衍，或者根本不想聊","没有波动并不等于没有压迫感"], challengePool: ["它说我说话有点太收着了，你觉得离谱吗？","它说我表面平和，其实让人摸不清态度，你认吗？","它说我不是温和，是让人觉得有点远，你怎么看？"] }
+    };
+
+    function getVerdict(label) {
+      const base = verdictMap[label] || {
+        title: "你说出来的感觉，和你以为的不太一样。",
+        sub: "你自己觉得这是正常表达，但别人未必按你的自我理解来接收。这种偏差本身就值得拿去问熟人。",
+        consequences: ["别人不一定按你的自我理解来接收","你以为自然的地方，别人可能会觉得不太舒服","这种偏差本身就值得拿去问熟人"],
+        challengePool: ["它说我说话让人不太舒服，你怎么说？","它说我自己觉得正常，别人未必舒服，你认吗？"]
+      };
+      const challenge = base.challengePool[Math.floor(Math.random() * base.challengePool.length)];
+      return { ...base, challenge };
+    }
+
+    function absoluteUrl(url) {
+      return new URL(url, window.location.origin).toString();
+    }
+
+    function buildChallengeUrl(sentence) {
+      const url = new URL(window.location.origin + "/");
+      url.searchParams.set("challenge", sentence);
+      if (latestShareAudioUrl) {
+        url.searchParams.set("audio", absoluteUrl(latestShareAudioUrl));
+      }
+      return url.toString();
+    }
+
+    function loadImage(src) {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.crossOrigin = "anonymous";
+        img.onload = () => resolve(img);
+        img.onerror = reject;
+        img.src = src;
+      });
+    }
+
+    const sentencePool = [
+      "你开心就好。",
+      "都行，我无所谓。",
+      "好的，我知道了。",
+      "行啊，随你。"
+    ];
+
+    if (challengeSentence) {
+      selectedSentence = challengeSentence;
+      sentenceBox.textContent = `“${selectedSentence}”`;
+      challengeBanner.style.display = "block";
+      dareBox.style.display = "block";
+      statusEl.textContent = "你正在挑战别人发来的同一句话。";
+    }
+
+    if (sharedAudioUrl) {
+      incomingAudioBox.style.display = "block";
+      incomingAudio.src = sharedAudioUrl;
+    }
+
+    let isPressing = false;
+
+    async function beginRecording() {
+      if (isPressing) return;
+      isPressing = true;
+      errorEl.textContent = "";
+      resultEl.style.display = "none";
+      try {
+        mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        chunks = [];
+        mediaRecorder = new MediaRecorder(mediaStream);
+
+        mediaRecorder.ondataavailable = (event) => {
+          if (event.data && event.data.size > 0) chunks.push(event.data);
+        };
+
+        mediaRecorder.onstop = async () => {
+          try {
+            statusEl.textContent = "正在生成判词...";
+            const blob = new Blob(chunks, { type: "audio/webm" });
+
+            if (latestAudioObjectUrl) URL.revokeObjectURL(latestAudioObjectUrl);
+            latestAudioObjectUrl = URL.createObjectURL(blob);
+            audioPlayer.src = latestAudioObjectUrl;
+            audioPlayer.style.display = "block";
+
+            const formData = new FormData();
+            formData.append("audio", blob, "voice.webm");
+            formData.append("sentence", selectedSentence);
+
+            const res = await fetch("/api/analyze-voice", { method: "POST", body: formData });
+            const data = await res.json();
+            if (!res.ok || !data.ok) throw new Error(data.detail || "分析失败");
+
+            latestShareAudioUrl = data.audio_url || "";
+            const verdict = getVerdict(data.result.title || data.result.label);
+            const challengeUrl = buildChallengeUrl(selectedSentence);
+            latestToxicMeta = buildToxicMeta(data.result.title || data.result.label, selectedSentence);
+
+            latestCardData = {
+              sentence: selectedSentence,
+              title: verdict.title,
+              sub: verdict.sub,
+              consequences: verdict.consequences,
+              challenge: verdict.challenge,
+              url: challengeUrl,
+              toxicScore: latestToxicMeta.score,
+              toxicLevel: latestToxicMeta.level,
+              toxicElements: latestToxicMeta.elements
+            };
+
+            resultSentenceEl.textContent = `“${selectedSentence}”`;
+            resultTitleEl.textContent = verdict.title;
+            resultSubEl.textContent = verdict.sub;
+            challengeTextEl.textContent = verdict.challenge;
+            liveQrEl.src = `/qr?url=${encodeURIComponent(challengeUrl)}`;
+            toxicScoreEl.textContent = `毒气指数：${latestToxicMeta.score}`;
+            toxicLevelEl.textContent = latestToxicMeta.level;
+            toxicElementsEl.textContent = `检测到的毒气：${latestToxicMeta.elements}`;
+            toxicMeta.style.display = "block";
+
+            consequenceListEl.innerHTML = "";
+            verdict.consequences.forEach((text) => {
+              const li = document.createElement("li");
+              li.textContent = text;
+              consequenceListEl.appendChild(li);
+            });
+
+            resultEl.style.display = "block";
+            statusEl.textContent = "松手完成，判词已生成";
+          } catch (err) {
+            statusEl.textContent = "分析失败";
+            errorEl.textContent = String(err.message || err);
+          } finally {
+            if (mediaStream) mediaStream.getTracks().forEach((t) => t.stop());
+            micHoldCircle.classList.remove("recording");
+            isPressing = false;
+          }
+        };
+
+        mediaRecorder.start();
+        micHoldCircle.classList.add("recording");
+        statusEl.textContent = "按住录音中，松手后自动分析...";
+      } catch (err) {
+        isPressing = false;
+        micHoldCircle.classList.remove("recording");
+        errorEl.textContent = "无法打开麦克风，请检查浏览器权限。";
+      }
+    }
+
+    function endRecording() {
+      if (!isPressing) return;
+      if (mediaRecorder && mediaRecorder.state !== "inactive") {
+        statusEl.textContent = "已松手，正在分析...";
+        mediaRecorder.stop();
+      } else {
+        isPressing = false;
+        micHoldCircle.classList.remove("recording");
+      }
+    }
+
+    micHoldBtn.addEventListener("pointerdown", async (e) => {
+      e.preventDefault();
+      await beginRecording();
     });
-    c.restore();
+    micHoldBtn.addEventListener("pointerup", endRecording);
+    micHoldBtn.addEventListener("pointerleave", endRecording);
+    micHoldBtn.addEventListener("pointercancel", endRecording);
+    micHoldBtn.addEventListener("touchend", endRecording);
+    micHoldBtn.addEventListener("mouseup", endRecording);
 
-    // QR：右下强光，箭头明确指向
-    const qrUrl='/api/qr?url='+encodeURIComponent(getShareUrl())+'&t='+Date.now();
-    let img=null;
-    try{img=await imageFromUrl(qrUrl,12000)}catch(e){try{img=await imageFromFetch(qrUrl,12000)}catch(e2){console.warn('QR failed',e2)}}
-    const qrX=770, qrY=1008, qrSize=250;
+    copyLinkBtn.addEventListener("click", async () => {
+      try {
+        const challengeUrl = buildChallengeUrl(selectedSentence);
+        await navigator.clipboard.writeText(challengeUrl);
+        alert("挑战链接已复制");
+      } catch (e) {
+        alert("复制失败，请手动复制地址");
+      }
+    });
 
-    // QR 外发光爆炸
-    c.save();
-    const qg=c.createRadialGradient(qrX+qrSize/2,qrY+qrSize/2,20,qrX+qrSize/2,qrY+qrSize/2,210);
-    qg.addColorStop(0,'rgba(215,255,63,.36)');qg.addColorStop(.55,'rgba(215,255,63,.18)');qg.addColorStop(1,'rgba(0,0,0,0)');
-    c.fillStyle=qg;c.fillRect(qrX-120,qrY-120,qrSize+240,qrSize+240);
-    c.restore();
+    document.getElementById("switchSentenceBtn").addEventListener("click", () => {
+      const candidates = sentencePool.filter((s) => s !== selectedSentence);
+      selectedSentence = randomPick(candidates);
+      sentenceBox.textContent = `“${selectedSentence}”`;
+      resultEl.style.display = "none";
+      errorEl.textContent = "";
+      statusEl.textContent = "已换一句，按住麦克风试试。";
+    });
 
-    c.fillStyle='#f7f2ea';c.font='950 58px Arial, sans-serif';c.fillText('扫码听我说，',72,1252);
-    c.fillStyle='#d7ff3f';c.font='950 78px Arial, sans-serif';c.fillText('冤不冤？！',388,1252);
+    generateCardBtn.addEventListener("click", async () => {
+      if (!latestCardData) return;
+      const canvas = document.getElementById("shareCanvas");
+      const ctx = canvas.getContext("2d");
+      const w = canvas.width;
+      const h = canvas.height;
+      const score = Number(latestCardData.toxicScore || 90);
+      const typeName = normalizeShareType(latestCardData.toxicLevel || "气氛降温器", latestCardData.title || "");
+      const headline = normalizeShareHeadline(latestCardData.title || "你一解释，别人更想撤退");
+      const ingredients = buildShareIngredients(latestCardData.toxicElements, score);
 
-    c.save();c.strokeStyle='#d7ff3f';c.lineWidth=18;c.lineCap='round';c.lineJoin='round';c.shadowColor='rgba(215,255,63,.72)';c.shadowBlur=22;
-    c.beginPath();c.moveTo(625,1245);c.quadraticCurveTo(705,1212,756,1172);c.stroke();
-    c.beginPath();c.moveTo(718,1154);c.lineTo(760,1169);c.lineTo(733,1206);c.stroke();
-    c.restore();
+      // ===== 档三：裂变海报级二维码分享图 =====
+      // 黑底 + 黄黑警示带 + 超大分数 + 夸张主判词 + 伤人配方 + 强扫码 CTA
+      ctx.clearRect(0, 0, w, h);
 
-    c.save();c.shadowColor='rgba(215,255,63,.9)';c.shadowBlur=36;c.fillStyle='#fff';round(c,qrX,qrY,qrSize,qrSize,14);c.fill();c.restore();
-    if(img){c.drawImage(img,qrX+16,qrY+16,qrSize-32,qrSize-32)}else{c.fillStyle='#111';c.font='900 28px Arial';c.fillText('二维码生成中',qrX+26,qrY+120)}
+      // 背景
+      const bg = ctx.createLinearGradient(0, 0, w, h);
+      bg.addColorStop(0, "#050604");
+      bg.addColorStop(0.45, "#0a1208");
+      bg.addColorStop(1, "#030403");
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, w, h);
 
-    // 底部原声提示条
-    c.save();
-    c.fillStyle='rgba(0,0,0,.72)';round(c,110,1322,420,52,24);c.fill();
-    c.fillStyle='#d7ff3f';c.font='950 28px Arial, sans-serif';c.fillText('听原声，再判断我冤不冤 ▶',140,1356);
-    c.restore();
+      // 毒气荧光雾
+      drawGlow(ctx, 720, 280, 430, "rgba(202,255,45,0.22)");
+      drawGlow(ctx, 140, 700, 300, "rgba(202,255,45,0.15)");
+      drawGlow(ctx, 870, 1130, 310, "rgba(202,255,45,0.24)");
 
-    const blob=await new Promise((resolve,reject)=>canvas.toBlob(b=>b?resolve(b):reject(new Error('canvas blob failed')),'image/png'));
-    const url=URL.createObjectURL(blob);const a=document.createElement('a');a.download='relationshiptest-share-card-final.png';a.href=url;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),2000);
-    toast('分享图已生成，请保存或发送');
-  }catch(e){console.error(e);toast('分享图生成失败，请重试')}
-  finally{btn.disabled=false;btn.textContent=old}
-}
+      // 粗粝噪点/飞溅
+      for (let i = 0; i < 680; i++) {
+        const x = Math.random() * w;
+        const y = 160 + Math.random() * (h - 220);
+        const a = Math.random() * 0.14;
+        ctx.fillStyle = Math.random() > 0.78 ? `rgba(205,255,45,${a})` : `rgba(255,255,235,${a})`;
+        ctx.fillRect(x, y, Math.random() * 2.2 + 0.3, Math.random() * 2.2 + 0.3);
+      }
 
-function posterHeadlineLines(t){
-  t=String(t||'你一解释，别人更想撤退');
-  const targets=['别人更想撤退','场面只剩礼貌','所有人都不敢接话','不敢接话','更想撤退'];
-  for(const k of targets){const i=t.indexOf(k);if(i>0)return [t.slice(0,i).replace(/[，,]$/,'，'),t.slice(i)]}
-  if(t.includes('，')){const a=t.split(/[，,]/);return [a[0]+'，',a.slice(1).join('，')]}
-  return [t.slice(0,Math.ceil(t.length/2)),t.slice(Math.ceil(t.length/2))];
-}
+      // 顶部黄黑危险斜条
+      drawHazardBand(ctx, -80, 24, w + 160, 118, -6, `⚠ 我随口录了一句话，伤人指数 ${score}% ⚠`, 40);
 
-function fitText(c,text,x,y,maxWidth,baseSize){
-  text=String(text||'');
-  let size=baseSize;
-  const family='Arial, sans-serif';
-  const weight='950';
-  while(size>20){c.font=`${weight} ${size}px ${family}`;if(c.measureText(text).width<=maxWidth)break;size-=2;}
-  c.fillText(text,x,y);
-}
+      // 斜向主内容区域，参考图2的海报冲击感
+      ctx.save();
+      ctx.translate(0, 0);
+      ctx.rotate(-0.045);
 
-function drawSlantedHazard(c,x,y,w,h,text){
-  c.save();
-  c.translate(x+w/2,y+h/2);c.rotate(-0.07);c.translate(-w/2,-h/2);
-  c.fillStyle='#f0c22a';c.fillRect(0,0,w,h);
-  c.fillStyle='rgba(0,0,0,.18)';
-  for(let i=0;i<1200;i++){if(Math.random()<.08){c.fillRect(Math.random()*w,Math.random()*h,Math.random()*7,Math.random()*5)}}
-  c.fillStyle='#050505';
-  for(let yy of [0,h-22]){for(let i=-80;i<w+80;i+=48){c.beginPath();c.moveTo(i,yy);c.lineTo(i+30,yy);c.lineTo(i+11,yy+22);c.lineTo(i-19,yy+22);c.closePath();c.fill();}}
-  c.fillStyle='#050505';c.font='950 43px Arial, sans-serif';c.textAlign='center';c.fillText(text,w/2,h/2+16);c.textAlign='left';
-  c.restore();
-}
+      // 大百分比
+      ctx.fillStyle = "rgba(255,255,238,0.98)";
+      ctx.shadowColor = "rgba(210,255,40,0.36)";
+      ctx.shadowBlur = 22;
+      ctx.font = "900 250px Arial Black, Impact, sans-serif";
+      ctx.fillText(`${score}%`, 72, 430);
+      ctx.shadowBlur = 0;
 
-function splitHeadline(t){
-  t=String(t||'你一解释，别人更想撤退');
-  const cut=['别人更想撤退','更想撤退','都不敢接话','不敢接话'];
-  for(const k of cut){const i=t.indexOf(k);if(i>0)return [t.slice(0,i),t.slice(i)]}
-  if(t.length>12)return [t.slice(0,Math.ceil(t.length/2)),t.slice(Math.ceil(t.length/2))];
-  return [t];
-}
+      // 左上贴纸：高危表达
+      drawSticker(ctx, 68, 198, 160, 58, "高危表达", "#ffd735", "rgba(255,213,53,0.13)", -8);
 
-function drawHazardPoster(c,x,y,w,h,text){
-  c.save();
-  c.fillStyle='#111006';c.fillRect(x,y,w,h);
-  c.fillStyle='#f2c72d';
-  c.fillRect(x,y,w,16);c.fillRect(x,y+h-16,w,16);
-  c.fillStyle='#050505';
-  for(let yy of [y,y+h-16]){for(let i=x-70;i<x+w+70;i+=52){c.beginPath();c.moveTo(i,yy);c.lineTo(i+30,yy);c.lineTo(i+12,yy+16);c.lineTo(i-18,yy+16);c.closePath();c.fill()}}
-  c.fillStyle='#f2d04b';c.font='950 46px Arial';c.textAlign='center';c.fillText(text,x+w/2,y+69);c.textAlign='left';
-  c.restore();
-}
-function imageFromUrl(url,timeout=3500){return new Promise((resolve,reject)=>{const img=new Image();let done=false;const timer=setTimeout(()=>{if(!done){done=true;reject(new Error('image timeout'))}},timeout);img.onload=()=>{if(!done){done=true;clearTimeout(timer);resolve(img)}};img.onerror=()=>{if(!done){done=true;clearTimeout(timer);reject(new Error('image load failed'))}};img.src=url;})}
-function imageFromFetch(url,timeout=8000){return new Promise((resolve,reject)=>{const ctrl=new AbortController();const timer=setTimeout(()=>{ctrl.abort();reject(new Error('qr fetch timeout'))},timeout);fetch(url,{cache:'no-store',signal:ctrl.signal}).then(r=>{if(!r.ok)throw new Error('qr http '+r.status);return r.blob()}).then(b=>{const obj=URL.createObjectURL(b);const img=new Image();img.onload=()=>{clearTimeout(timer);URL.revokeObjectURL(obj);resolve(img)};img.onerror=()=>{clearTimeout(timer);URL.revokeObjectURL(obj);reject(new Error('qr object image failed'))};img.src=obj}).catch(e=>{clearTimeout(timer);reject(e)})})}
-function drawHazard(c,x,y,w){
-  c.save();
-  const h=76;
-  c.fillStyle='#0a0a08';
-  c.fillRect(x,y,w,h);
-  c.strokeStyle='rgba(255,209,41,.38)';
-  c.lineWidth=2;
-  c.beginPath();c.moveTo(x,y+.5);c.lineTo(x+w,y+.5);c.stroke();
-  c.beginPath();c.moveTo(x,y+h-.5);c.lineTo(x+w,y+h-.5);c.stroke();
-  c.fillStyle='rgba(255,209,41,.9)';
-  for(let yy of [y,y+h-10]){
-    for(let i=x-52;i<x+w+52;i+=44){
-      c.beginPath();c.moveTo(i,yy);c.lineTo(i+24,yy);c.lineTo(i+10,yy+10);c.lineTo(i-14,yy+10);c.closePath();c.fill();
+      // 右上类型贴纸
+      drawSticker(ctx, 590, 388, 300, 78, typeName, "#cbff2e", "rgba(203,255,46,0.92)", -6, true);
+
+      // 主判词：巨大、压迫、局部荧光
+      drawImpactHeadline(ctx, headline, 72, 625, w - 120, 104);
+
+      // 伤人配方卡
+      const boxX = 70, boxY = 850, boxW = 640, boxH = 260;
+      ctx.strokeStyle = "rgba(207,255,49,0.86)";
+      ctx.lineWidth = 3;
+      ctx.fillStyle = "rgba(7,10,8,0.72)";
+      roundRect(ctx, boxX, boxY, boxW, boxH, 18); ctx.fill(); ctx.stroke();
+
+      ctx.fillStyle = "#ccff31";
+      roundRect(ctx, boxX + 2, boxY - 32, 190, 46, 12); ctx.fill();
+      ctx.fillStyle = "#111";
+      ctx.font = "900 30px sans-serif";
+      ctx.fillText("伤人配方", boxX + 28, boxY + 2);
+
+      const iconX = boxX + 34;
+      const textX = boxX + 88;
+      let iy = boxY + 82;
+      ingredients.forEach((it, idx) => {
+        ctx.fillStyle = idx === 0 ? "#d7ff38" : "#f5f5e7";
+        ctx.font = "900 31px sans-serif";
+        ctx.fillText(it.icon, iconX, iy);
+        ctx.fillStyle = "#fffcec";
+        ctx.font = "800 29px sans-serif";
+        ctx.fillText(it.name, textX, iy);
+        ctx.fillStyle = "#ffcf50";
+        ctx.font = "900 37px Arial Black, sans-serif";
+        ctx.fillText(`${it.percent}%`, boxX + boxW - 108, iy + 2);
+        ctx.strokeStyle = "rgba(255,255,255,0.13)";
+        ctx.lineWidth = 1;
+        if (idx < ingredients.length - 1) {
+          ctx.beginPath(); ctx.moveTo(boxX + 40, iy + 30); ctx.lineTo(boxX + boxW - 42, iy + 30); ctx.stroke();
+        }
+        iy += 72;
+      });
+
+      // 二维码 CTA：强箭头 + 文案
+      ctx.fillStyle = "#fffdf2";
+      ctx.font = "900 58px sans-serif";
+      ctx.fillText("扫码听我说，", 78, 1210);
+      ctx.fillStyle = "#ccff31";
+      ctx.font = "900 76px sans-serif";
+      ctx.fillText("冤不冤?!", 382, 1216);
+
+      ctx.restore();
+
+      // QR 发光底座，保持不旋转，便于扫码
+      const qrSize = 255;
+      const qrX = w - 324;
+      const qrY = h - 360;
+      drawGlow(ctx, qrX + qrSize / 2, qrY + qrSize / 2, 230, "rgba(205,255,45,0.55)");
+      ctx.fillStyle = "rgba(189,255,30,0.16)";
+      roundRect(ctx, qrX - 34, qrY - 54, qrSize + 68, qrSize + 94, 34); ctx.fill();
+      ctx.strokeStyle = "rgba(207,255,49,0.92)";
+      ctx.lineWidth = 4;
+      roundRect(ctx, qrX - 34, qrY - 54, qrSize + 68, qrSize + 94, 34); ctx.stroke();
+
+      ctx.fillStyle = "#ccff31";
+      ctx.font = "900 24px sans-serif";
+      ctx.fillText("长按识别，听原声", qrX - 4, qrY - 18);
+
+      // 大荧光箭头指向二维码
+      ctx.save();
+      ctx.strokeStyle = "#ccff31";
+      ctx.fillStyle = "#ccff31";
+      ctx.shadowColor = "rgba(207,255,49,0.9)";
+      ctx.shadowBlur = 22;
+      ctx.lineWidth = 13;
+      ctx.lineCap = "round";
+      ctx.beginPath();
+      ctx.moveTo(qrX - 145, qrY + 112);
+      ctx.quadraticCurveTo(qrX - 88, qrY + 86, qrX - 38, qrY + 104);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(qrX - 40, qrY + 104);
+      ctx.lineTo(qrX - 78, qrY + 74);
+      ctx.lineTo(qrX - 70, qrY + 126);
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+
+      try {
+        const qrImg = await loadImage(`/qr?url=${encodeURIComponent(latestCardData.url)}`);
+        ctx.fillStyle = "#ffffff";
+        roundRect(ctx, qrX, qrY, qrSize, qrSize, 18); ctx.fill();
+        ctx.drawImage(qrImg, qrX + 14, qrY + 14, qrSize - 28, qrSize - 28);
+      } catch (e) {
+        ctx.fillStyle = "#ffffff";
+        roundRect(ctx, qrX, qrY, qrSize, qrSize, 18); ctx.fill();
+        ctx.fillStyle = "#111";
+        ctx.font = "900 42px sans-serif";
+        ctx.fillText("QR", qrX + 92, qrY + 142);
+      }
+
+      ctx.fillStyle = "rgba(255,255,235,0.86)";
+      ctx.font = "800 27px sans-serif";
+      ctx.fillText("听原声，再判断我冤不冤 ▶", 126, h - 102);
+
+      // 底部暗边，强化海报闭合感
+      const bottomFade = ctx.createLinearGradient(0, h - 230, 0, h);
+      bottomFade.addColorStop(0, "rgba(0,0,0,0)");
+      bottomFade.addColorStop(1, "rgba(0,0,0,0.58)");
+      ctx.fillStyle = bottomFade;
+      ctx.fillRect(0, h - 230, w, 230);
+
+      const link = document.createElement("a");
+      link.download = "toxic-share-card.png";
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+    });
+
+    function normalizeShareHeadline(title) {
+      const clean = String(title || "").replace(/[。“”]/g, "").trim();
+      if (clean.length <= 18) return clean;
+      if (clean.includes("解释")) return "你一解释，别人更想撤退";
+      if (clean.includes("冷静") || clean.includes("控场")) return "你越冷静，别人越想退后";
+      if (clean.includes("直接") || clean.includes("强势")) return "你一开口，别人就想结束对话";
+      if (clean.includes("试探") || clean.includes("不确定")) return "你不说透，别人越听越累";
+      if (clean.includes("平和") || clean.includes("压")) return "你没发火，但空气冷了";
+      return "你一解释，别人更想撤退";
     }
-  }
-  c.fillStyle='#f2d04b';
-  c.font='950 38px Arial';
-  c.textAlign='center';
-  c.fillText('⚠️ 这句话建议谨慎外放 ⚠️',x+w/2,y+50);
-  c.textAlign='left';
-  c.restore()
-}
-function round(c,x,y,w,h,r){c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath()}function wrap(c,text,x,y,max,lh){let line='';for(const ch of text){const test=line+ch;if(c.measureText(test).width>max){c.fillText(line,x,y);line=ch;y+=lh}else line=test}c.fillText(line,x,y);return y}
-function shareUrl(){const u=new URL(location.origin+location.pathname);u.searchParams.set('share','1');u.searchParams.set('score',result?.score||$('scoreNum').textContent);u.searchParams.set('type',result?.type||$('typeTag').textContent);u.searchParams.set('quote',result?.quote||$('quoteText').textContent);u.searchParams.set('ings',(result?.ings||[]).join('|'));u.searchParams.set('pcts',(result?.pcts||[]).join('|'));if(audioUrl&&audioUrl.startsWith('/'))u.searchParams.set('audio',audioUrl);return u.toString()}
-function loadShare(){const p=new URLSearchParams(location.search);if(p.get('share')==='1'&&p.get('score')){const score=+p.get('score');const fallback=fallbackByScore(score);const r={score,type:p.get('type')||fallback.type,quote:p.get('quote')||fallback.quote,ings:(p.get('ings')?p.get('ings').split('|'):fallback.ings),pcts:(p.get('pcts')?p.get('pcts').split('|'):fallback.pcts)};result=r;$('scoreNum').textContent=score;$('typeTag').textContent=r.type;$('quoteText').textContent=r.quote;$('ingredients').innerHTML=r.ings.map((x,i)=>`<div class="ing"><span>${x}</span><span>${(r.pcts||PCTS[0])[i]||''}</span></div>`).join('');audioUrl=p.get('audio')||'';if(audioUrl)$('audioPlayer').src=audioUrl;document.body.classList.add('shareOnly');show('resultScreen');}}
-function bindRecordButton(){
-  const btn=$('recordBtn');
-  if(!btn)return;
-  let down=false;
-  const begin=(ev)=>{if(ev){ev.preventDefault();ev.stopPropagation();}down=true;startRec();};
-  const end=(ev)=>{if(ev){ev.preventDefault();ev.stopPropagation();}if(!down && !isRecording)return;down=false;stopRec();};
-  btn.addEventListener('pointerdown',begin,{passive:false});
-  btn.addEventListener('pointerup',end,{passive:false});
-  btn.addEventListener('pointercancel',end,{passive:false});
-  btn.addEventListener('pointerleave',end,{passive:false});
-  btn.addEventListener('touchstart',begin,{passive:false});
-  btn.addEventListener('touchend',end,{passive:false});
-  btn.addEventListener('mousedown',begin);
-  btn.addEventListener('mouseup',end);
-  btn.addEventListener('contextmenu',e=>e.preventDefault());
-}
-bindRecordButton();
-window.addEventListener('error',e=>toast('页面脚本错误：'+(e.message||'unknown')));
-$('playBtn').onclick=()=>{const a=$('audioPlayer');if(!a.src){toast('声音还在准备中');return}if(a.paused){a.play().then(()=>{$('playBtn').textContent='暂停播放'}).catch(()=>toast('请再点一次播放'))}else{a.pause();$('playBtn').textContent='▶ 播放我的原声'}};$('audioPlayer').addEventListener('ended',()=>{$('playBtn').textContent='▶ 播放我的原声'});$('restartBtn').onclick=()=>{location.href='/'};$('shareBtn').onclick=createShareCard;$('copyBtn').onclick=async()=>{const btn=$('copyBtn');const old=btn.textContent;btn.disabled=true;btn.textContent='正在复制…';toast('正在生成听原声链接');try{await ensureShareReady();const url=getShareUrl();if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(url);toast('听原声链接已复制，发给朋友试试')}else{prompt('复制这个听声音链接',url);toast('链接已生成')}}catch(e){console.error(e);toast('链接生成失败，请重试')}finally{btn.disabled=false;setTimeout(()=>btn.textContent=old,900)}};loadShare();
-</script>
 
-<script>
-(function(){
-  const qs=new URLSearchParams(location.search);
-  const sid=qs.get('sid')||qs.get('id')||'';
-  function send(event,data={}){
-    try{navigator.sendBeacon&&navigator.sendBeacon('/api/track',new Blob([JSON.stringify({event,data,path:location.pathname,sid})],{type:'application/json'}))||fetch('/api/track',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({event,data,path:location.pathname,sid}),keepalive:true});}catch(e){}
-  }
-  window.analyticsTrack=send;
-  send(qs.get('from')==='share'?'visit_from_share':'page_view',{query:location.search,referrer:document.referrer});
-  document.addEventListener('DOMContentLoaded',function(){
-    const bind=(id,event)=>{const el=document.getElementById(id); if(el) el.addEventListener('click',()=>send(event,{id}));};
-    bind('recordBtn','record_button_click'); bind('rankLink','leaderboard_click'); bind('shareBtn','share_button_click'); bind('copyBtn','copy_link_click'); bind('restartBtn','restart_click');
-    const rec=document.getElementById('recordBtn'); if(rec){rec.addEventListener('pointerdown',()=>send('record_start')); rec.addEventListener('pointerup',()=>send('record_stop'));}
-  });
-})();
-</script>
+    function normalizeShareType(level, title) {
+      const t = `${level || ""} ${title || ""}`;
+      if (t.includes("冷静") || t.includes("控场")) return "气氛降温器";
+      if (t.includes("直接") || t.includes("强势")) return "回复终止型";
+      if (t.includes("试探") || t.includes("不确定")) return "已读不回触发器";
+      if (t.includes("平和") || t.includes("压")) return "隐性放电型";
+      if (t.includes("热情")) return "语气污染源";
+      return "气氛降温器";
+    }
 
+    function buildShareIngredients(raw, score) {
+      const fallback = ["句尾带刺结晶（不易察觉）", "低频烦躁信号（持续发射）", "好好说话抗体缺失（建议隔离）"];
+      const parts = String(raw || "").split("·").map(s => s.trim()).filter(Boolean);
+      const names = [
+        parts[3] ? toMemeIngredient(parts[3]) : fallback[0],
+        parts[2] ? toMemeIngredient(parts[2]) : fallback[1],
+        fallback[2]
+      ];
+      const p1 = Math.max(31, Math.min(42, Math.round(score * 0.45)));
+      const p2 = Math.max(22, Math.min(32, Math.round(score * 0.31)));
+      const p3 = Math.max(15, Math.min(23, Math.round(score * 0.20)));
+      return [
+        { icon: "✦", name: names[0], percent: p1 },
+        { icon: "〰", name: names[1], percent: p2 },
+        { icon: "+", name: names[2], percent: p3 }
+      ];
+    }
+
+    function toMemeIngredient(s) {
+      if (s.includes("翻白眼")) return "轻微翻白眼粉尘（随语气飘散）";
+      if (s.includes("阴阳")) return "阴阳怪气残留物（擦不干净）";
+      if (s.includes("安静")) return "空气突然安静颗粒（扩散很快）";
+      if (s.includes("冷") || s.includes("距离")) return "气氛降温微粒（吸入即沉默）";
+      if (s.includes("控制") || s.includes("压迫")) return "嘴硬保护膜（厚度超标）";
+      if (s.includes("不确定") || s.includes("猜")) return "猜心雾化物（越听越累）";
+      if (s.includes("情绪")) return "情绪悬浮颗粒（浓度稳定）";
+      return s.length > 16 ? s.slice(0, 16) : s;
+    }
+
+    function drawGlow(ctx, x, y, r, color) {
+      const g = ctx.createRadialGradient(x, y, 0, x, y, r);
+      g.addColorStop(0, color);
+      g.addColorStop(0.45, color.replace(/0\.[0-9]+\)/, "0.10)"));
+      g.addColorStop(1, "rgba(0,0,0,0)");
+      ctx.fillStyle = g;
+      ctx.beginPath();
+      ctx.arc(x, y, r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    function drawHazardBand(ctx, x, y, width, height, deg, text, fontSize) {
+      ctx.save();
+      ctx.translate(x + width / 2, y + height / 2);
+      ctx.rotate((deg * Math.PI) / 180);
+      ctx.translate(-width / 2, -height / 2);
+      ctx.fillStyle = "#f5c526";
+      ctx.fillRect(0, 0, width, height);
+      ctx.fillStyle = "#0a0a08";
+      for (let sx = -height; sx < width + height; sx += 54) {
+        ctx.beginPath();
+        ctx.moveTo(sx, 0); ctx.lineTo(sx + 32, 0); ctx.lineTo(sx - 28 + height, height); ctx.lineTo(sx - 60 + height, height);
+        ctx.closePath(); ctx.fill();
+      }
+      ctx.fillStyle = "rgba(0,0,0,0.82)";
+      ctx.fillRect(0, height * 0.25, width, height * 0.50);
+      ctx.fillStyle = "#ffdd38";
+      ctx.font = `900 ${fontSize}px sans-serif`;
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText(text, width / 2, height / 2 + 2);
+      ctx.restore();
+      ctx.textAlign = "left";
+      ctx.textBaseline = "alphabetic";
+    }
+
+    function drawSticker(ctx, x, y, width, height, text, stroke, fill, deg, darkText) {
+      ctx.save();
+      ctx.translate(x + width / 2, y + height / 2);
+      ctx.rotate((deg * Math.PI) / 180);
+      ctx.translate(-width / 2, -height / 2);
+      ctx.fillStyle = fill;
+      ctx.strokeStyle = stroke;
+      ctx.lineWidth = 4;
+      roundRect(ctx, 0, 0, width, height, 12); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = darkText ? "#071005" : stroke;
+      ctx.font = `900 ${Math.min(40, Math.floor(height * 0.55))}px sans-serif`;
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText(text, width / 2, height / 2 + 1);
+      ctx.restore();
+      ctx.textAlign = "left";
+      ctx.textBaseline = "alphabetic";
+    }
+
+    function drawImpactHeadline(ctx, text, x, y, maxWidth, lineHeight) {
+      const lines = splitHeadline(text, maxWidth, ctx, "900 88px sans-serif");
+      lines.slice(0, 2).forEach((line, idx) => {
+        ctx.font = "900 88px sans-serif";
+        ctx.shadowColor = "rgba(0,0,0,0.85)";
+        ctx.shadowBlur = 4;
+        // 最后一部分用荧光绿，制造参考图2那种海报冲击
+        if (idx === lines.length - 1 || line.length > 8) {
+          const cut = Math.max(2, Math.floor(line.length * 0.45));
+          const a = line.slice(0, cut);
+          const b = line.slice(cut);
+          ctx.fillStyle = "#fffdf0";
+          ctx.fillText(a, x, y + idx * lineHeight);
+          const ax = x + ctx.measureText(a).width + 6;
+          ctx.fillStyle = "#ccff31";
+          ctx.fillText(b, ax, y + idx * lineHeight);
+        } else {
+          ctx.fillStyle = "#fffdf0";
+          ctx.fillText(line, x, y + idx * lineHeight);
+        }
+        ctx.shadowBlur = 0;
+      });
+    }
+
+    function splitHeadline(text, maxWidth, ctx, font) {
+      ctx.font = font;
+      const chars = String(text || "").replace(/[。，.]/g, "").split("");
+      const lines = [];
+      let line = "";
+      chars.forEach(ch => {
+        const test = line + ch;
+        if (ctx.measureText(test).width > maxWidth && line) {
+          lines.push(line);
+          line = ch;
+        } else {
+          line = test;
+        }
+      });
+      if (line) lines.push(line);
+      return lines.length ? lines : ["你一解释，别人更想撤退"];
+    }
+
+    function roundRect(ctx, x, y, width, height, radius) {
+      ctx.beginPath();
+      ctx.moveTo(x + radius, y);
+      ctx.arcTo(x + width, y, x + width, y + height, radius);
+      ctx.arcTo(x + width, y + height, x, y + height, radius);
+      ctx.arcTo(x, y + height, x, y, radius);
+      ctx.arcTo(x, y, x + width, y, radius);
+      ctx.closePath();
+    }
+
+    function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
+      const chars = text.split("");
+      let line = "";
+      for (let i = 0; i < chars.length; i++) {
+        const testLine = line + chars[i];
+        if (ctx.measureText(testLine).width > maxWidth && line) {
+          ctx.fillText(line, x, y);
+          line = chars[i];
+          y += lineHeight;
+        } else {
+          line = testLine;
+        }
+      }
+      if (line) ctx.fillText(line, x, y);
+    }
+  </script>
 </body>
 </html>
