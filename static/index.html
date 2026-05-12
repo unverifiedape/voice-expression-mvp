@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- toxic-voice-v1.7.0-minimal-home-20260507 -->
+<!-- relationshiptest-v1.7.2-unified-conversion-pages-20260512 -->
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8" />
@@ -37,6 +37,14 @@
 @media (max-height:720px){.homeMinimal{gap:18px;min-height:calc(100dvh - 78px)}.homeMinimal .homeTitle{font-size:48px}.homeMicWrap{width:176px;height:176px}.homeMicWrap .mic{width:118px;height:118px}.homeAction{font-size:16px}.rankLink{margin-bottom:10px}}
 @media (max-width:380px){.homeMinimal .homeTitle{font-size:50px}.homeAction{font-size:16px}}
 
+/* V1.7.2 unified conversion pages */
+#resultScreen .actions{grid-template-columns:1fr;gap:12px;width:100%}
+#resultScreen .btn{font-size:16px;padding:17px 14px;border-radius:20px}
+#resultScreen .btn.secondary{opacity:.86}
+#scanScreen .scanTitle{font-size:34px;line-height:1.08}
+#scanScreen .step{font-weight:800;color:rgba(247,242,234,.78)}
+#scanScreen .step.hot{color:var(--text)}
+
 </style>
 </head>
 <body>
@@ -60,13 +68,13 @@
     <section class="screen" id="scanScreen">
       <div class="top"><div class="brand">ANALYZING</div><div class="pill">请勿离开</div></div>
       <div class="hero">
-        <h2 class="scanTitle">正在检测<br>你的伤人成分</h2>
+        <h2 class="scanTitle">正在检测<br>你的伤人感</h2>
         <div class="wave" id="wave"></div>
         <div class="scanLine"></div>
         <div class="steps">
-          <div class="step hot" id="s1">正在分析你的语气波动…</div>
-          <div class="step" id="s2">匹配潜在情绪浓度…</div>
-          <div class="step" id="s3">生成出口伤人评级…</div>
+          <div class="step hot" id="s1">正在回放你的语气…</div>
+          <div class="step" id="s2">识别哪一句最刺耳…</div>
+          <div class="step" id="s3">生成伤人指数…</div>
         </div>
       </div>
       <p class="bottomNote">⚠️ 检测结果可能引发朋友转发、质疑或沉默。</p>
@@ -87,8 +95,8 @@
           </div>
         </article>
         <div class="actions">
-          <button class="btn" id="shareBtn">生成裂变分享图</button>
-          <button class="btn secondary" id="copyBtn">复制听声音链接</button>
+          <button class="btn" id="shareBtn">生成可扫码分享图</button>
+          <button class="btn secondary" id="copyBtn">复制听原声链接</button>
         </div>
         <p class="legal">本测试仅用于娱乐与社交分享，不构成心理、医学或人格评估。</p>
       </div>
@@ -146,7 +154,7 @@ function getShareUrl(){return shareId?`${location.origin}/s.html?id=${encodeURIC
 async function createShareCard(){
   const btn=$('shareBtn');
   const old=btn.textContent;
-  btn.disabled=true;btn.textContent='正在生成…';toast('正在生成分享图');
+  btn.disabled=true;btn.textContent='正在生成…';toast('正在生成可扫码分享图');
   try{await ensureShareReady()}catch(e){btn.disabled=false;btn.textContent=old;toast('分享入口生成失败，请重试');return}
   try{
     const canvas=document.createElement('canvas'),w=1080,h=1440;canvas.width=w;canvas.height=h;const c=canvas.getContext('2d');
@@ -154,17 +162,17 @@ async function createShareCard(){
     let g=c.createRadialGradient(540,40,20,540,40,760);g.addColorStop(0,'rgba(215,255,63,.32)');g.addColorStop(.42,'rgba(30,44,14,.26)');g.addColorStop(1,'rgba(5,5,5,0)');c.fillStyle=g;c.fillRect(0,0,w,h);
     c.fillStyle='rgba(255,255,255,.045)';round(c,54,54,972,1332,46);c.fill();c.strokeStyle='rgba(255,255,255,.08)';c.lineWidth=2;c.stroke();
     drawHazard(c,0,60,w);
-    c.fillStyle='rgba(247,242,234,.78)';c.font='900 36px Arial';c.fillText('我的毒气伤人指数',86,212);
+    c.fillStyle='rgba(247,242,234,.78)';c.font='900 36px Arial';c.fillText('我的语气伤人指数',86,212);
     c.fillStyle='#f7f2ea';c.font='950 238px Arial';c.fillText((result?.score||88)+'%',82,456);
     c.fillStyle='#d7ff3f';c.font='900 38px Arial';c.fillText(result?.type||'☣️ 语气污染源',92,534);
-    c.fillStyle='rgba(255,209,41,.76)';c.font='800 26px Arial';c.fillText('⚠ 已超过68%人类安全阈值',92,580);
+    c.fillStyle='rgba(255,209,41,.76)';c.font='800 26px Arial';c.fillText('高危表达已生成',92,580);
     c.fillStyle='#f7f2ea';c.font='900 70px Arial';let quoteBottom=wrap(c,result?.quote||'你一开口，气氛就凉了',86,685,900,82);
     const boxY=Math.max(805, quoteBottom+80), boxH=330;
     c.fillStyle='rgba(255,255,255,.105)';round(c,86,boxY,908,boxH,36);c.fill();
     c.fillStyle='#f7f2ea';c.font='900 38px Arial';c.fillText('主要成分',126,boxY+70);
     c.font='500 38px Arial';(result?.ings||[]).slice(0,3).forEach((x,i)=>c.fillText('• '+x,126,boxY+145+i*62));
     c.fillStyle='rgba(255,255,255,.78)';c.font='900 34px Arial';c.fillText('扫码听我声音，哪里有错？',86,1220);
-    c.fillStyle='rgba(255,255,255,.52)';c.font='500 28px Arial';c.fillText('顺便测测你自己有多毒',86,1266);
+    c.fillStyle='rgba(255,255,255,.52)';c.font='500 28px Arial';c.fillText('顺便测测你自己这句话',86,1266);
     const qrUrl='/api/qr?url='+encodeURIComponent(getShareUrl())+'&t='+Date.now();
     let img=null;
     try{img=await imageFromUrl(qrUrl,12000)}catch(e){
@@ -199,7 +207,7 @@ function drawHazard(c,x,y,w){
   c.fillStyle='#f2d04b';
   c.font='950 38px Arial';
   c.textAlign='center';
-  c.fillText('⚠️ 语气有毒，出口伤人 ⚠️',x+w/2,y+50);
+  c.fillText('⚠️ 这句话建议谨慎外放 ⚠️',x+w/2,y+50);
   c.textAlign='left';
   c.restore()
 }
@@ -224,7 +232,7 @@ function bindRecordButton(){
 }
 bindRecordButton();
 window.addEventListener('error',e=>toast('页面脚本错误：'+(e.message||'unknown')));
-$('playBtn').onclick=()=>{const a=$('audioPlayer');if(!a.src){toast('声音还在准备中');return}if(a.paused){a.play().then(()=>{$('playBtn').textContent='暂停播放'}).catch(()=>toast('请再点一次播放'))}else{a.pause();$('playBtn').textContent='▶ 播放我的原声'}};$('audioPlayer').addEventListener('ended',()=>{$('playBtn').textContent='▶ 播放我的原声'});$('restartBtn').onclick=()=>{location.href='/'};$('shareBtn').onclick=createShareCard;$('copyBtn').onclick=async()=>{const btn=$('copyBtn');const old=btn.textContent;btn.disabled=true;btn.textContent='正在复制…';toast('正在生成听声音链接');try{await ensureShareReady();const url=getShareUrl();if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(url);toast('听声音链接已复制，发给朋友试试')}else{prompt('复制这个听声音链接',url);toast('链接已生成')}}catch(e){console.error(e);toast('链接生成失败，请重试')}finally{btn.disabled=false;setTimeout(()=>btn.textContent=old,900)}};loadShare();
+$('playBtn').onclick=()=>{const a=$('audioPlayer');if(!a.src){toast('声音还在准备中');return}if(a.paused){a.play().then(()=>{$('playBtn').textContent='暂停播放'}).catch(()=>toast('请再点一次播放'))}else{a.pause();$('playBtn').textContent='▶ 播放我的原声'}};$('audioPlayer').addEventListener('ended',()=>{$('playBtn').textContent='▶ 播放我的原声'});$('restartBtn').onclick=()=>{location.href='/'};$('shareBtn').onclick=createShareCard;$('copyBtn').onclick=async()=>{const btn=$('copyBtn');const old=btn.textContent;btn.disabled=true;btn.textContent='正在复制…';toast('正在生成听原声链接');try{await ensureShareReady();const url=getShareUrl();if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(url);toast('听原声链接已复制，发给朋友试试')}else{prompt('复制这个听声音链接',url);toast('链接已生成')}}catch(e){console.error(e);toast('链接生成失败，请重试')}finally{btn.disabled=false;setTimeout(()=>btn.textContent=old,900)}};loadShare();
 </script>
 
 <script>

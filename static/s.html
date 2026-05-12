@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- toxic-voice-v1.6.7-warning-polish-20260504 -->
+<!-- relationshiptest-v1.7.2-share-page-unified-20260512 -->
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8" />
@@ -12,23 +12,32 @@
 
 .hazardBar{position:relative;z-index:2;margin:0 -18px 12px;height:42px;display:flex;align-items:center;justify-content:center;overflow:hidden;border-top:1px solid rgba(255,209,41,.34);border-bottom:1px solid rgba(255,209,41,.24);box-shadow:0 8px 24px rgba(0,0,0,.32),0 0 18px rgba(215,255,63,.08);background:linear-gradient(180deg,rgba(20,18,10,.96),rgba(6,6,5,.94))}.hazardBar:before,.hazardBar:after{content:"";position:absolute;left:0;right:0;height:5px;background:repeating-linear-gradient(135deg,rgba(255,209,41,.9) 0 12px,rgba(255,209,41,.9) 12px 18px,rgba(5,5,5,.96) 18px 30px,rgba(5,5,5,.96) 30px 36px);opacity:.72}.hazardBar:before{top:0}.hazardBar:after{bottom:0}.hazardBar span{position:relative;z-index:1;color:#f2d04b;font-weight:950;font-size:17px;letter-spacing:.04em;text-shadow:0 0 14px rgba(215,255,63,.12)}.top{height:auto}.hero{padding-top:8px}.scoreLabel{font-size:13px;color:var(--muted)}.app{padding-top:0}@media (max-width:380px){.hazardBar span{font-size:16px}h1{font-size:42px}}
 .thresholdNote{margin:0 0 12px;color:rgba(255,209,41,.78);font-size:12px;font-weight:800}
+
+/* V1.7.2 unified share page */
+.app{padding-top:18px}
+.hero{justify-content:flex-start;padding-top:28px;gap:18px}
+.badge{background:rgba(215,255,63,.12);color:var(--acid);border:1px solid rgba(215,255,63,.25);box-shadow:none}
+h1{font-size:48px;line-height:.94;text-shadow:0 16px 60px rgba(0,0,0,.7)}
+.sub{font-weight:700;color:rgba(247,242,234,.62)}
+.card{border-radius:34px}
+.tap{border-radius:20px}
+#testBtn{margin-top:4px}
 </style>
 </head>
 <body>
 <main class="app">
   <div class="grain"></div>
-  <div class="hazardBar"><span>⚠️ 语气有毒，出口伤人 ⚠️</span></div>
   <section class="hero">
-    <div class="badge">☣️ 毒气原声已送达</div>
+    <div class="badge">原声已送达</div>
     <h1>听一下TA说的话<br>哪里不对劲</h1>
-    <p class="sub">很多人听完会不太舒服。<br>你也说一句，看看差别。</p>
+    <p class="sub">很多人听完才知道，问题不在内容，在语气。</p>
     <article class="card">
       <div class="mini">TA的伤人指数</div>
       <div class="score"><span id="score">--</span>%</div>
       <div class="type" id="type">正在读取结果…</div>
       <p class="quote" id="quote">声音加载中</p>
       <div class="audioWrap">
-        <button class="tap" id="tapBtn">▶ 点击播放TA的毒气原声</button>
+        <button class="tap" id="tapBtn">▶ 听听TA到底怎么说的</button>
         <audio id="audio" playsinline></audio>
       </div>
     </article>
@@ -50,7 +59,7 @@ async function init(){
   }catch(e){render(fallback());$('quote').textContent='这段原声可能已经过期，但你还可以测自己';}
 }
 function render(m){$('score').textContent=m.score||88;$('type').textContent=m.type||'☣️ 伤人样本';$('quote').textContent=m.quote||'这句话不一定很重，但很容易让人不舒服'}
-function setBtnIdle(){ $('tapBtn').textContent='▶ 点击播放TA的毒气原声'; }
+function setBtnIdle(){ $('tapBtn').textContent='▶ 听听TA到底怎么说的'; }
 function setBtnPlaying(){ $('tapBtn').textContent='暂停播放'; }
 $('tapBtn').onclick=async()=>{
   const a=$('audio');
