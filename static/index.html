@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- relationshiptest-v1.7.6-final-clear-qr-share-card-cover-20260512 -->
+<!-- relationshiptest-v1.7.9-final-viral-share-card-reference2-20260512 -->
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8" />
@@ -168,134 +168,122 @@ async function createShareCard(){
     const ings=rawIngs.map(x=>String(x).replace(/^主要成分[:：]?\s*/,'').replace(/^毒气配方[:：]?\s*/,'').replace(/^伤人配方[:：]?\s*/,''));
     const pcts=(result?.pcts&&result.pcts.length?result.pcts:['35%','30%','16%']).slice(0,3);
 
-    // ===== 图2方向：强传播海报，不是结果截图 =====
-    c.fillStyle='#020302';c.fillRect(0,0,w,h);
+    // ===== V1.7.9: 按“图2”海报方向重做：全屏传播海报，不再是结果页卡片 =====
+    c.fillStyle='#030402';c.fillRect(0,0,w,h);
 
-    // toxic green smoke / glow
-    const bg1=c.createRadialGradient(790,250,10,760,250,700);
-    bg1.addColorStop(0,'rgba(217,255,35,.26)');bg1.addColorStop(.34,'rgba(105,156,20,.12)');bg1.addColorStop(1,'rgba(0,0,0,0)');
-    c.fillStyle=bg1;c.fillRect(0,0,w,h);
-    const bg2=c.createRadialGradient(170,760,10,170,760,520);
-    bg2.addColorStop(0,'rgba(173,255,30,.22)');bg2.addColorStop(1,'rgba(0,0,0,0)');
-    c.fillStyle=bg2;c.fillRect(0,0,w,h);
-
-    // rough particles and smoke
+    // 背景：毒雾、颗粒、脏海报质感
+    const g1=c.createRadialGradient(780,235,20,760,235,760);
+    g1.addColorStop(0,'rgba(213,255,44,.35)');g1.addColorStop(.26,'rgba(116,171,16,.22)');g1.addColorStop(.72,'rgba(22,38,6,.10)');g1.addColorStop(1,'rgba(0,0,0,0)');
+    c.fillStyle=g1;c.fillRect(0,0,w,h);
+    const g2=c.createRadialGradient(120,710,20,120,710,620);
+    g2.addColorStop(0,'rgba(185,255,36,.22)');g2.addColorStop(.45,'rgba(67,122,20,.14)');g2.addColorStop(1,'rgba(0,0,0,0)');
+    c.fillStyle=g2;c.fillRect(0,0,w,h);
     c.save();
-    for(let i=0;i<950;i++){
-      const x=Math.random()*w,y=Math.random()*h,r=Math.random()*2.2;
-      c.globalAlpha=Math.random()*0.10;
-      c.fillStyle=i%6===0?'#d8ff35':'#ffffff';
+    for(let i=0;i<1300;i++){
+      const x=Math.random()*w,y=Math.random()*h,r=Math.random()*2.4;
+      c.globalAlpha=Math.random()*0.13;
+      c.fillStyle=i%5===0?'#d7ff3f':(i%11===0?'#f5d047':'#ffffff');
       c.beginPath();c.arc(x,y,r,0,Math.PI*2);c.fill();
     }
     c.restore();
-    c.save();c.globalAlpha=.16;c.strokeStyle='#9ee21a';c.lineWidth=2;
-    for(let i=0;i<10;i++){c.beginPath();c.arc(350,330,120+i*26,Math.PI*.18,Math.PI*1.72);c.stroke()}
+
+    // 顶部斜向警示带：先把事件讲清楚
+    drawSlantedHazard(c,-35,16,w+70,122,`⚠ 我随口录了一句话，伤人指数 ${score}% ⚠`);
+
+    // 左侧烟雾点缀
+    c.save();c.globalAlpha=.20;c.fillStyle='#9fd52c';
+    for(let i=0;i<16;i++){c.beginPath();c.arc(55+Math.random()*120,420+Math.random()*420,30+Math.random()*70,0,Math.PI*2);c.fill();}
     c.restore();
 
-    // ===== Top yellow hazard banner carries the story =====
-    drawHazardPoster(c,0,0,w,118,`⚠ 我随口录了一句话，伤人指数 ${score}% ⚠`);
-
-    // slanted main poster area hint
+    // 巨大分数：第一视觉中心
     c.save();
-    c.translate(0,0);
-    c.fillStyle='rgba(255,255,255,.028)';round(c,34,118,1012,1268,28);c.fill();
-    c.strokeStyle='rgba(255,255,255,.10)';c.lineWidth=2;c.stroke();
+    c.translate(78,155);c.rotate(-0.055);
+    c.shadowColor='rgba(215,255,63,.35)';c.shadowBlur=28;
+    c.fillStyle='#f7f2ea';c.font='950 315px Arial, sans-serif';
+    c.fillText(score+'%',0,332);
+    c.globalAlpha=.22;c.fillStyle='#ffffff';c.fillText(score+'%',-8,326);c.globalAlpha=1;
     c.restore();
 
-    // small tag + huge score, dramatic and slightly rotated
+    // 高危表达小章
     c.save();
-    c.translate(74,162);
-    c.rotate(-0.035);
-    c.fillStyle='rgba(215,255,63,.10)';c.strokeStyle='rgba(215,255,63,.75)';c.lineWidth=4;
-    round(c,0,0,198,68,12);c.fill();c.stroke();
-    c.fillStyle='#d7ff3f';c.font='950 34px Arial';c.fillText('高危表达',34,45);
+    c.translate(55,268);c.rotate(-0.075);
+    c.strokeStyle='rgba(244,205,45,.95)';c.lineWidth=4;c.fillStyle='rgba(5,5,5,.62)';
+    round(c,0,0,170,64,10);c.fill();c.stroke();
+    c.fillStyle='#f2d04b';c.font='950 34px Arial, sans-serif';c.fillText('高危表达',22,43);
     c.restore();
 
+    // 类型贴纸：右侧荧光脏贴纸
     c.save();
-    c.translate(82,230);
-    c.rotate(-0.055);
-    c.shadowColor='rgba(215,255,63,.25)';c.shadowBlur=26;
-    c.fillStyle='#f7f2ea';c.font='950 265px Arial';
-    c.fillText(score+'%',0,235);
-    // rough offset strokes for poster feel
-    c.globalAlpha=.18;c.fillStyle='#ffffff';c.fillText(score+'%',-6,232);c.globalAlpha=1;
+    c.translate(700,345);c.rotate(-0.08);
+    c.fillStyle='rgba(215,255,63,.94)';round(c,0,0,286,78,12);c.fill();
+    c.strokeStyle='rgba(0,0,0,.35)';c.lineWidth=3;c.stroke();
+    c.fillStyle='#080b05';c.font='950 40px Arial, sans-serif';
+    fitText(c,type,30,52,232,40);
+    [45,137,230].forEach((dx,i)=>{c.fillStyle='rgba(215,255,63,.94)';c.fillRect(dx,76,11,22+i*6);c.beginPath();c.arc(dx+5.5,98+i*6,5.5,0,Math.PI*2);c.fill();});
     c.restore();
 
-    // type sticker on right
+    // 主结果：参考图2，大而粗，视觉中心第二层
+    const qLines=posterHeadlineLines(quote);
     c.save();
-    c.translate(704,392);c.rotate(-0.08);
-    c.fillStyle='rgba(215,255,63,.94)';round(c,0,0,300,78,12);c.fill();
-    c.fillStyle='#101608';c.font='950 42px Arial';c.fillText(type,42,53);
-    // dripping hint
-    c.fillStyle='rgba(215,255,63,.92)';
-    [70,178,245].forEach((dx,i)=>{c.beginPath();c.roundRect?null:null;c.fillRect(dx,76,10,22+i*7);c.beginPath();c.arc(dx+5,98+i*7,5,0,Math.PI*2);c.fill()});
+    c.translate(70,545);c.rotate(-0.025);
+    c.shadowColor='rgba(0,0,0,.6)';c.shadowBlur=3;
+    c.fillStyle='#f7f2ea';c.font='950 112px Arial, sans-serif';
+    fitText(c,qLines[0]||'你一解释，',0,0,940,112);
+    c.fillStyle='#d7ff3f';c.font='950 125px Arial, sans-serif';
+    fitText(c,qLines[1]||'别人更想撤退',0,128,940,125);
     c.restore();
 
-    // ===== Main result headline: largest emotional line =====
-    const qLines = splitHeadline(quote);
-    let hy=578;
+    // 粗刷线
+    c.save();c.strokeStyle='rgba(215,255,63,.82)';c.lineWidth=6;c.lineCap='round';
+    c.beginPath();c.moveTo(78,792);c.quadraticCurveTo(470,845,1010,770);c.stroke();
+    c.globalAlpha=.34;c.beginPath();c.moveTo(430,812);c.quadraticCurveTo(610,840,770,792);c.stroke();c.restore();
+
+    // 伤人配方卡：左下，像海报里的证据标签
+    const boxX=70, boxY=835, boxW=650, boxH=305;
     c.save();
-    c.rotate(-0.025);
-    c.font='950 88px Arial';
-    c.fillStyle='#f7f2ea';
-    if(qLines.length===1){
-      c.fillText(qLines[0],72,hy);
-    }else{
-      c.fillText(qLines[0],72,hy);
-      c.fillStyle='#d7ff3f';c.font='950 96px Arial';
-      c.fillText(qLines.slice(1).join(''),72,hy+104);
-    }
-    c.restore();
-
-    // visual brush underline
-    c.save();c.strokeStyle='rgba(215,255,63,.86)';c.lineWidth=5;c.lineCap='round';
-    c.beginPath();c.moveTo(64,786);c.quadraticCurveTo(460,826,1000,766);c.stroke();
-    c.restore();
-
-    // ===== Hurtful formula card =====
-    const boxX=72, boxY=820, boxW=628, boxH=310;
-    c.save();
-    c.fillStyle='rgba(0,0,0,.48)';round(c,boxX,boxY,boxW,boxH,20);c.fill();
-    c.strokeStyle='rgba(215,255,63,.64)';c.lineWidth=2.5;c.stroke();
-    c.fillStyle='rgba(215,255,63,.96)';round(c,boxX+14,boxY-30,210,58,14);c.fill();
-    c.fillStyle='#0a1006';c.font='950 40px Arial';c.fillText('伤人配方',boxX+58,boxY+10);
-    const icon=['✧','〰','✚'];
-    ings.forEach((x,i)=>{
-      const yy=boxY+92+i*72;
-      c.strokeStyle='rgba(255,255,255,.16)';c.lineWidth=1.5;c.beginPath();c.moveTo(boxX+34,yy+30);c.lineTo(boxX+boxW-34,yy+30);c.stroke();
-      c.fillStyle='#d7ff3f';c.font='950 34px Arial';c.fillText(icon[i]||'•',boxX+36,yy);
-      c.fillStyle='#f7f2ea';c.font='850 31px Arial';c.fillText(ings[i],boxX+92,yy);
-      c.fillStyle='#ffd35e';c.textAlign='right';c.font='950 40px Arial';c.fillText(pcts[i]||'',boxX+boxW-42,yy);c.textAlign='left';
+    c.fillStyle='rgba(4,6,4,.70)';round(c,boxX,boxY,boxW,boxH,18);c.fill();
+    c.strokeStyle='rgba(215,255,63,.72)';c.lineWidth=2.8;c.stroke();
+    c.fillStyle='rgba(215,255,63,.95)';round(c,boxX+4,boxY-35,210,62,12);c.fill();
+    c.fillStyle='#071006';c.font='950 39px Arial, sans-serif';c.fillText('伤人配方',boxX+58,boxY+8);
+    const icons=['✦','〰','✚'];
+    ings.forEach((txt,i)=>{
+      const yy=boxY+91+i*75;
+      c.strokeStyle='rgba(255,255,255,.16)';c.lineWidth=1.4;c.beginPath();c.moveTo(boxX+35,yy+34);c.lineTo(boxX+boxW-40,yy+34);c.stroke();
+      c.fillStyle='#d7ff3f';c.font='950 34px Arial, sans-serif';c.fillText(icons[i],boxX+38,yy);
+      c.fillStyle='#f7f2ea';c.font='850 31px Arial, sans-serif';
+      fitText(c,txt,boxX+92,yy,395,31);
+      c.fillStyle='#ffd25c';c.textAlign='right';c.font='950 42px Arial, sans-serif';c.fillText(pcts[i]||'',boxX+boxW-38,yy);c.textAlign='left';
     });
     c.restore();
 
-    // ===== QR conversion block: very visible, with arrow =====
+    // QR：右下强光，箭头明确指向
     const qrUrl='/api/qr?url='+encodeURIComponent(getShareUrl())+'&t='+Date.now();
     let img=null;
     try{img=await imageFromUrl(qrUrl,12000)}catch(e){try{img=await imageFromFetch(qrUrl,12000)}catch(e2){console.warn('QR failed',e2)}}
-    const qrX=760, qrY=1000, qrSize=248;
+    const qrX=770, qrY=1008, qrSize=250;
 
-    // CTA brush text bottom-left
+    // QR 外发光爆炸
     c.save();
-    c.fillStyle='#f7f2ea';c.font='950 54px Arial';c.fillText('扫码听我说，',80,1232);
-    c.fillStyle='#d7ff3f';c.font='950 78px Arial';c.fillText('冤不冤？！',376,1234);
+    const qg=c.createRadialGradient(qrX+qrSize/2,qrY+qrSize/2,20,qrX+qrSize/2,qrY+qrSize/2,210);
+    qg.addColorStop(0,'rgba(215,255,63,.36)');qg.addColorStop(.55,'rgba(215,255,63,.18)');qg.addColorStop(1,'rgba(0,0,0,0)');
+    c.fillStyle=qg;c.fillRect(qrX-120,qrY-120,qrSize+240,qrSize+240);
     c.restore();
 
-    c.save();c.strokeStyle='#d7ff3f';c.lineWidth=16;c.lineCap='round';c.lineJoin='round';c.shadowColor='rgba(215,255,63,.65)';c.shadowBlur=18;
-    c.beginPath();c.moveTo(595,1235);c.quadraticCurveTo(675,1204,742,1170);c.stroke();
-    c.beginPath();c.moveTo(704,1150);c.lineTo(748,1168);c.lineTo(714,1200);c.stroke();
+    c.fillStyle='#f7f2ea';c.font='950 58px Arial, sans-serif';c.fillText('扫码听我说，',72,1252);
+    c.fillStyle='#d7ff3f';c.font='950 78px Arial, sans-serif';c.fillText('冤不冤？！',388,1252);
+
+    c.save();c.strokeStyle='#d7ff3f';c.lineWidth=18;c.lineCap='round';c.lineJoin='round';c.shadowColor='rgba(215,255,63,.72)';c.shadowBlur=22;
+    c.beginPath();c.moveTo(625,1245);c.quadraticCurveTo(705,1212,756,1172);c.stroke();
+    c.beginPath();c.moveTo(718,1154);c.lineTo(760,1169);c.lineTo(733,1206);c.stroke();
     c.restore();
 
-    // QR glow splash
-    c.save();c.shadowColor='rgba(215,255,63,.82)';c.shadowBlur=48;c.fillStyle='rgba(215,255,63,.16)';round(c,730,944,322,390,28);c.fill();c.restore();
-    c.fillStyle='rgba(215,255,63,.96)';c.font='950 26px Arial';c.fillText('听原声，再判断我冤不冤',750,972);
-    c.save();c.shadowColor='rgba(215,255,63,.78)';c.shadowBlur=34;c.fillStyle='#fff';round(c,qrX,qrY,qrSize,qrSize,14);c.fill();c.restore();
-    if(img){c.drawImage(img,qrX+16,qrY+16,qrSize-32,qrSize-32)}else{c.fillStyle='#111';c.font='900 30px Arial';c.fillText('二维码生成中',qrX+28,qrY+120)}
+    c.save();c.shadowColor='rgba(215,255,63,.9)';c.shadowBlur=36;c.fillStyle='#fff';round(c,qrX,qrY,qrSize,qrSize,14);c.fill();c.restore();
+    if(img){c.drawImage(img,qrX+16,qrY+16,qrSize-32,qrSize-32)}else{c.fillStyle='#111';c.font='900 28px Arial';c.fillText('二维码生成中',qrX+26,qrY+120)}
 
-    // bottom pill cue
+    // 底部原声提示条
     c.save();
-    c.fillStyle='rgba(0,0,0,.68)';round(c,84,1320,360,52,24);c.fill();
-    c.fillStyle='#d7ff3f';c.font='950 28px Arial';c.fillText('听完再说我冤不冤 ▶',112,1354);
+    c.fillStyle='rgba(0,0,0,.72)';round(c,110,1322,420,52,24);c.fill();
+    c.fillStyle='#d7ff3f';c.font='950 28px Arial, sans-serif';c.fillText('听原声，再判断我冤不冤 ▶',140,1356);
     c.restore();
 
     const blob=await new Promise((resolve,reject)=>canvas.toBlob(b=>b?resolve(b):reject(new Error('canvas blob failed')),'image/png'));
@@ -304,6 +292,36 @@ async function createShareCard(){
   }catch(e){console.error(e);toast('分享图生成失败，请重试')}
   finally{btn.disabled=false;btn.textContent=old}
 }
+
+function posterHeadlineLines(t){
+  t=String(t||'你一解释，别人更想撤退');
+  const targets=['别人更想撤退','场面只剩礼貌','所有人都不敢接话','不敢接话','更想撤退'];
+  for(const k of targets){const i=t.indexOf(k);if(i>0)return [t.slice(0,i).replace(/[，,]$/,'，'),t.slice(i)]}
+  if(t.includes('，')){const a=t.split(/[，,]/);return [a[0]+'，',a.slice(1).join('，')]}
+  return [t.slice(0,Math.ceil(t.length/2)),t.slice(Math.ceil(t.length/2))];
+}
+
+function fitText(c,text,x,y,maxWidth,baseSize){
+  text=String(text||'');
+  let size=baseSize;
+  const family='Arial, sans-serif';
+  const weight='950';
+  while(size>20){c.font=`${weight} ${size}px ${family}`;if(c.measureText(text).width<=maxWidth)break;size-=2;}
+  c.fillText(text,x,y);
+}
+
+function drawSlantedHazard(c,x,y,w,h,text){
+  c.save();
+  c.translate(x+w/2,y+h/2);c.rotate(-0.07);c.translate(-w/2,-h/2);
+  c.fillStyle='#f0c22a';c.fillRect(0,0,w,h);
+  c.fillStyle='rgba(0,0,0,.18)';
+  for(let i=0;i<1200;i++){if(Math.random()<.08){c.fillRect(Math.random()*w,Math.random()*h,Math.random()*7,Math.random()*5)}}
+  c.fillStyle='#050505';
+  for(let yy of [0,h-22]){for(let i=-80;i<w+80;i+=48){c.beginPath();c.moveTo(i,yy);c.lineTo(i+30,yy);c.lineTo(i+11,yy+22);c.lineTo(i-19,yy+22);c.closePath();c.fill();}}
+  c.fillStyle='#050505';c.font='950 43px Arial, sans-serif';c.textAlign='center';c.fillText(text,w/2,h/2+16);c.textAlign='left';
+  c.restore();
+}
+
 function splitHeadline(t){
   t=String(t||'你一解释，别人更想撤退');
   const cut=['别人更想撤退','更想撤退','都不敢接话','不敢接话'];
