@@ -1,0 +1,13 @@
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Local runtime files
+.env
+analytics.db
+uploads/
+shares/
+venv/
