@@ -11,3 +11,4 @@ analytics.db
 uploads/
 shares/
 venv/
+.DS_Store
