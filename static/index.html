@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- relationshiptest-v1.8.7-sharecard-simplified-hierarchy-20260513 -->
+<!-- relationshiptest-v1.8.9-sharecard-final-copy-badge-20260513 -->
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8" />
@@ -189,7 +189,7 @@ async function createShareCard(){
     c.restore();
 
     // 顶部黄黑警示带：只讲发生了什么
-    drawSlantedHazard(c,-58,24,w+116,118,'⚠ 我随口录了一句话 ⚠');
+    drawSlantedHazard(c,-58,24,w+116,118,'⚠ 声音伤人，谨慎外放。⚠');
 
     // 左侧毒雾
     c.save();c.globalAlpha=.15;c.fillStyle='#a8e22d';
@@ -204,28 +204,24 @@ async function createShareCard(){
     for(let r=52;r<=176;r+=30){c.beginPath();c.arc(840,274,r,0,Math.PI*2);c.stroke();}
     c.restore();
 
-    // 第一视觉中心：伤人指数 + 分数
-    c.fillStyle='rgba(247,242,234,.76)';
+    // 第一视觉中心：解释句 + 分数
+    c.fillStyle='rgba(247,242,234,.88)';
     c.font='900 34px Arial, sans-serif';
-    c.fillText('伤人指数',78,182);
-
+    c.fillText('随口说了一句，测出伤人指数'+score+'%',78,182);
     c.save();
-    c.translate(60,200);c.rotate(-0.025);
-    c.shadowColor='rgba(215,255,63,.30)';c.shadowBlur=20;
-    c.fillStyle='#f7f2ea';
-    fitText(c,score+'%',0,244,610,232,'950');
+    c.strokeStyle='rgba(215,255,63,.72)';c.lineWidth=3;c.setLineDash([12,10]);
+    c.beginPath();c.moveTo(78,202);c.lineTo(520,202);c.stroke();
     c.restore();
 
-    // 只保留一个类型贴纸
     c.save();
-    c.font='950 40px Arial, sans-serif';
-    const typeW=Math.max(188,Math.min(300,c.measureText(type).width+68));
-    c.translate(706,292);c.rotate(-0.045);
-    c.fillStyle='rgba(215,255,63,.98)';round(c,0,0,typeW,74,14);c.fill();
-    c.strokeStyle='rgba(0,0,0,.24)';c.lineWidth=3;c.stroke();
-    c.fillStyle='#070905';fitText(c,type,28,49,typeW-56,38,'950');
-    [42,116,190].forEach((dx,i)=>{c.fillStyle='rgba(215,255,63,.96)';c.fillRect(dx,72,10,16+i*4);c.beginPath();c.arc(dx+5,88+i*4,5,0,Math.PI*2);c.fill();});
+    c.translate(60,212);c.rotate(-0.025);
+    c.shadowColor='rgba(215,255,63,.38)';c.shadowBlur=26;
+    c.fillStyle='#d7ff3f';
+    fitText(c,score+'%',0,244,620,232,'950');
     c.restore();
+
+    // 主标签徽章：测出来的身份标签
+    drawResultBadge(c, type, 708, 236, 292, 256);
 
     // 主判词：单独占一块，不跟分数打架
     const qLines=posterHeadlineLines(quote);
@@ -269,8 +265,8 @@ async function createShareCard(){
     const qrX=744, qrY=930, qrSize=276;
 
     c.save();
-    c.fillStyle='#f7f2ea';c.font='950 58px Arial, sans-serif';c.fillText('扫码听原声',76,1118);
-    c.fillStyle='#d7ff3f';c.font='950 82px Arial, sans-serif';c.fillText('看我冤不冤？！',76,1204);
+    c.fillStyle='#f7f2ea';c.font='950 48px Arial, sans-serif';c.fillText('扫码听我原声，',76,1110);
+    c.fillStyle='#d7ff3f';c.font='950 72px Arial, sans-serif';c.fillText('你来评评理。',76,1190);
     c.restore();
 
     c.save();c.strokeStyle='#d7ff3f';c.lineWidth=16;c.lineCap='round';c.lineJoin='round';c.shadowColor='rgba(215,255,63,.80)';c.shadowBlur=20;
@@ -286,10 +282,13 @@ async function createShareCard(){
     c.save();c.shadowColor='rgba(215,255,63,.90)';c.shadowBlur=30;c.fillStyle='#fff';round(c,qrX,qrY,qrSize,qrSize,18);c.fill();c.restore();
     if(img){c.drawImage(img,qrX+18,qrY+18,qrSize-36,qrSize-36)}else{c.fillStyle='#111';c.font='900 28px Arial';c.fillText('二维码生成中',qrX+30,qrY+138)}
 
-    // 底部小绿条：一句辅助，不再抢戏
+    // 底部裂变引导条
     c.save();
-    c.fillStyle='rgba(215,255,63,.96)';round(c,92,1298,308,56,26);c.fill();
-    c.fillStyle='#050806';c.font='950 27px Arial, sans-serif';c.fillText('听完你也测一句',122,1334);
+    c.fillStyle='rgba(215,255,63,.96)';round(c,54,1296,972,62,30);c.fill();
+    c.fillStyle='#050806';c.font='950 32px Arial, sans-serif';
+    fitText(c,'嗨，别笑！你估计也能上榜–>',118,1337,760,32,'950');
+    c.fillStyle='#050806';c.beginPath();c.arc(82,1327,24,0,Math.PI*2);c.fill();
+    c.fillStyle='#d7ff3f';c.font='900 24px Arial, sans-serif';c.fillText('!',77,1336);
     c.restore();
 
     const blob=await new Promise((resolve,reject)=>canvas.toBlob(b=>b?resolve(b):reject(new Error('canvas blob failed')),'image/png'));
@@ -297,6 +296,33 @@ async function createShareCard(){
     toast('分享图已生成，请保存或发送');
   }catch(e){console.error(e);toast('分享图生成失败，请重试')}
   finally{btn.disabled=false;btn.textContent=old}
+}
+
+
+function drawResultBadge(c,label,x,y,w,h){
+  c.save();
+  const cx=x+w/2, cy=y+h/2;
+  // aura rings
+  c.strokeStyle='rgba(215,255,63,.18)';c.lineWidth=2;
+  for(let r=88;r<=154;r+=26){c.beginPath();c.arc(cx,cy,r,0,Math.PI*2);c.stroke();}
+  c.shadowColor='rgba(215,255,63,.62)';c.shadowBlur=22;
+  const g=c.createLinearGradient(x,y,x+w,y+h);
+  g.addColorStop(0,'rgba(215,255,63,.98)');g.addColorStop(1,'rgba(180,245,28,.94)');
+  c.fillStyle=g;
+  round(c,x+12,y+22,w-24,h-44,28);c.fill();
+  c.shadowBlur=0;c.strokeStyle='rgba(0,0,0,.32)';c.lineWidth=4;c.stroke();
+  // inner frame
+  c.strokeStyle='rgba(0,0,0,.30)';c.lineWidth=3;round(c,x+28,y+38,w-56,h-76,22);c.stroke();
+  c.fillStyle='#070905';
+  c.font='950 58px Arial, sans-serif';
+  const chars=String(label||'语气污染源').replace(/^([\u{1F300}-\u{1FAFF}\u2600-\u27BF]+\s*)/u,'').trim();
+  const parts=chars.length>5?[chars.slice(0,2),chars.slice(2)]:[chars];
+  if(parts.length===2){fitText(c,parts[0],x+58,y+102,w-116,58,'950');fitText(c,parts[1],x+58,y+168,w-116,58,'950');}
+  else{fitText(c,chars,x+44,y+140,w-88,58,'950');}
+  c.font='900 22px Arial, sans-serif';
+  c.fillText('★ ★ ★ ★ ★',x+74,y+68);
+  c.fillStyle='rgba(0,0,0,.75)';c.font='900 30px Arial, sans-serif';c.fillText('⚠',cx-16,y+h-62);
+  c.restore();
 }
 
 function drawFitStrokeFill(c,text,x,y,maxWidth,baseSize,weight='950'){
