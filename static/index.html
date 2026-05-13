@@ -189,7 +189,7 @@ async function createShareCard(){
     c.restore();
 
     // top warning banner: strict reference copy
-    drawStrongHazardBand(c,0,28,w,128,'⚠ 声音伤人，谨慎外放。⚠');
+    drawStrongHazardBand(c,0,36,w,132,'⚠ 声音伤人，谨慎外放。⚠');
 
     // faint radar rings behind badge
     c.save();c.strokeStyle='rgba(215,255,63,.16)';c.lineWidth=2;
@@ -201,7 +201,7 @@ async function createShareCard(){
     // explain line, as in reference image 2: no score here, score is the hero
     c.fillStyle='rgba(247,242,234,.92)';
     c.font='900 38px Arial, sans-serif';
-    c.fillText('我随口说了一句，伤人指数竟然有',58,228);
+    c.fillText('随口说了一句，测出伤人指数'+score+'%',58,228);
     c.save();c.strokeStyle='rgba(215,255,63,.75)';c.lineWidth=3;c.setLineDash([16,12]);
     c.beginPath();c.moveTo(58,252);c.lineTo(520,252);c.stroke();c.restore();
 
@@ -218,7 +218,7 @@ async function createShareCard(){
     c.restore();
 
     // measured main tag badge on right
-    drawResultBadge(c,type,690,250,320,270);
+    drawResultBadge(c,type,700,260,310,260);
 
     // headline: reference hierarchy, strong but readable
     const qLines=posterHeadlineLines(quote);
@@ -257,8 +257,8 @@ async function createShareCard(){
     const qrX=695,qrY=895,qrSize=306;
     // CTA text left bottom
     c.save();
-    c.fillStyle='#f7f2ea';c.font='950 48px Arial, sans-serif';c.fillText('扫码听原声',58,1182);
-    c.fillStyle='#d7ff3f';c.font='950 68px Arial, sans-serif';fitText(c,'看我冤不冤？',58,1262,520,68,'950');
+    c.fillStyle='#f7f2ea';c.font='950 47px Arial, sans-serif';c.fillText('扫码听我原声，',58,1182);
+    c.fillStyle='#d7ff3f';c.font='950 62px Arial, sans-serif';fitText(c,'你来评评理。',58,1262,520,62,'950');
     c.restore();
     c.save();c.strokeStyle='#d7ff3f';c.lineWidth=14;c.lineCap='round';c.lineJoin='round';c.shadowColor='rgba(215,255,63,.65)';c.shadowBlur=18;
     c.beginPath();c.moveTo(560,1198);c.quadraticCurveTo(627,1146,690,1110);c.stroke();
@@ -277,7 +277,7 @@ async function createShareCard(){
     c.fillStyle='rgba(215,255,63,.95)';round(c,42,1322,996,72,34);c.fill();
     c.fillStyle='#050806';c.beginPath();c.arc(88,1358,31,0,Math.PI*2);c.fill();
     c.fillStyle='#d7ff3f';c.font='900 29px Arial, sans-serif';c.fillText('🔥',72,1369);
-    c.fillStyle='#050806';fitText(c,'朋友，别不服气，估计你也能进高危排行榜。听更多…',150,1369,780,33,'950');
+    c.fillStyle='#050806';fitText(c,'嗨，别笑！你估计也能上榜–>',150,1369,780,33,'950');
     c.fillStyle='#050806';c.beginPath();c.arc(990,1358,31,0,Math.PI*2);c.fill();
     c.fillStyle='#d7ff3f';c.font='950 36px Arial, sans-serif';c.fillText('›',981,1371);
     c.restore();
@@ -293,30 +293,33 @@ async function createShareCard(){
 function drawResultBadge(c,label,x,y,w,h){
   c.save();
   const cx=x+w/2, cy=y+h/2;
-  // halo + radar rings behind measured label
-  c.strokeStyle='rgba(215,255,63,.18)';c.lineWidth=2;
-  for(let r=82;r<=164;r+=26){c.beginPath();c.arc(cx,cy,r,0,Math.PI*2);c.stroke();}
-  c.save();c.translate(cx,cy);c.rotate(-0.02);
-  const px=[-w*.38,-w*.30,w*.30,w*.38,w*.38,w*.27,w*.10,0,-w*.10,-w*.27,-w*.38,-w*.38];
-  const py=[-h*.30,-h*.42,-h*.42,-h*.30,h*.18,h*.34,h*.40,h*.47,h*.40,h*.34,h*.18,-h*.30];
-  c.shadowColor='rgba(215,255,63,.66)';c.shadowBlur=26;
-  const g=c.createLinearGradient(-w/2,-h/2,w/2,h/2);g.addColorStop(0,'#dfff35');g.addColorStop(1,'#aee92a');
-  c.fillStyle=g;c.beginPath();c.moveTo(px[0],py[0]);for(let i=1;i<px.length;i++)c.lineTo(px[i],py[i]);c.closePath();c.fill();
-  c.shadowBlur=0;c.strokeStyle='rgba(5,8,4,.85)';c.lineWidth=7;c.stroke();
-  c.strokeStyle='rgba(255,255,255,.22)';c.lineWidth=2;c.beginPath();c.moveTo(px[0]+12,py[0]+12);for(let i=1;i<px.length;i++)c.lineTo(px[i]*.88,py[i]*.88);c.closePath();c.stroke();
-  // stars
-  c.fillStyle='#050806';c.font='950 22px Arial, sans-serif';c.textAlign='center';c.fillText('★ ★ ★ ★ ★',0,-h*.25);
-  // label text
-  const chars=String(label||'语气污染源').replace(/^([\u{1F300}-\u{1FAFF}\u2600-\u27BF]+\s*)/u,'').trim();
-  const parts=chars.length>5?[chars.slice(0,2),chars.slice(2)]:[chars];
+  const clean=String(label||'语气污染源').replace(/^([\u{1F300}-\u{1FAFF}\u2600-\u27BF]+\s*)/u,'').trim() || '语气污染源';
+  // halo + radar rings behind badge
+  c.strokeStyle='rgba(215,255,63,.15)';c.lineWidth=2;
+  for(let r=76;r<=168;r+=26){c.beginPath();c.arc(cx,cy,r,0,Math.PI*2);c.stroke();}
+  c.save();c.translate(cx,cy);c.rotate(-0.018);
+  // shield / official measured tag badge
+  const bw=w*.86,bh=h*.82;
+  const pts=[[-.42,-.32],[-.34,-.46],[.34,-.46],[.42,-.32],[.42,.18],[.28,.35],[.10,.42],[0,.50],[-.10,.42],[-.28,.35],[-.42,.18]];
+  c.shadowColor='rgba(215,255,63,.70)';c.shadowBlur=28;
+  const g=c.createLinearGradient(-bw/2,-bh/2,bw/2,bh/2);g.addColorStop(0,'#e8ff42');g.addColorStop(.58,'#cfff30');g.addColorStop(1,'#9ddf20');
+  c.fillStyle=g;c.beginPath();c.moveTo(pts[0][0]*bw,pts[0][1]*bh);for(let i=1;i<pts.length;i++)c.lineTo(pts[i][0]*bw,pts[i][1]*bh);c.closePath();c.fill();
+  c.shadowBlur=0;c.strokeStyle='rgba(3,5,2,.9)';c.lineWidth=8;c.stroke();
+  c.strokeStyle='rgba(255,255,255,.18)';c.lineWidth=2;
+  c.beginPath();c.moveTo(pts[0][0]*bw*.86,pts[0][1]*bh*.86);for(let i=1;i<pts.length;i++)c.lineTo(pts[i][0]*bw*.86,pts[i][1]*bh*.86);c.closePath();c.stroke();
+  c.fillStyle='#050806';c.font='950 24px Arial, sans-serif';c.textAlign='center';c.fillText('★ ★ ★ ★ ★',0,-bh*.24);
+  // split label safely into 1 or 2 lines
+  const chars=[...clean];
+  let lines=[];
+  if(chars.length<=5){lines=[clean]}else if(chars.length<=6){lines=[chars.slice(0,3).join(''), chars.slice(3).join('')]}else{lines=[chars.slice(0,4).join(''), chars.slice(4,8).join('')]}
   c.fillStyle='#050806';
-  if(parts.length===2){
-    c.font='950 56px Arial, sans-serif';fitText(c,parts[0],-w*.27,-8,w*.54,56,'950');
-    fitText(c,parts[1],-w*.30,56,w*.60,56,'950');
+  if(lines.length===1){
+    let size=54; while(size>28){c.font=`950 ${size}px Arial, sans-serif`; if(c.measureText(lines[0]).width<=bw*.63)break; size-=2;} c.fillText(lines[0],0,18);
   }else{
-    c.font='950 52px Arial, sans-serif';fitText(c,chars,-w*.30,26,w*.60,52,'950');
+    let size=46; while(size>26){c.font=`950 ${size}px Arial, sans-serif`; if(Math.max(c.measureText(lines[0]).width,c.measureText(lines[1]).width)<=bw*.68)break; size-=2;}
+    c.fillText(lines[0],0,-4); c.fillText(lines[1],0,50);
   }
-  c.fillStyle='rgba(0,0,0,.76)';c.font='950 30px Arial, sans-serif';c.fillText('⚠',0,h*.29);
+  c.font='950 30px Arial, sans-serif';c.fillText('⚠',0,bh*.28);
   c.textAlign='left';
   c.restore();
   c.restore();
@@ -349,21 +352,24 @@ function fitText(c,text,x,y,maxWidth,baseSize,weight='950'){
 
 function drawStrongHazardBand(c,x,y,w,h,text){
   c.save();
+  // strong reference-2 caution tape, but safe centered text
   c.fillStyle='#f0c22a';c.fillRect(x,y,w,h);
-  // grunge texture
-  c.save();c.globalAlpha=.18;c.fillStyle='#050505';
-  for(let i=0;i<260;i++){c.fillRect(x+Math.random()*w,y+Math.random()*h,Math.random()*10,Math.random()*5)}
+  c.save();c.globalAlpha=.20;c.fillStyle='#050505';
+  for(let i=0;i<360;i++){c.fillRect(x+Math.random()*w,y+Math.random()*h,Math.random()*12,Math.random()*5)}
   c.restore();
   c.fillStyle='#050505';
-  const stripeH=28;
+  const stripeH=30;
   for(const yy of [y,y+h-stripeH]){
-    for(let i=x-80;i<x+w+90;i+=52){
-      c.beginPath();c.moveTo(i,yy);c.lineTo(i+32,yy);c.lineTo(i+10,yy+stripeH);c.lineTo(i-22,yy+stripeH);c.closePath();c.fill();
+    for(let i=x-90;i<x+w+100;i+=54){
+      c.beginPath();c.moveTo(i,yy);c.lineTo(i+34,yy);c.lineTo(i+12,yy+stripeH);c.lineTo(i-22,yy+stripeH);c.closePath();c.fill();
     }
   }
-  c.fillStyle='#050505';c.font='950 56px Arial, sans-serif';c.textAlign='center';
-  fitText(c,text,x+110,y+h/2+21,w-220,56,'950');
-  c.textAlign='left';
+  // fit centered title, never cropped
+  let size=56;
+  c.textAlign='center';c.textBaseline='middle';c.fillStyle='#050505';
+  while(size>34){c.font=`950 ${size}px Arial, sans-serif`;if(c.measureText(text).width<=w-170)break;size-=2;}
+  c.fillText(text,x+w/2,y+h/2+1);
+  c.textAlign='left';c.textBaseline='alphabetic';
   c.restore();
 }
 
