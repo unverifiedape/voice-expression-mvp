@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- relationshiptest-v1.8.9-sharecard-final-copy-badge-20260513 -->
+<!-- relationshiptest-v1.9.0-sharecard-strict-reference2-20260513 -->
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8" />
@@ -157,138 +157,129 @@ async function createShareCard(){
   try{
     await ensureShareReady();
     const canvas=document.createElement('canvas'),w=1080,h=1440;canvas.width=w;canvas.height=h;const c=canvas.getContext('2d');
-    const score=result?.score||90;
-    const typeRaw=(result?.type||'🌫️ 气氛降温器').replace(/^\s+/,'');
-    const type=typeRaw.replace(/^([\u{1F300}-\u{1FAFF}\u2600-\u27BF]+\s*)/u,'') || typeRaw;
-    const quote=result?.quote||'你一解释，别人更想撤退';
+    const score=result?.score||72;
+    const typeRaw=(result?.type||'语气污染源').replace(/^\s+/,'');
+    const type=typeRaw.replace(/^([\u{1F300}-\u{1FAFF}\u2600-\u27BF]+\s*)/u,'') || typeRaw || '语气污染源';
+    const quote=result?.quote||'你不发火，但你让所有人都不敢接话';
     const rawIngs=(result?.ings&&result.ings.length?result.ings:[
-      '句尾带刺结晶（不易察觉）',
-      '低频烦躁信号（持续发射）',
-      '好好说话抗体缺失（建议隔离）'
+      '不想解释沉淀物',
+      '低频烦躁信号',
+      '嘴硬保护膜'
     ]).slice(0,3);
-    const ings=rawIngs.map(x=>String(x).replace(/^主要成分[:：]?\s*/,'').replace(/^毒气配方[:：]?\s*/,'').replace(/^伤人配方[:：]?\s*/,'')).slice(0,3);
-    const pcts=(result?.pcts&&result.pcts.length?result.pcts:['35%','30%','16%']).slice(0,3);
+    const ings=rawIngs.map(x=>String(x).replace(/^主要成分[:：]?\s*/,'').replace(/^毒气配方[:：]?\s*/,'').replace(/^伤人配方[:：]?\s*/,'').replace(/（.*?）/g,'').trim()).slice(0,3);
+    const pcts=(result?.pcts&&result.pcts.length?result.pcts:['34%','25%','21%']).slice(0,3);
 
-    // ===== V1.8.8 share-card rebuilt: simplified story flow =====
+    // ===== V1.9.0 share-card: strict reference-2 copy + controlled viral layout =====
     c.fillStyle='#020302';c.fillRect(0,0,w,h);
 
-    // 背景：保留酸绿毒雾，但把干扰降下来
-    const bg=c.createRadialGradient(650,210,10,650,210,840);
-    bg.addColorStop(0,'rgba(213,255,44,.28)');bg.addColorStop(.28,'rgba(104,174,18,.16)');bg.addColorStop(.7,'rgba(20,35,6,.12)');bg.addColorStop(1,'rgba(0,0,0,0)');
-    c.fillStyle=bg;c.fillRect(0,0,w,h);
-    const fog=c.createRadialGradient(88,560,10,88,560,410);
-    fog.addColorStop(0,'rgba(206,255,44,.20)');fog.addColorStop(.5,'rgba(93,166,18,.12)');fog.addColorStop(1,'rgba(0,0,0,0)');
-    c.fillStyle=fog;c.fillRect(0,0,w,h);
+    // deep black + acid glow background
+    let g=c.createRadialGradient(720,265,10,720,265,780);
+    g.addColorStop(0,'rgba(215,255,63,.25)');g.addColorStop(.28,'rgba(94,160,18,.16)');g.addColorStop(.62,'rgba(18,32,8,.08)');g.addColorStop(1,'rgba(0,0,0,0)');
+    c.fillStyle=g;c.fillRect(0,0,w,h);
+    g=c.createRadialGradient(88,560,8,88,560,380);
+    g.addColorStop(0,'rgba(215,255,63,.18)');g.addColorStop(.55,'rgba(130,210,26,.10)');g.addColorStop(1,'rgba(0,0,0,0)');
+    c.fillStyle=g;c.fillRect(0,0,w,h);
     c.save();
-    for(let i=0;i<1100;i++){
-      const x=Math.random()*w,y=Math.random()*h,r=Math.random()*1.7;
-      c.globalAlpha=Math.random()*0.09;
-      c.fillStyle=i%8===0?'#d7ff3f':(i%11===0?'#f2c72d':'#fff7df');
+    for(let i=0;i<900;i++){
+      const x=Math.random()*w,y=Math.random()*h,r=Math.random()*1.5;
+      c.globalAlpha=Math.random()*0.075;
+      c.fillStyle=i%9===0?'#d7ff3f':(i%13===0?'#f1c72b':'#fff7df');
       c.beginPath();c.arc(x,y,r,0,Math.PI*2);c.fill();
     }
     c.restore();
 
-    // 顶部黄黑警示带：只讲发生了什么
-    drawSlantedHazard(c,-58,24,w+116,118,'⚠ 声音伤人，谨慎外放。⚠');
+    // top warning banner: strict reference copy
+    drawStrongHazardBand(c,0,28,w,128,'⚠ 声音伤人，谨慎外放。⚠');
 
-    // 左侧毒雾
-    c.save();c.globalAlpha=.15;c.fillStyle='#a8e22d';
-    for(let i=0;i<10;i++){
-      c.beginPath();c.arc(46+Math.random()*124,392+Math.random()*320,26+Math.random()*58,0,Math.PI*2);c.fill();
-    }
+    // faint radar rings behind badge
+    c.save();c.strokeStyle='rgba(215,255,63,.16)';c.lineWidth=2;
+    for(let r=46;r<=168;r+=28){c.beginPath();c.arc(832,300,r,0,Math.PI*2);c.stroke();}
+    c.globalAlpha=.55;c.fillStyle='#d7ff3f';
+    [0,1,2].forEach((_,i)=>{c.beginPath();c.arc(760+i*48,230+i*34,5+i*2,0,Math.PI*2);c.fill();});
     c.restore();
 
-    // 右上轻波纹
+    // explain line, as in reference image 2: no score here, score is the hero
+    c.fillStyle='rgba(247,242,234,.92)';
+    c.font='900 38px Arial, sans-serif';
+    c.fillText('我随口说了一句，伤人指数竟然有',58,228);
+    c.save();c.strokeStyle='rgba(215,255,63,.75)';c.lineWidth=3;c.setLineDash([16,12]);
+    c.beginPath();c.moveTo(58,252);c.lineTo(520,252);c.stroke();c.restore();
+
+    // small score label + giant score
     c.save();
-    c.strokeStyle='rgba(215,255,63,.10)';c.lineWidth=3;
-    for(let r=52;r<=176;r+=30){c.beginPath();c.arc(840,274,r,0,Math.PI*2);c.stroke();}
+    c.fillStyle='rgba(215,255,63,.98)';round(c,58,272,165,48,8);c.fill();
+    c.fillStyle='#050806';c.font='950 31px Arial, sans-serif';c.fillText('伤人指数',82,306);
     c.restore();
-
-    // 第一视觉中心：解释句 + 分数
-    c.fillStyle='rgba(247,242,234,.88)';
-    c.font='900 34px Arial, sans-serif';
-    c.fillText('随口说了一句，测出伤人指数'+score+'%',78,182);
     c.save();
-    c.strokeStyle='rgba(215,255,63,.72)';c.lineWidth=3;c.setLineDash([12,10]);
-    c.beginPath();c.moveTo(78,202);c.lineTo(520,202);c.stroke();
+    c.translate(46,278);c.rotate(-0.015);
+    c.shadowColor='rgba(215,255,63,.45)';c.shadowBlur=28;
+    const sg=c.createLinearGradient(0,0,0,260);sg.addColorStop(0,'#fffef0');sg.addColorStop(.55,'#e9ff91');sg.addColorStop(1,'#cfff30');
+    c.fillStyle=sg;fitText(c,score+'%',0,295,650,258,'950');
     c.restore();
 
-    c.save();
-    c.translate(60,212);c.rotate(-0.025);
-    c.shadowColor='rgba(215,255,63,.38)';c.shadowBlur=26;
-    c.fillStyle='#d7ff3f';
-    fitText(c,score+'%',0,244,620,232,'950');
-    c.restore();
+    // measured main tag badge on right
+    drawResultBadge(c,type,690,250,320,270);
 
-    // 主标签徽章：测出来的身份标签
-    drawResultBadge(c, type, 708, 236, 292, 256);
-
-    // 主判词：单独占一块，不跟分数打架
+    // headline: reference hierarchy, strong but readable
     const qLines=posterHeadlineLines(quote);
     c.save();
-    c.translate(74,498);
-    c.shadowColor='rgba(0,0,0,.68)';c.shadowBlur=8;
-    c.lineJoin='round';c.strokeStyle='rgba(0,0,0,.38)';c.lineWidth=6;
-    c.fillStyle='#f8f4e8';
-    drawFitStrokeFill(c,qLines[0]||'你一解释，',0,0,900,74,'950');
+    c.translate(58,650);
+    c.shadowColor='rgba(0,0,0,.72)';c.shadowBlur=9;c.lineJoin='round';c.strokeStyle='rgba(0,0,0,.46)';c.lineWidth=8;
+    c.fillStyle='#fff8e8';
+    drawFitStrokeFill(c,qLines[0]||'你不发火，',0,0,940,76,'950');
     c.fillStyle='#d7ff3f';
-    drawFitStrokeFill(c,qLines[1]||'别人更想撤退',0,102,900,92,'950');
+    drawFitStrokeFill(c,qLines[1]||'但你让所有人都不敢接话',0,98,940,86,'950');
+    c.restore();
+    c.save();c.strokeStyle='rgba(215,255,63,.78)';c.lineWidth=6;c.lineCap='round';
+    c.beginPath();c.moveTo(56,795);c.lineTo(998,795);c.stroke();
     c.restore();
 
-    // 过渡分割线
-    c.save();c.strokeStyle='rgba(215,255,63,.82)';c.lineWidth=5;c.lineCap='round';
-    c.beginPath();c.moveTo(78,718);c.quadraticCurveTo(420,744,684,732);c.stroke();
-    c.restore();
-
-    // 证据区：伤人配方，略缩小，读起来更快
-    const boxX=70, boxY=760, boxW=600, boxH=238;
-    c.save();
-    c.fillStyle='rgba(5,7,5,.84)';round(c,boxX,boxY,boxW,boxH,20);c.fill();
-    c.strokeStyle='rgba(215,255,63,.68)';c.lineWidth=2.5;c.stroke();
-    c.fillStyle='rgba(215,255,63,.98)';round(c,boxX+10,boxY-26,188,50,12);c.fill();
-    c.fillStyle='#071006';c.font='950 32px Arial, sans-serif';c.fillText('伤人配方',boxX+40,boxY+6);
-    const icons=['✦','〰','✚'];
+    // ingredients panel, positioned as reference
+    const boxX=58,boxY=840,boxW=570,boxH=238;
+    c.save();c.fillStyle='rgba(3,5,4,.84)';round(c,boxX,boxY,boxW,boxH,17);c.fill();
+    c.strokeStyle='rgba(215,255,63,.72)';c.lineWidth=2.5;c.stroke();
+    c.fillStyle='rgba(215,255,63,.98)';round(c,boxX+12,boxY-28,180,52,8);c.fill();
+    c.fillStyle='#050806';c.font='950 34px Arial, sans-serif';c.fillText('伤人配方',boxX+39,boxY+7);
+    const icons=['✦','〰','盾'];
     ings.forEach((txt,i)=>{
-      const clean=String(txt).replace(/（.*?）/g,'').trim();
       const yy=boxY+72+i*58;
-      if(i<2){c.strokeStyle='rgba(255,255,255,.12)';c.lineWidth=1.2;c.beginPath();c.moveTo(boxX+24,yy+24);c.lineTo(boxX+boxW-24,yy+24);c.stroke();}
-      c.fillStyle='#d7ff3f';c.font='950 28px Arial, sans-serif';c.fillText(icons[i],boxX+22,yy);
-      c.fillStyle='#f7f2ea';fitText(c,clean,boxX+72,yy,388,25,'850');
-      c.fillStyle='#ffd25c';c.textAlign='right';c.font='950 34px Arial, sans-serif';c.fillText(pcts[i]||'',boxX+boxW-24,yy);c.textAlign='left';
+      if(i<2){c.strokeStyle='rgba(255,255,255,.13)';c.lineWidth=1.2;c.setLineDash([5,6]);c.beginPath();c.moveTo(boxX+34,yy+24);c.lineTo(boxX+boxW-28,yy+24);c.stroke();c.setLineDash([])}
+      c.fillStyle='#d7ff3f';c.font=i===2?'900 22px Arial, sans-serif':'950 30px Arial, sans-serif';c.fillText(icons[i],boxX+26,yy);
+      c.fillStyle='#f7f2ea';fitText(c,txt,boxX+82,yy,350,28,'850');
+      c.fillStyle='#d7ff3f';c.textAlign='right';c.font='950 38px Arial, sans-serif';c.fillText(pcts[i]||'',boxX+boxW-26,yy);c.textAlign='left';
     });
     c.restore();
 
-    // QR 与 CTA：最后落点
+    // QR code + CTA
     const qrUrl='/api/qr?url='+encodeURIComponent(getShareUrl())+'&t='+Date.now();
     let img=null;
     try{img=await imageFromUrl(qrUrl,12000)}catch(e){try{img=await imageFromFetch(qrUrl,12000)}catch(e2){console.warn('QR failed',e2)}}
-    const qrX=744, qrY=930, qrSize=276;
-
+    const qrX=695,qrY=895,qrSize=306;
+    // CTA text left bottom
     c.save();
-    c.fillStyle='#f7f2ea';c.font='950 48px Arial, sans-serif';c.fillText('扫码听我原声，',76,1110);
-    c.fillStyle='#d7ff3f';c.font='950 72px Arial, sans-serif';c.fillText('你来评评理。',76,1190);
+    c.fillStyle='#f7f2ea';c.font='950 48px Arial, sans-serif';c.fillText('扫码听原声',58,1182);
+    c.fillStyle='#d7ff3f';c.font='950 68px Arial, sans-serif';fitText(c,'看我冤不冤？',58,1262,520,68,'950');
     c.restore();
-
-    c.save();c.strokeStyle='#d7ff3f';c.lineWidth=16;c.lineCap='round';c.lineJoin='round';c.shadowColor='rgba(215,255,63,.80)';c.shadowBlur=20;
-    c.beginPath();c.moveTo(536,1180);c.quadraticCurveTo(628,1148,716,1092);c.stroke();
-    c.beginPath();c.moveTo(682,1072);c.lineTo(724,1090);c.lineTo(698,1124);c.stroke();
+    c.save();c.strokeStyle='#d7ff3f';c.lineWidth=14;c.lineCap='round';c.lineJoin='round';c.shadowColor='rgba(215,255,63,.65)';c.shadowBlur=18;
+    c.beginPath();c.moveTo(560,1198);c.quadraticCurveTo(627,1146,690,1110);c.stroke();
+    c.beginPath();c.moveTo(660,1094);c.lineTo(704,1104);c.lineTo(682,1142);c.stroke();
     c.restore();
-
     c.save();
-    const qg=c.createRadialGradient(qrX+qrSize/2,qrY+qrSize/2,22,qrX+qrSize/2,qrY+qrSize/2,220);
-    qg.addColorStop(0,'rgba(215,255,63,.38)');qg.addColorStop(.58,'rgba(215,255,63,.18)');qg.addColorStop(1,'rgba(0,0,0,0)');
-    c.fillStyle=qg;c.fillRect(qrX-116,qrY-116,qrSize+232,qrSize+232);
+    let qg=c.createRadialGradient(qrX+qrSize/2,qrY+qrSize/2,20,qrX+qrSize/2,qrY+qrSize/2,238);
+    qg.addColorStop(0,'rgba(215,255,63,.44)');qg.addColorStop(.55,'rgba(215,255,63,.18)');qg.addColorStop(1,'rgba(0,0,0,0)');
+    c.fillStyle=qg;c.fillRect(qrX-120,qrY-120,qrSize+240,qrSize+240);
     c.restore();
-    c.save();c.shadowColor='rgba(215,255,63,.90)';c.shadowBlur=30;c.fillStyle='#fff';round(c,qrX,qrY,qrSize,qrSize,18);c.fill();c.restore();
-    if(img){c.drawImage(img,qrX+18,qrY+18,qrSize-36,qrSize-36)}else{c.fillStyle='#111';c.font='900 28px Arial';c.fillText('二维码生成中',qrX+30,qrY+138)}
+    c.save();c.shadowColor='rgba(215,255,63,.92)';c.shadowBlur=28;c.fillStyle='#fff';round(c,qrX,qrY,qrSize,qrSize,18);c.fill();c.restore();
+    if(img){c.drawImage(img,qrX+20,qrY+20,qrSize-40,qrSize-40)}else{c.fillStyle='#111';c.font='900 28px Arial';c.fillText('二维码生成中',qrX+40,qrY+155)}
 
-    // 底部裂变引导条
+    // bottom viral CTA bar: strict reference 2
     c.save();
-    c.fillStyle='rgba(215,255,63,.96)';round(c,54,1296,972,62,30);c.fill();
-    c.fillStyle='#050806';c.font='950 32px Arial, sans-serif';
-    fitText(c,'嗨，别笑！你估计也能上榜–>',118,1337,760,32,'950');
-    c.fillStyle='#050806';c.beginPath();c.arc(82,1327,24,0,Math.PI*2);c.fill();
-    c.fillStyle='#d7ff3f';c.font='900 24px Arial, sans-serif';c.fillText('!',77,1336);
+    c.fillStyle='rgba(215,255,63,.95)';round(c,42,1322,996,72,34);c.fill();
+    c.fillStyle='#050806';c.beginPath();c.arc(88,1358,31,0,Math.PI*2);c.fill();
+    c.fillStyle='#d7ff3f';c.font='900 29px Arial, sans-serif';c.fillText('🔥',72,1369);
+    c.fillStyle='#050806';fitText(c,'朋友，别不服气，估计你也能进高危排行榜。听更多…',150,1369,780,33,'950');
+    c.fillStyle='#050806';c.beginPath();c.arc(990,1358,31,0,Math.PI*2);c.fill();
+    c.fillStyle='#d7ff3f';c.font='950 36px Arial, sans-serif';c.fillText('›',981,1371);
     c.restore();
 
     const blob=await new Promise((resolve,reject)=>canvas.toBlob(b=>b?resolve(b):reject(new Error('canvas blob failed')),'image/png'));
@@ -302,26 +293,32 @@ async function createShareCard(){
 function drawResultBadge(c,label,x,y,w,h){
   c.save();
   const cx=x+w/2, cy=y+h/2;
-  // aura rings
+  // halo + radar rings behind measured label
   c.strokeStyle='rgba(215,255,63,.18)';c.lineWidth=2;
-  for(let r=88;r<=154;r+=26){c.beginPath();c.arc(cx,cy,r,0,Math.PI*2);c.stroke();}
-  c.shadowColor='rgba(215,255,63,.62)';c.shadowBlur=22;
-  const g=c.createLinearGradient(x,y,x+w,y+h);
-  g.addColorStop(0,'rgba(215,255,63,.98)');g.addColorStop(1,'rgba(180,245,28,.94)');
-  c.fillStyle=g;
-  round(c,x+12,y+22,w-24,h-44,28);c.fill();
-  c.shadowBlur=0;c.strokeStyle='rgba(0,0,0,.32)';c.lineWidth=4;c.stroke();
-  // inner frame
-  c.strokeStyle='rgba(0,0,0,.30)';c.lineWidth=3;round(c,x+28,y+38,w-56,h-76,22);c.stroke();
-  c.fillStyle='#070905';
-  c.font='950 58px Arial, sans-serif';
+  for(let r=82;r<=164;r+=26){c.beginPath();c.arc(cx,cy,r,0,Math.PI*2);c.stroke();}
+  c.save();c.translate(cx,cy);c.rotate(-0.02);
+  const px=[-w*.38,-w*.30,w*.30,w*.38,w*.38,w*.27,w*.10,0,-w*.10,-w*.27,-w*.38,-w*.38];
+  const py=[-h*.30,-h*.42,-h*.42,-h*.30,h*.18,h*.34,h*.40,h*.47,h*.40,h*.34,h*.18,-h*.30];
+  c.shadowColor='rgba(215,255,63,.66)';c.shadowBlur=26;
+  const g=c.createLinearGradient(-w/2,-h/2,w/2,h/2);g.addColorStop(0,'#dfff35');g.addColorStop(1,'#aee92a');
+  c.fillStyle=g;c.beginPath();c.moveTo(px[0],py[0]);for(let i=1;i<px.length;i++)c.lineTo(px[i],py[i]);c.closePath();c.fill();
+  c.shadowBlur=0;c.strokeStyle='rgba(5,8,4,.85)';c.lineWidth=7;c.stroke();
+  c.strokeStyle='rgba(255,255,255,.22)';c.lineWidth=2;c.beginPath();c.moveTo(px[0]+12,py[0]+12);for(let i=1;i<px.length;i++)c.lineTo(px[i]*.88,py[i]*.88);c.closePath();c.stroke();
+  // stars
+  c.fillStyle='#050806';c.font='950 22px Arial, sans-serif';c.textAlign='center';c.fillText('★ ★ ★ ★ ★',0,-h*.25);
+  // label text
   const chars=String(label||'语气污染源').replace(/^([\u{1F300}-\u{1FAFF}\u2600-\u27BF]+\s*)/u,'').trim();
   const parts=chars.length>5?[chars.slice(0,2),chars.slice(2)]:[chars];
-  if(parts.length===2){fitText(c,parts[0],x+58,y+102,w-116,58,'950');fitText(c,parts[1],x+58,y+168,w-116,58,'950');}
-  else{fitText(c,chars,x+44,y+140,w-88,58,'950');}
-  c.font='900 22px Arial, sans-serif';
-  c.fillText('★ ★ ★ ★ ★',x+74,y+68);
-  c.fillStyle='rgba(0,0,0,.75)';c.font='900 30px Arial, sans-serif';c.fillText('⚠',cx-16,y+h-62);
+  c.fillStyle='#050806';
+  if(parts.length===2){
+    c.font='950 56px Arial, sans-serif';fitText(c,parts[0],-w*.27,-8,w*.54,56,'950');
+    fitText(c,parts[1],-w*.30,56,w*.60,56,'950');
+  }else{
+    c.font='950 52px Arial, sans-serif';fitText(c,chars,-w*.30,26,w*.60,52,'950');
+  }
+  c.fillStyle='rgba(0,0,0,.76)';c.font='950 30px Arial, sans-serif';c.fillText('⚠',0,h*.29);
+  c.textAlign='left';
+  c.restore();
   c.restore();
 }
 
@@ -347,6 +344,27 @@ function fitText(c,text,x,y,maxWidth,baseSize,weight='950'){
   const family='Arial, sans-serif';
   while(size>18){c.font=`${weight} ${size}px ${family}`;if(c.measureText(text).width<=maxWidth)break;size-=2;}
   c.fillText(text,x,y);
+}
+
+
+function drawStrongHazardBand(c,x,y,w,h,text){
+  c.save();
+  c.fillStyle='#f0c22a';c.fillRect(x,y,w,h);
+  // grunge texture
+  c.save();c.globalAlpha=.18;c.fillStyle='#050505';
+  for(let i=0;i<260;i++){c.fillRect(x+Math.random()*w,y+Math.random()*h,Math.random()*10,Math.random()*5)}
+  c.restore();
+  c.fillStyle='#050505';
+  const stripeH=28;
+  for(const yy of [y,y+h-stripeH]){
+    for(let i=x-80;i<x+w+90;i+=52){
+      c.beginPath();c.moveTo(i,yy);c.lineTo(i+32,yy);c.lineTo(i+10,yy+stripeH);c.lineTo(i-22,yy+stripeH);c.closePath();c.fill();
+    }
+  }
+  c.fillStyle='#050505';c.font='950 56px Arial, sans-serif';c.textAlign='center';
+  fitText(c,text,x+110,y+h/2+21,w-220,56,'950');
+  c.textAlign='left';
+  c.restore();
 }
 
 function drawSlantedHazard(c,x,y,w,h,text){
