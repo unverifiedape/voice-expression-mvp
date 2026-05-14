@@ -147,10 +147,28 @@ async function finishRec(){audioBlob=new Blob(chunks,{type:'audio/webm'});audioU
 function runScan(){['s1','s2','s3'].forEach((id,i)=>setTimeout(()=>$(id).classList.add('hot'),i*520));makeBars()}
 function renderResult(r){result=r;shareId='';shareReady=false;uploadPromise=null;$('scoreNum').textContent=r.score;$('typeTag').textContent=r.type;$('quoteText').textContent=r.quote;$('ingredients').innerHTML=r.ings.map((x,i)=>`<div class="ing"><span>${x}</span><span>${(r.pcts||PCTS[0])[i]}</span></div>`).join('');const ap=$('audioPlayer');ap.src=audioUrl;ap.load();$('playBtn').textContent='▶ 播放我的原声';show('resultScreen');}
 
-async function ensureShareReady(){
+async function recoverAudioBlob(){
+  if(audioBlob&&audioBlob.size)return audioBlob;
+  const ap=$('audioPlayer');
+  const src=(audioUrl||ap?.currentSrc||ap?.src||'').trim();
+  if(!src)return null;
+  try{
+    const res=await fetchWithTimeout(src,{method:'GET'},10000);
+    if(!res.ok)throw new Error('audio fetch failed');
+    const b=await res.blob();
+    if(b&&b.size){audioBlob=b;return audioBlob}
+  }catch(e){console.warn('recover audio failed',e)}
+  return null;
+}
+async function ensureShareReady(options={}){
+  const allowNoAudio=!!options.allowNoAudio;
   if(shareId)return shareId;
   if(uploadPromise)return uploadPromise;
-  if(!audioBlob){throw new Error('no audio blob')}
+  await recoverAudioBlob();
+  if(!audioBlob){
+    if(allowNoAudio){shareReady=false;return ''}
+    throw new Error('no audio blob');
+  }
   uploadPromise=(async()=>{
     const fd=new FormData();
     fd.append('audio',audioBlob,'voice.webm');
@@ -165,12 +183,17 @@ async function ensureShareReady(){
   })();
   try{return await uploadPromise}finally{uploadPromise=null}
 }
-function getShareUrl(){return shareId?`${location.origin}/s.html?id=${encodeURIComponent(shareId)}`:location.href}
+function getShareUrl(){
+  if(shareId)return `${location.origin}/s.html?id=${encodeURIComponent(shareId)}`;
+  const u=new URL(location.origin+location.pathname);
+  u.searchParams.set('from','share_card');
+  return u.toString();
+}
 
 async function createShareCard(){
   const btn=$('shareBtn');const old=btn.textContent;btn.disabled=true;btn.textContent='正在生成分享图…';toast('正在生成分享图，请稍等…');
   try{
-    await ensureShareReady();
+    await ensureShareReady({allowNoAudio:true});
     const canvas=document.createElement('canvas'),w=1080,h=1440;canvas.width=w;canvas.height=h;const c=canvas.getContext('2d');
     const score=result?.score||72;
     const typeRaw=(result?.type||'语气污染源').replace(/^\s+/,'');
@@ -272,7 +295,7 @@ async function createShareCard(){
     const file=new File([blob],'relationshiptest-share-card.png',{type:'image/png'});
     if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title:'我的毒气伤人指数',text:'扫码听原声，你来评评理。'});showToast('已打开分享面板')}
     else{downloadBlob(blob,'relationshiptest-share-card.png');showToast('已生成分享图，已保存/下载')}
-  }catch(e){console.error(e);showToast('生成失败：请确认已录音，或刷新后再试')}
+  }catch(e){console.error(e);showToast('生成失败：请重新录一句，或刷新后再试')}
   finally{btn.disabled=false;btn.textContent=old}
 }
 
