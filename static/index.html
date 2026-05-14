@@ -117,7 +117,8 @@ const COMPONENTS=[
   '阴阳怪气残留（持续挥发中）','已读不回蒸汽（高温冷处理）','嘴硬保护膜（厚度超标）','礼貌性降温剂（表面文明）','不想解释沉淀物（沉底多年）','被动攻击微粒（肉眼难见）','空气变冷因子（扩散速度快）','轻微翻白眼粉尘（随语气飘散）','不耐烦挥发物（开口即散）','隐藏嫌弃颗粒（浓度稳定）','情绪压缩装置（随时漏气）','冷处理扩散物（半径三米）','社交疲惫气溶胶（吸入即沉默）','选择性耐心残渣（仅对少数人有效）','低频烦躁信号（持续发射）','强忍不爽压缩包（即将解压）','表面平静涂层（内含爆炸物）','内心翻桌粉尘（轻拍即起）','假装配合粉尘（伪装良好）','沉默式反击分子（毒性慢热）','冷笑残留液（附着力极强）','句尾带刺结晶（不易察觉）','好好说话抗体缺失（建议隔离）','群聊退潮素（使热场瞬间降温）','解释越多越毒反应剂（遇水加剧）'
 ];
 const PCTS=[['37%','29%','18%'],['34%','25%','21%'],['31%','27%','19%'],['39%','22%','17%'],['35%','30%','16%']];
-let mediaRecorder,chunks=[],audioBlob=null,audioUrl='',result=null,recordStarted=0,isRecording=false,shareId='',shareReady=false,uploadPromise=null;
+let mediaRecorder,chunks=[],audioBlob=null,audioUrl='',serverAudioUrl='',result=null,recordStarted=0,isRecording=false,shareId='',shareReady=false,uploadPromise=null;
+let preparedStream=null,preparingMic=null,holdRequested=false,stopRequested=false;
 function show(id){screens.forEach(s=>$(s).classList.toggle('active',s===id))}
 function toast(t){$('toast').textContent=t;$('toast').classList.add('show');setTimeout(()=>$('toast').classList.remove('show'),2100)}
 function showToast(t){toast(t)}
@@ -141,16 +142,79 @@ function sample(arr,n){const copy=[...arr],out=[];while(out.length<n&&copy.lengt
 function generateResult(score){return{score,type:rand(TYPES),quote:rand(LINES),ings:sample(COMPONENTS,3),pcts:rand(PCTS)}}
 function fallbackByScore(score){const level=score>=84?'📴 群聊终结者':score>=76?'🧊 冷场制造机':score>=68?'⚡ 隐性放电型':'☣️ 语气污染源';return{score,type:level,quote:rand(LINES),ings:sample(COMPONENTS,3),pcts:rand(PCTS)}}
 function makeBars(){let html='';for(let i=0;i<28;i++)html+=`<div class="bar" style="height:${20+Math.random()*70}px"></div>`;$('wave').innerHTML=html}makeBars();
-async function startRec(){try{if(isRecording)return;if(!window.isSecureContext){toast('麦克风需要 HTTPS 或 localhost 环境');return}if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){toast('当前浏览器无法调用麦克风，请换 Chrome/Safari 或确认 HTTPS');return}const stream=await navigator.mediaDevices.getUserMedia({audio:true});chunks=[];const mime=MediaRecorder.isTypeSupported('audio/webm;codecs=opus')?'audio/webm;codecs=opus':(MediaRecorder.isTypeSupported('audio/mp4')?'audio/mp4':'');mediaRecorder=mime?new MediaRecorder(stream,{mimeType:mime}):new MediaRecorder(stream);mediaRecorder.ondataavailable=e=>{if(e.data&&e.data.size)chunks.push(e.data)};mediaRecorder.onstop=()=>{stream.getTracks().forEach(t=>t.stop());isRecording=false;finishRec()};recordStarted=Date.now();mediaRecorder.start();isRecording=true;$('recordBtn').classList.add('recording');$('holdText').textContent='正在录音，松手看结果';toast('开始录音了，大胆说')}catch(e){console.error(e);isRecording=false;toast('麦克风没有启动：请允许权限后再试')}}
-function stopRec(){if(!mediaRecorder||mediaRecorder.state!=='recording')return;const dur=Date.now()-recordStarted;if(dur<900){setTimeout(stopRec,900-dur);return}mediaRecorder.stop();$('recordBtn').classList.remove('recording');$('holdText').textContent='按住说一句，松手看结果'}
-async function finishRec(){audioBlob=new Blob(chunks,{type:'audio/webm'});audioUrl=URL.createObjectURL(audioBlob);show('scanScreen');runScan();let score=seedScore();try{const fd=new FormData();fd.append('audio',audioBlob,'voice.webm');fd.append('sentence','');const res=await fetch('/api/analyze-voice',{method:'POST',body:fd});const data=await res.json();if(data&&data.ok){const len=(data.duration_ms||0);if(len>0)score=Math.min(92,Math.max(72,score+(len>4000?3:0)));}}catch(e){}setTimeout(()=>renderResult(generateResult(score)),1650)}
+async function prepareMic(silent=false){
+  if(preparedStream && preparedStream.getAudioTracks().some(t=>t.readyState==='live')) return preparedStream;
+  if(preparingMic) return preparingMic;
+  if(!window.isSecureContext){ if(!silent) toast('麦克风需要 HTTPS 或 localhost 环境'); throw new Error('insecure context') }
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){ if(!silent) toast('当前浏览器无法调用麦克风'); throw new Error('no mediaDevices') }
+  preparingMic=navigator.mediaDevices.getUserMedia({audio:true}).then(stream=>{
+    preparedStream=stream; preparingMic=null; return stream;
+  }).catch(e=>{preparingMic=null; if(!silent) toast('请允许麦克风权限后再试'); throw e});
+  return preparingMic;
+}
+async function startRec(){
+  try{
+    if(isRecording)return;
+    stopRequested=false;
+    $('recordBtn').classList.add('recording');
+    $('holdText').textContent='麦克风启动中，看到提示后再说';
+    const stream=await prepareMic(false);
+    if(!holdRequested){
+      $('recordBtn').classList.remove('recording');
+      $('holdText').textContent='麦克风已准备好，按住再说一句';
+      toast('麦克风已准备好，重新按住开始录音');
+      return;
+    }
+    chunks=[];
+    const mime=MediaRecorder.isTypeSupported('audio/webm;codecs=opus')?'audio/webm;codecs=opus':(MediaRecorder.isTypeSupported('audio/mp4')?'audio/mp4':'');
+    mediaRecorder=mime?new MediaRecorder(stream,{mimeType:mime}):new MediaRecorder(stream);
+    mediaRecorder.ondataavailable=e=>{if(e.data&&e.data.size)chunks.push(e.data)};
+    mediaRecorder.onstop=()=>{isRecording=false;finishRec()};
+    recordStarted=Date.now();
+    mediaRecorder.start(120);
+    isRecording=true;
+    $('holdText').textContent='正在录音，松手看结果';
+    toast('开始录音了，大胆说');
+    if(stopRequested) stopRec();
+  }catch(e){
+    console.error(e);isRecording=false;holdRequested=false;stopRequested=false;
+    $('recordBtn').classList.remove('recording');
+    $('holdText').textContent='按住说一句，松手看结果';
+  }
+}
+function stopRec(){
+  stopRequested=true;
+  if(!mediaRecorder||mediaRecorder.state!=='recording')return;
+  const dur=Date.now()-recordStarted;
+  if(dur<900){setTimeout(stopRec,900-dur);return}
+  try{mediaRecorder.requestData&&mediaRecorder.requestData()}catch(e){}
+  mediaRecorder.stop();
+  $('recordBtn').classList.remove('recording');
+  $('holdText').textContent='按住说一句，松手看结果';
+}
+async function finishRec(){
+  audioBlob=new Blob(chunks,{type:(mediaRecorder&&mediaRecorder.mimeType)||'audio/webm'});
+  if(!audioBlob.size){toast('录音太短，请重新按住说一句');return}
+  audioUrl=URL.createObjectURL(audioBlob);serverAudioUrl='';
+  show('scanScreen');runScan();let score=seedScore();
+  try{
+    const fd=new FormData();fd.append('audio',audioBlob,'voice.webm');fd.append('sentence','');
+    const res=await fetchWithTimeout('/api/analyze-voice',{method:'POST',body:fd},12000);
+    const data=await res.json();
+    if(data&&data.ok){
+      if(data.audio_url) serverAudioUrl=data.audio_url;
+      const len=(data.duration_ms||0);if(len>0)score=Math.min(92,Math.max(72,score+(len>4000?3:0)));
+    }
+  }catch(e){console.warn('analyze failed',e)}
+  setTimeout(()=>renderResult(generateResult(score)),1650)
+}
 function runScan(){['s1','s2','s3'].forEach((id,i)=>setTimeout(()=>$(id).classList.add('hot'),i*520));makeBars()}
 function renderResult(r){result=r;shareId='';shareReady=false;uploadPromise=null;$('scoreNum').textContent=r.score;$('typeTag').textContent=r.type;$('quoteText').textContent=r.quote;$('ingredients').innerHTML=r.ings.map((x,i)=>`<div class="ing"><span>${x}</span><span>${(r.pcts||PCTS[0])[i]}</span></div>`).join('');const ap=$('audioPlayer');ap.src=audioUrl;ap.load();$('playBtn').textContent='▶ 播放我的原声';show('resultScreen');}
 
 async function recoverAudioBlob(){
   if(audioBlob&&audioBlob.size)return audioBlob;
   const ap=$('audioPlayer');
-  const src=(audioUrl||ap?.currentSrc||ap?.src||'').trim();
+  const src=(serverAudioUrl||audioUrl||ap?.currentSrc||ap?.src||'').trim();
   if(!src)return null;
   try{
     const res=await fetchWithTimeout(src,{method:'GET'},10000);
@@ -162,6 +226,7 @@ async function recoverAudioBlob(){
 }
 async function ensureShareReady(options={}){
   const allowNoAudio=!!options.allowNoAudio;
+  const allowFallback=options.allowFallback!==false;
   if(shareId)return shareId;
   if(uploadPromise)return uploadPromise;
   await recoverAudioBlob();
@@ -174,26 +239,31 @@ async function ensureShareReady(options={}){
     fd.append('audio',audioBlob,'voice.webm');
     fd.append('meta',JSON.stringify(result||{}));
     const res=await fetchWithTimeout('/api/upload',{method:'POST',body:fd},15000);
-    if(!res.ok)throw new Error('upload failed');
+    if(!res.ok)throw new Error('upload failed '+res.status);
     const data=await res.json();
     if(!data.id)throw new Error('missing id');
     shareId=data.id;
+    if(data.audio_url) serverAudioUrl=data.audio_url;
     shareReady=true;
     return shareId;
   })();
-  try{return await uploadPromise}finally{uploadPromise=null}
+  try{return await uploadPromise}
+  catch(e){
+    console.warn('upload share failed, fallback to query share url',e);
+    shareReady=false;
+    if(allowFallback) return '';
+    throw e;
+  }finally{uploadPromise=null}
 }
 function getShareUrl(){
   if(shareId)return `${location.origin}/s.html?id=${encodeURIComponent(shareId)}`;
-  const u=new URL(location.origin+location.pathname);
-  u.searchParams.set('from','share_card');
-  return u.toString();
+  return shareUrl();
 }
 
 async function createShareCard(){
   const btn=$('shareBtn');const old=btn.textContent;btn.disabled=true;btn.textContent='正在生成分享图…';toast('正在生成分享图，请稍等…');
   try{
-    await ensureShareReady({allowNoAudio:true});
+    await ensureShareReady({allowNoAudio:true,allowFallback:true});
     const canvas=document.createElement('canvas'),w=1080,h=1440;canvas.width=w;canvas.height=h;const c=canvas.getContext('2d');
     const score=result?.score||72;
     const typeRaw=(result?.type||'语气污染源').replace(/^\s+/,'');
@@ -295,7 +365,7 @@ async function createShareCard(){
     const file=new File([blob],'relationshiptest-share-card.png',{type:'image/png'});
     if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title:'我的毒气伤人指数',text:'扫码听原声，你来评评理。'});showToast('已打开分享面板')}
     else{downloadBlob(blob,'relationshiptest-share-card.png');showToast('已生成分享图，已保存/下载')}
-  }catch(e){console.error(e);showToast('生成失败：请重新录一句，或刷新后再试')}
+  }catch(e){console.error(e);showToast('生成失败：二维码或图片生成异常，请再试一次')}
   finally{btn.disabled=false;btn.textContent=old}
 }
 
@@ -395,14 +465,13 @@ function drawHazard(c,x,y,w){
   c.restore()
 }
 function round(c,x,y,w,h,r){c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath()}function wrap(c,text,x,y,max,lh){let line='';for(const ch of text){const test=line+ch;if(c.measureText(test).width>max){c.fillText(line,x,y);line=ch;y+=lh}else line=test}c.fillText(line,x,y);return y}
-function shareUrl(){const u=new URL(location.origin+location.pathname);u.searchParams.set('share','1');u.searchParams.set('score',result?.score||$('scoreNum').textContent);u.searchParams.set('type',result?.type||$('typeTag').textContent);u.searchParams.set('quote',result?.quote||$('quoteText').textContent);u.searchParams.set('ings',(result?.ings||[]).join('|'));u.searchParams.set('pcts',(result?.pcts||[]).join('|'));if(audioUrl&&audioUrl.startsWith('/'))u.searchParams.set('audio',audioUrl);return u.toString()}
-function loadShare(){const p=new URLSearchParams(location.search);if(p.get('share')==='1'&&p.get('score')){const score=+p.get('score');const fallback=fallbackByScore(score);const r={score,type:p.get('type')||fallback.type,quote:p.get('quote')||fallback.quote,ings:(p.get('ings')?p.get('ings').split('|'):fallback.ings),pcts:(p.get('pcts')?p.get('pcts').split('|'):fallback.pcts)};result=r;$('scoreNum').textContent=score;$('typeTag').textContent=r.type;$('quoteText').textContent=r.quote;$('ingredients').innerHTML=r.ings.map((x,i)=>`<div class="ing"><span>${x}</span><span>${(r.pcts||PCTS[0])[i]||''}</span></div>`).join('');audioUrl=p.get('audio')||'';if(audioUrl)$('audioPlayer').src=audioUrl;document.body.classList.add('shareOnly');show('resultScreen');}}
+function shareUrl(){const u=new URL(location.origin+location.pathname);u.searchParams.set('share','1');u.searchParams.set('score',result?.score||$('scoreNum').textContent);u.searchParams.set('type',result?.type||$('typeTag').textContent);u.searchParams.set('quote',result?.quote||$('quoteText').textContent);u.searchParams.set('ings',(result?.ings||[]).join('|'));u.searchParams.set('pcts',(result?.pcts||[]).join('|'));if(serverAudioUrl)u.searchParams.set('audio',serverAudioUrl);else if(audioUrl&&audioUrl.startsWith('/'))u.searchParams.set('audio',audioUrl);return u.toString()}
+function loadShare(){const p=new URLSearchParams(location.search);if(p.get('share')==='1'&&p.get('score')){const score=+p.get('score');const fallback=fallbackByScore(score);const r={score,type:p.get('type')||fallback.type,quote:p.get('quote')||fallback.quote,ings:(p.get('ings')?p.get('ings').split('|'):fallback.ings),pcts:(p.get('pcts')?p.get('pcts').split('|'):fallback.pcts)};result=r;$('scoreNum').textContent=score;$('typeTag').textContent=r.type;$('quoteText').textContent=r.quote;$('ingredients').innerHTML=r.ings.map((x,i)=>`<div class="ing"><span>${x}</span><span>${(r.pcts||PCTS[0])[i]||''}</span></div>`).join('');audioUrl=p.get('audio')||'';serverAudioUrl=audioUrl;if(audioUrl)$('audioPlayer').src=audioUrl;document.body.classList.add('shareOnly');show('resultScreen');}}
 function bindRecordButton(){
   const btn=$('recordBtn');
   if(!btn)return;
-  let down=false;
-  const begin=(ev)=>{if(ev){ev.preventDefault();ev.stopPropagation();}down=true;startRec();};
-  const end=(ev)=>{if(ev){ev.preventDefault();ev.stopPropagation();}if(!down && !isRecording)return;down=false;stopRec();};
+  const begin=(ev)=>{if(ev){ev.preventDefault();ev.stopPropagation();}holdRequested=true;stopRequested=false;startRec();};
+  const end=(ev)=>{if(ev){ev.preventDefault();ev.stopPropagation();}holdRequested=false;stopRec();};
   btn.addEventListener('pointerdown',begin,{passive:false});
   btn.addEventListener('pointerup',end,{passive:false});
   btn.addEventListener('pointercancel',end,{passive:false});
@@ -411,7 +480,10 @@ function bindRecordButton(){
   btn.addEventListener('touchend',end,{passive:false});
   btn.addEventListener('mousedown',begin);
   btn.addEventListener('mouseup',end);
-  btn.addEventListener('contextmenu',e=>e.preventDefault());
+  // 尝试提前预热麦克风，减少按下后等待导致的漏录
+  const warm=()=>prepareMic(true).catch(()=>{});
+  window.addEventListener('pointerdown',warm,{once:true,passive:true});
+  setTimeout(warm,600);
 }
 bindRecordButton();
 window.addEventListener('error',e=>toast('页面脚本错误：'+(e.message||'unknown')));
