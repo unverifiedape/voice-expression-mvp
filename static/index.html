@@ -271,6 +271,161 @@ function getCompactQrUrl(score,type,quote){
   return u.toString();
 }
 
+
+function drawPosterBg(c,w,h){
+  c.save();
+  c.fillStyle='#030403';
+  c.fillRect(0,0,w,h);
+
+  let g=c.createRadialGradient(w*0.5,h*0.18,40,w*0.5,h*0.18,720);
+  g.addColorStop(0,'rgba(198,255,52,.14)');
+  g.addColorStop(.45,'rgba(80,120,10,.08)');
+  g.addColorStop(1,'rgba(0,0,0,0)');
+  c.fillStyle=g;c.fillRect(0,0,w,h);
+
+  let g2=c.createRadialGradient(w*0.82,h*0.78,30,w*0.82,h*0.78,240);
+  g2.addColorStop(0,'rgba(198,255,52,.18)');
+  g2.addColorStop(1,'rgba(198,255,52,0)');
+  c.fillStyle=g2;c.beginPath();c.arc(w*0.82,h*0.78,260,0,Math.PI*2);c.fill();
+
+  c.strokeStyle='rgba(198,255,52,.18)';
+  c.lineWidth=2;
+  const cx=846,cy=286;
+  [54,102,150,198].forEach(r=>{c.beginPath();c.arc(cx,cy,r,0,Math.PI*2);c.stroke();});
+  c.strokeStyle='rgba(198,255,52,.10)';
+  c.beginPath();c.moveTo(cx-210,cy);c.lineTo(cx+210,cy);c.stroke();
+  c.beginPath();c.moveTo(cx,cy-210);c.lineTo(cx,cy+210);c.stroke();
+  c.fillStyle='rgba(198,255,52,.75)';
+  [[cx,cy],[cx+82,cy-88],[cx-120,cy+134],[cx+126,cy+72]].forEach(([x,y])=>{c.beginPath();c.arc(x,y,5,0,Math.PI*2);c.fill();});
+
+  c.fillStyle='rgba(198,255,52,.9)';
+  for(let i=0;i<140;i++){
+    const x=Math.random()*w, y=120+Math.random()*(h-200), s=Math.random()<.18?2:1;
+    c.fillRect(x,y,s,s);
+  }
+  c.restore();
+}
+
+function drawCleanHazardBand(c,x,y,w,h,text){
+  c.save();
+  c.fillStyle='#e7bc2b';
+  c.fillRect(x,y,w,h);
+  c.fillStyle='rgba(0,0,0,.14)';
+  for(let i=0;i<260;i++) if(Math.random()<.55) c.fillRect(x+Math.random()*w,y+Math.random()*h,Math.random()*10+2,Math.random()*4+1);
+  const stripeH=22;
+  c.fillStyle='#050505';
+  for(const yy of [y,y+h-stripeH]){
+    for(let i=x-70;i<x+w+80;i+=44){
+      c.beginPath();
+      c.moveTo(i,yy);
+      c.lineTo(i+28,yy);
+      c.lineTo(i+10,yy+stripeH);
+      c.lineTo(i-18,yy+stripeH);
+      c.closePath();
+      c.fill();
+    }
+  }
+  c.textAlign='center'; c.textBaseline='middle';
+  c.fillStyle='#050505';
+  let size=58;
+  while(size>38){c.font=`950 ${size}px Arial, sans-serif`; if(c.measureText(text).width<=w-170) break; size-=2;}
+  c.fillText(text,x+w/2,y+h/2+2);
+  c.font='900 46px Arial, sans-serif';
+  c.fillText('⚠',x+108,y+h/2+2);
+  c.fillText('⚠',x+w-108,y+h/2+2);
+  c.textAlign='left'; c.textBaseline='alphabetic';
+  c.restore();
+}
+
+function drawBadgeShield(c,cx,cy,label){
+  const w=300,h=316,x=cx-w/2,y=cy-h/2;
+  c.save();
+  c.shadowColor='rgba(198,255,52,.42)';c.shadowBlur=24;
+  c.fillStyle='#d7ff3f';
+  c.beginPath();
+  c.moveTo(x+28,y+28);
+  c.lineTo(x+w-28,y+28);
+  c.lineTo(x+w-28,y+h-82);
+  c.lineTo(x+w/2,y+h-28);
+  c.lineTo(x+28,y+h-82);
+  c.closePath();
+  c.fill();
+  c.shadowBlur=0;
+  c.lineWidth=7;c.strokeStyle='#0b0b0b';c.stroke();
+  c.lineWidth=2.5;c.strokeStyle='rgba(11,11,11,.45)';
+  c.beginPath();
+  c.moveTo(x+48,y+46);
+  c.lineTo(x+w-48,y+46);
+  c.lineTo(x+w-48,y+h-92);
+  c.lineTo(x+w/2,y+h-48);
+  c.lineTo(x+48,y+h-92);
+  c.closePath();
+  c.stroke();
+  c.fillStyle='#050806';c.textAlign='center';
+  c.font='900 30px Arial, sans-serif';c.fillText('★★★★★',cx,y+88);
+  let size=70;
+  while(size>40){
+    c.font=`950 ${size}px Arial, sans-serif`;
+    const lines=String(label).split(/\s+/).length>1?String(label).split(/\s+/):posterHeadlineLines(String(label)).filter(Boolean);
+    const l1=lines[0]||label,l2=lines[1]||'';
+    const mw=Math.max(c.measureText(l1).width,c.measureText(l2).width);
+    if(mw<=w-78) break;
+    size-=2;
+  }
+  c.font=`950 ${size}px Arial, sans-serif`;
+  const lines=posterHeadlineLines(String(label)).filter(Boolean);
+  if(lines.length>1 && c.measureText(lines[1]).width<w-78){
+    c.fillText(lines[0],cx,y+168);
+    c.fillText(lines[1],cx,y+240);
+  }else{
+    c.fillText(String(label),cx,y+208);
+  }
+  c.lineWidth=4;c.strokeStyle='#0b0b0b';
+  c.beginPath();c.moveTo(cx-26,y+h-68);c.lineTo(cx,y+h-28);c.lineTo(cx+26,y+h-68);c.closePath();c.stroke();
+  c.fillStyle='#d7ff3f';c.fill();
+  c.fillStyle='#050806';c.font='900 20px Arial, sans-serif';c.fillText('!',cx,y+h-44);
+  c.textAlign='left';
+  c.restore();
+}
+
+function drawArrow(c,x1,y1,x2,y2){
+  c.save();
+  c.strokeStyle='#d7ff3f';
+  c.lineWidth=10;
+  c.lineCap='round';
+  c.lineJoin='round';
+  c.shadowColor='rgba(198,255,52,.42)';c.shadowBlur=18;
+  c.beginPath();c.moveTo(x1,y1);c.lineTo(x2,y2);c.stroke();
+  const ang=Math.atan2(y2-y1,x2-x1);
+  c.beginPath();
+  c.moveTo(x2,y2);
+  c.lineTo(x2-36*Math.cos(ang-Math.PI/6),y2-36*Math.sin(ang-Math.PI/6));
+  c.lineTo(x2-36*Math.cos(ang+Math.PI/6),y2-36*Math.sin(ang+Math.PI/6));
+  c.closePath();
+  c.fillStyle='#d7ff3f';c.fill();
+  c.restore();
+}
+
+function drawFooterBar(c,x,y,w,h,text){
+  c.save();
+  c.shadowColor='rgba(198,255,52,.22)';c.shadowBlur=12;
+  c.fillStyle='#d7ff3f';
+  round(c,x,y,w,h,h/2);c.fill();
+  c.shadowBlur=0;
+  c.fillStyle='#0b0b0b';
+  c.beginPath();c.arc(x+44,y+h/2,28,0,Math.PI*2);c.fill();
+  c.beginPath();c.arc(x+w-44,y+h/2,28,0,Math.PI*2);c.fill();
+  c.fillStyle='#d7ff3f';c.font='900 24px Arial, sans-serif';c.textAlign='center';c.textBaseline='middle';
+  c.fillText('✦',x+44,y+h/2+1);
+  c.fillStyle='#d7ff3f';c.font='900 34px Arial, sans-serif';c.fillText('›',x+w-44,y+h/2+1);
+  c.textAlign='left';c.textBaseline='alphabetic';
+  c.fillStyle='#0b0b0b';
+  let size=30;
+  while(size>22){c.font=`950 ${size}px Arial, sans-serif`; if(c.measureText(text).width<=w-130) break; size-=1;}
+  c.fillText(text,x+88,y+48);
+  c.restore();
+}
+
 async function createShareCard(){
   const btn=$('shareBtn');const old=btn.textContent;btn.disabled=true;btn.textContent='正在生成分享图…';toast('正在生成分享图，请稍等…');
   try{
@@ -280,100 +435,82 @@ async function createShareCard(){
     const typeRaw=(result?.type||'语气污染源').replace(/^\s+/,'');
     const type=typeRaw.replace(/^([\u{1F300}-\u{1FAFF}\u2600-\u27BF]+\s*)/u,'') || typeRaw || '语气污染源';
     const quote=result?.quote||'你不发火，但你让所有人都不敢接话';
-    const rawIngs=(result?.ings&&result.ings.length?result.ings:[
-      '不想解释沉淀物',
-      '低频烦躁信号',
-      '嘴硬保护膜'
-    ]).slice(0,3);
+    const rawIngs=(result?.ings&&result.ings.length?result.ings:['不想解释沉淀物','低频烦躁信号','嘴硬保护膜']).slice(0,3);
     const ings=rawIngs.map(x=>String(x).replace(/^主要成分[:：]?\s*/,'').replace(/^毒气配方[:：]?\s*/,'').replace(/^伤人配方[:：]?\s*/,'').replace(/（.*?）/g,'').trim()).slice(0,3);
     const pcts=(result?.pcts&&result.pcts.length?result.pcts:['34%','25%','21%']).slice(0,3);
 
-    // ===== V1.9.2 real template route: background poster skeleton + dynamic text/QR only =====
-    let tpl=null;
-    try{tpl=await imageFromFetch('/share_card_template_v192.png?v=199',8000)}catch(e){try{tpl=await imageFromUrl('/share_card_template_v192.png?v=199',8000)}catch(e2){console.warn('template failed, fallback canvas',e2)}}
-    if(tpl){c.drawImage(tpl,0,0,w,h)}else{
-      c.fillStyle='#020302';c.fillRect(0,0,w,h);
-      drawStrongHazardBand(c,0,36,w,132,'⚠ 声音伤人，谨慎外放。⚠');
-    }
+    drawPosterBg(c,w,h);
+    drawCleanHazardBand(c,0,34,w,126,'声音伤人，谨慎外放。');
 
-    // Explain line: fixed story, dynamic score only once in sentence and once as hero score
     c.save();
-    c.fillStyle='rgba(247,242,234,.94)';
+    c.fillStyle='rgba(247,242,234,.96)';
     c.font='900 38px Arial, sans-serif';
-    c.fillText('随口说了一句，测出伤人指数'+score+'%',58,228);
+    c.fillText(`随口说了一句，测出伤人指数${score}%`,58,226);
     c.strokeStyle='rgba(215,255,63,.72)';c.lineWidth=3;c.setLineDash([16,12]);
-    c.beginPath();c.moveTo(58,252);c.lineTo(520,252);c.stroke();
-    c.restore();
-
-    // score label + giant score
-    c.save();
-    c.fillStyle='rgba(215,255,63,.98)';round(c,58,272,165,48,8);c.fill();
-    c.fillStyle='#050806';c.font='950 31px Arial, sans-serif';c.fillText('伤人指数',82,306);
+    c.beginPath();c.moveTo(58,248);c.lineTo(508,248);c.stroke();
     c.restore();
 
     c.save();
-    c.translate(46,278);c.rotate(-0.015);
-    c.shadowColor='rgba(215,255,63,.42)';c.shadowBlur=30;
-    const sg=c.createLinearGradient(0,0,0,295);sg.addColorStop(0,'#fffef0');sg.addColorStop(.5,'#eaff88');sg.addColorStop(1,'#cfff30');
-    c.fillStyle=sg;fitText(c,score+'%',0,295,650,258,'950');
+    c.fillStyle='rgba(215,255,63,.98)';round(c,58,270,170,50,10);c.fill();
+    c.fillStyle='#050806';c.font='950 31px Arial, sans-serif';c.fillText('伤人指数',82,304);
     c.restore();
 
-    // main measured tag inside badge template
     c.save();
-    c.textAlign='center';c.textBaseline='middle';
-    c.fillStyle='#050806';
-    c.shadowColor='rgba(255,255,255,.16)';c.shadowBlur=2;
-    let typeSize=58;
-    while(typeSize>34){c.font='950 '+typeSize+'px Arial, sans-serif'; if(c.measureText(type).width<=235)break; typeSize-=2;}
-    c.fillText(type,820,360);
-    c.textAlign='left';c.textBaseline='alphabetic';
+    c.translate(52,284);c.rotate(-0.012);
+    c.shadowColor='rgba(215,255,63,.42)';c.shadowBlur=28;
+    const sg=c.createLinearGradient(0,0,0,300);sg.addColorStop(0,'#fffef0');sg.addColorStop(.45,'#eaff88');sg.addColorStop(1,'#cfff30');
+    c.fillStyle=sg;fitText(c,score+'%',0,300,620,264,'950');
     c.restore();
 
-    // headline: reference-2 impact
+    drawBadgeShield(c,822,362,type);
+
     const qLines=posterHeadlineLines(quote);
     c.save();
-    c.translate(58,650);
-    c.shadowColor='rgba(0,0,0,.80)';c.shadowBlur=9;c.lineJoin='round';c.strokeStyle='rgba(0,0,0,.48)';c.lineWidth=8;
+    c.translate(58,656);
+    c.lineJoin='round';c.strokeStyle='rgba(0,0,0,.52)';c.lineWidth=10;c.shadowColor='rgba(0,0,0,.7)';c.shadowBlur=12;
     c.fillStyle='#fff8e8';
-    drawFitStrokeFill(c,qLines[0]||'你不发火，',0,0,940,76,'950');
+    drawFitStrokeFill(c,qLines[0]||'你不发火，',0,0,954,76,'950');
     c.fillStyle='#d7ff3f';
-    drawFitStrokeFill(c,qLines[1]||'但你让所有人都不敢接话',0,98,940,86,'950');
+    drawFitStrokeFill(c,qLines[1]||'但你让所有人都不敢接话',0,98,954,88,'950');
     c.restore();
 
-    // ingredient dynamic rows
     c.save();
-    const boxX=58,boxY=840,boxW=570;
+    c.strokeStyle='rgba(215,255,63,.84)';c.lineWidth=3;
+    c.beginPath();c.moveTo(58,804);c.lineTo(978,804);c.stroke();
+    c.restore();
+
+    c.save();
+    const boxX=58,boxY=840,boxW=570,boxH=254;
+    c.strokeStyle='#bdf730';c.lineWidth=3;round(c,boxX,boxY,boxW,boxH,22);c.stroke();
+    c.fillStyle='#d7ff3f';round(c,boxX+12,boxY-28,176,54,12);c.fill();
+    c.fillStyle='#050806';c.font='950 31px Arial, sans-serif';c.fillText('伤人配方',boxX+42,boxY+9);
     const icons=['✦','〰','盾'];
     ings.forEach((txt,i)=>{
-      const yy=boxY+72+i*58;
-      if(i<2){c.strokeStyle='rgba(255,255,255,.13)';c.lineWidth=1.2;c.setLineDash([5,6]);c.beginPath();c.moveTo(boxX+34,yy+24);c.lineTo(boxX+boxW-28,yy+24);c.stroke();c.setLineDash([])}
+      const yy=boxY+78+i*60;
+      if(i<2){c.strokeStyle='rgba(255,255,255,.13)';c.lineWidth=1.2;c.setLineDash([5,6]);c.beginPath();c.moveTo(boxX+26,yy+24);c.lineTo(boxX+boxW-24,yy+24);c.stroke();c.setLineDash([])}
       c.fillStyle='#d7ff3f';c.font=i===2?'900 22px Arial, sans-serif':'950 30px Arial, sans-serif';c.fillText(icons[i],boxX+26,yy);
       c.fillStyle='#f7f2ea';fitText(c,txt,boxX+82,yy,350,28,'850');
-      c.fillStyle='#d7ff3f';c.textAlign='right';c.font='950 38px Arial, sans-serif';c.fillText(pcts[i]||'',boxX+boxW-26,yy);c.textAlign='left';
+      c.fillStyle='#d7ff3f';c.textAlign='right';c.font='950 38px Arial, sans-serif';c.fillText(pcts[i]||'',boxX+boxW-28,yy);c.textAlign='left';
     });
     c.restore();
 
-    // QR image: draw locally to avoid cross-origin canvas taint / Android export failures
-    const qrX=695,qrY=895,qrSize=306;
-    c.save();c.shadowColor='rgba(215,255,63,.90)';c.shadowBlur=26;c.fillStyle='#fff';round(c,qrX,qrY,qrSize,qrSize,18);c.fill();c.restore();
+    const qrX=718, qrY=886, qrSize=280;
+    c.save();c.shadowColor='rgba(215,255,63,.92)';c.shadowBlur=28;c.fillStyle='#fff';round(c,qrX,qrY,qrSize,qrSize,20);c.fill();c.restore();
     try{
       const qrLink=getCompactQrUrl(score,type,quote);
-      drawQrCode(c,qrLink,qrX+20,qrY+20,qrSize-40);
+      drawQrCode(c,qrLink,qrX+18,qrY+18,qrSize-36);
     }catch(qrErr){
       console.error('local QR draw failed',qrErr);
       throw new Error('二维码生成失败: '+(qrErr&&qrErr.message?qrErr.message:'unknown'));
     }
 
-    // CTA text, strictly per requested copy
     c.save();
-    c.fillStyle='#f7f2ea';c.font='950 47px Arial, sans-serif';c.fillText('扫码听我原声，',58,1182);
-    c.fillStyle='#d7ff3f';c.font='950 62px Arial, sans-serif';fitText(c,'你来评评理。',58,1262,520,62,'950');
+    c.fillStyle='#f7f2ea';c.font='950 47px Arial, sans-serif';c.fillText('扫码听我原声，',58,1192);
+    c.fillStyle='#d7ff3f';c.font='950 64px Arial, sans-serif';fitText(c,'你来评评理。',58,1274,530,64,'950');
     c.restore();
+    drawArrow(c,614,1186,694,1140);
 
-    // footer text
-    c.save();
-    c.fillStyle='#050806';fitText(c,'嗨，别笑！你估计也能上榜–>',150,1369,780,33,'950');
-    c.restore();
+    drawFooterBar(c,42,1326,996,74,'嗨，别笑！你估计也能上榜–>');
 
     const blob=await canvasToBlobSafe(canvas);
     const file=new File([blob],'relationshiptest-share-card.png',{type:'image/png'});
