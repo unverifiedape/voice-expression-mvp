@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- relationshiptest-v1.9.7-local-qr-share-fix-20260514 -->
+<!-- relationshiptest-v2.0.2-share-visual-final-polish-20260515 -->
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8" />
@@ -299,8 +299,8 @@ function drawPosterBg(c,w,h){
   [[cx,cy],[cx+82,cy-88],[cx-120,cy+134],[cx+126,cy+72]].forEach(([x,y])=>{c.beginPath();c.arc(x,y,5,0,Math.PI*2);c.fill();});
 
   c.fillStyle='rgba(198,255,52,.9)';
-  for(let i=0;i<140;i++){
-    const x=Math.random()*w, y=120+Math.random()*(h-200), s=Math.random()<.18?2:1;
+  for(let i=0;i<58;i++){
+    const x=Math.random()*w, y=120+Math.random()*(h-200), s=Math.random()<.14?2:1;
     c.fillRect(x,y,s,s);
   }
   c.restore();
@@ -330,60 +330,71 @@ function drawCleanHazardBand(c,x,y,w,h,text){
   let size=58;
   while(size>38){c.font=`950 ${size}px Arial, sans-serif`; if(c.measureText(text).width<=w-170) break; size-=2;}
   c.fillText(text,x+w/2,y+h/2+2);
-  c.font='900 46px Arial, sans-serif';
-  c.fillText('⚠',x+108,y+h/2+2);
-  c.fillText('⚠',x+w-108,y+h/2+2);
+  c.font='900 40px Arial, sans-serif';
+  c.fillText('⚠',x+106,y+h/2+2);
+  c.fillText('⚠',x+w-106,y+h/2+2);
   c.textAlign='left'; c.textBaseline='alphabetic';
   c.restore();
 }
 
+function splitBadgeLabel(label){
+  const raw=String(label||'语气污染源').trim();
+  if(raw.length<=5) return [raw];
+  if(raw.length<=8) return [raw.slice(0,4), raw.slice(4)];
+  return [raw.slice(0,4), raw.slice(4,8)];
+}
+
 function drawBadgeShield(c,cx,cy,label){
-  const w=300,h=316,x=cx-w/2,y=cy-h/2;
+  const w=286,h=268,x=cx-w/2,y=cy-h/2;
   c.save();
-  c.shadowColor='rgba(198,255,52,.42)';c.shadowBlur=24;
-  c.fillStyle='#d7ff3f';
+  c.shadowColor='rgba(198,255,52,.22)';c.shadowBlur=14;
+  const bg=c.createLinearGradient(x,y,x,y+h);
+  bg.addColorStop(0,'#d8fa3f');
+  bg.addColorStop(1,'#b7db20');
+  c.fillStyle=bg;
   c.beginPath();
-  c.moveTo(x+28,y+28);
-  c.lineTo(x+w-28,y+28);
-  c.lineTo(x+w-28,y+h-82);
-  c.lineTo(x+w/2,y+h-28);
-  c.lineTo(x+28,y+h-82);
+  c.moveTo(x+24,y+24);
+  c.lineTo(x+w-24,y+24);
+  c.lineTo(x+w-24,y+h-72);
+  c.lineTo(x+w/2,y+h-24);
+  c.lineTo(x+24,y+h-72);
   c.closePath();
   c.fill();
   c.shadowBlur=0;
-  c.lineWidth=7;c.strokeStyle='#0b0b0b';c.stroke();
-  c.lineWidth=2.5;c.strokeStyle='rgba(11,11,11,.45)';
+  c.lineWidth=6;c.strokeStyle='#0a0b07';c.stroke();
+  c.lineWidth=2;c.strokeStyle='rgba(10,11,7,.38)';
   c.beginPath();
-  c.moveTo(x+48,y+46);
-  c.lineTo(x+w-48,y+46);
-  c.lineTo(x+w-48,y+h-92);
-  c.lineTo(x+w/2,y+h-48);
-  c.lineTo(x+48,y+h-92);
+  c.moveTo(x+42,y+40);
+  c.lineTo(x+w-42,y+40);
+  c.lineTo(x+w-42,y+h-84);
+  c.lineTo(x+w/2,y+h-42);
+  c.lineTo(x+42,y+h-84);
   c.closePath();
   c.stroke();
-  c.fillStyle='#050806';c.textAlign='center';
-  c.font='900 30px Arial, sans-serif';c.fillText('★★★★★',cx,y+88);
-  let size=70;
-  while(size>40){
+
+  c.fillStyle='#070807';c.textAlign='center';
+  c.font='900 22px Arial, sans-serif';c.fillText('★★★★★',cx,y+70);
+
+  const lines=splitBadgeLabel(label);
+  let size=50;
+  while(size>26){
     c.font=`950 ${size}px Arial, sans-serif`;
-    const lines=String(label).split(/\s+/).length>1?String(label).split(/\s+/):posterHeadlineLines(String(label)).filter(Boolean);
-    const l1=lines[0]||label,l2=lines[1]||'';
-    const mw=Math.max(c.measureText(l1).width,c.measureText(l2).width);
-    if(mw<=w-78) break;
+    const mw=Math.max(...lines.map(t=>c.measureText(t).width));
+    if(mw<=w-72) break;
     size-=2;
   }
   c.font=`950 ${size}px Arial, sans-serif`;
-  const lines=posterHeadlineLines(String(label)).filter(Boolean);
-  if(lines.length>1 && c.measureText(lines[1]).width<w-78){
-    c.fillText(lines[0],cx,y+168);
-    c.fillText(lines[1],cx,y+240);
+  if(lines.length===1){
+    c.fillText(lines[0],cx,y+166);
   }else{
-    c.fillText(String(label),cx,y+208);
+    c.fillText(lines[0],cx,y+142);
+    c.fillText(lines[1],cx,y+196);
   }
-  c.lineWidth=4;c.strokeStyle='#0b0b0b';
-  c.beginPath();c.moveTo(cx-26,y+h-68);c.lineTo(cx,y+h-28);c.lineTo(cx+26,y+h-68);c.closePath();c.stroke();
-  c.fillStyle='#d7ff3f';c.fill();
-  c.fillStyle='#050806';c.font='900 20px Arial, sans-serif';c.fillText('!',cx,y+h-44);
+
+  c.lineWidth=3;c.strokeStyle='#10110c';
+  c.beginPath();c.moveTo(cx-22,y+h-60);c.lineTo(cx,y+h-30);c.lineTo(cx+22,y+h-60);c.closePath();c.stroke();
+  c.fillStyle='#d2f437';c.fill();
+  c.fillStyle='#0a0c07';c.font='900 18px Arial, sans-serif';c.fillText('!',cx,y+h-42);
   c.textAlign='left';
   c.restore();
 }
@@ -391,16 +402,16 @@ function drawBadgeShield(c,cx,cy,label){
 function drawArrow(c,x1,y1,x2,y2){
   c.save();
   c.strokeStyle='#d7ff3f';
-  c.lineWidth=10;
+  c.lineWidth=12;
   c.lineCap='round';
   c.lineJoin='round';
-  c.shadowColor='rgba(198,255,52,.42)';c.shadowBlur=18;
+  c.shadowColor='rgba(198,255,52,.5)';c.shadowBlur=22;
   c.beginPath();c.moveTo(x1,y1);c.lineTo(x2,y2);c.stroke();
   const ang=Math.atan2(y2-y1,x2-x1);
   c.beginPath();
   c.moveTo(x2,y2);
-  c.lineTo(x2-36*Math.cos(ang-Math.PI/6),y2-36*Math.sin(ang-Math.PI/6));
-  c.lineTo(x2-36*Math.cos(ang+Math.PI/6),y2-36*Math.sin(ang+Math.PI/6));
+  c.lineTo(x2-44*Math.cos(ang-Math.PI/6),y2-44*Math.sin(ang-Math.PI/6));
+  c.lineTo(x2-44*Math.cos(ang+Math.PI/6),y2-44*Math.sin(ang+Math.PI/6));
   c.closePath();
   c.fillStyle='#d7ff3f';c.fill();
   c.restore();
@@ -416,13 +427,13 @@ function drawFooterBar(c,x,y,w,h,text){
   c.beginPath();c.arc(x+44,y+h/2,28,0,Math.PI*2);c.fill();
   c.beginPath();c.arc(x+w-44,y+h/2,28,0,Math.PI*2);c.fill();
   c.fillStyle='#d7ff3f';c.font='900 24px Arial, sans-serif';c.textAlign='center';c.textBaseline='middle';
-  c.fillText('✦',x+44,y+h/2+1);
+  c.fillText('🔥',x+44,y+h/2+1);
   c.fillStyle='#d7ff3f';c.font='900 34px Arial, sans-serif';c.fillText('›',x+w-44,y+h/2+1);
   c.textAlign='left';c.textBaseline='alphabetic';
   c.fillStyle='#0b0b0b';
   let size=30;
   while(size>22){c.font=`950 ${size}px Arial, sans-serif`; if(c.measureText(text).width<=w-130) break; size-=1;}
-  c.fillText(text,x+88,y+48);
+  c.fillText(text,x+88,y+47);
   c.restore();
 }
 
@@ -445,7 +456,7 @@ async function createShareCard(){
     c.save();
     c.fillStyle='rgba(247,242,234,.96)';
     c.font='900 38px Arial, sans-serif';
-    c.fillText(`随口说了一句，测出伤人指数${score}%`,58,226);
+    c.fillText('随口说了一句，测出伤人指数',58,226);
     c.strokeStyle='rgba(215,255,63,.72)';c.lineWidth=3;c.setLineDash([16,12]);
     c.beginPath();c.moveTo(58,248);c.lineTo(508,248);c.stroke();
     c.restore();
@@ -462,7 +473,7 @@ async function createShareCard(){
     c.fillStyle=sg;fitText(c,score+'%',0,300,620,264,'950');
     c.restore();
 
-    drawBadgeShield(c,822,362,type);
+    drawBadgeShield(c,838,366,type);
 
     const qLines=posterHeadlineLines(quote);
     c.save();
@@ -470,8 +481,8 @@ async function createShareCard(){
     c.lineJoin='round';c.strokeStyle='rgba(0,0,0,.52)';c.lineWidth=10;c.shadowColor='rgba(0,0,0,.7)';c.shadowBlur=12;
     c.fillStyle='#fff8e8';
     drawFitStrokeFill(c,qLines[0]||'你不发火，',0,0,954,76,'950');
-    c.fillStyle='#d7ff3f';
-    drawFitStrokeFill(c,qLines[1]||'但你让所有人都不敢接话',0,98,954,88,'950');
+    c.fillStyle='#cbea35';
+    drawFitStrokeFill(c,qLines[1]||'但你让所有人都不敢接话',0,98,930,78,'950');
     c.restore();
 
     c.save();
@@ -484,7 +495,7 @@ async function createShareCard(){
     c.strokeStyle='#bdf730';c.lineWidth=3;round(c,boxX,boxY,boxW,boxH,22);c.stroke();
     c.fillStyle='#d7ff3f';round(c,boxX+12,boxY-28,176,54,12);c.fill();
     c.fillStyle='#050806';c.font='950 31px Arial, sans-serif';c.fillText('伤人配方',boxX+42,boxY+9);
-    const icons=['✦','〰','盾'];
+    const icons=['✦','≈','✚'];
     ings.forEach((txt,i)=>{
       const yy=boxY+78+i*60;
       if(i<2){c.strokeStyle='rgba(255,255,255,.13)';c.lineWidth=1.2;c.setLineDash([5,6]);c.beginPath();c.moveTo(boxX+26,yy+24);c.lineTo(boxX+boxW-24,yy+24);c.stroke();c.setLineDash([])}
@@ -506,18 +517,18 @@ async function createShareCard(){
 
     c.save();
     c.fillStyle='#f7f2ea';c.font='950 47px Arial, sans-serif';c.fillText('扫码听我原声，',58,1192);
-    c.fillStyle='#d7ff3f';c.font='950 64px Arial, sans-serif';fitText(c,'你来评评理。',58,1274,530,64,'950');
+    c.fillStyle='#d7ff3f';c.font='950 64px Arial, sans-serif';fitText(c,'你来评评理！',58,1274,530,64,'950');
     c.restore();
-    drawArrow(c,614,1186,694,1140);
+    drawArrow(c,606,1184,704,1128);
 
-    drawFooterBar(c,42,1326,996,74,'嗨，别笑！你估计也能上榜–>');
+    drawFooterBar(c,42,1326,996,74,'别笑，你估计也能上榜 →');
 
     const blob=await canvasToBlobSafe(canvas);
     const file=new File([blob],'relationshiptest-share-card.png',{type:'image/png'});
     let shared=false;
     if(navigator.canShare&&navigator.canShare({files:[file]})){
       try{
-        await navigator.share({files:[file],title:'我的毒气伤人指数',text:'扫码听我原声，你来评评理。'});
+        await navigator.share({files:[file],title:'我的毒气伤人指数',text:'扫码听我原声，你来评评理！'});
         shared=true;
         showToast('已打开分享面板');
       }catch(shareErr){
