@@ -290,7 +290,7 @@ async function createShareCard(){
 
     // ===== V1.9.2 real template route: background poster skeleton + dynamic text/QR only =====
     let tpl=null;
-    try{tpl=await imageFromFetch('/share_card_template_v192.png?v=198',8000)}catch(e){try{tpl=await imageFromUrl('/share_card_template_v192.png?v=198',8000)}catch(e2){console.warn('template failed, fallback canvas',e2)}}
+    try{tpl=await imageFromFetch('/share_card_template_v192.png?v=199',8000)}catch(e){try{tpl=await imageFromUrl('/share_card_template_v192.png?v=199',8000)}catch(e2){console.warn('template failed, fallback canvas',e2)}}
     if(tpl){c.drawImage(tpl,0,0,w,h)}else{
       c.fillStyle='#020302';c.fillRect(0,0,w,h);
       drawStrongHazardBand(c,0,36,w,132,'⚠ 声音伤人，谨慎外放。⚠');
@@ -1730,6 +1730,23 @@ function fitText(c,text,x,y,maxWidth,baseSize,weight='950'){
   c.fillText(text,x,y);
 }
 
+
+
+function drawFitStrokeFill(c,text,x,y,maxWidth,baseSize,weight='950'){
+  // Fit bold headline text to a target width, then stroke+fill it.
+  // V199 fix: this function was called by the share-card renderer but missing in V198.
+  text=String(text||'');
+  let size=baseSize;
+  const family='Arial, sans-serif';
+  while(size>24){
+    c.font=`${weight} ${size}px ${family}`;
+    if(c.measureText(text).width<=maxWidth)break;
+    size-=2;
+  }
+  c.font=`${weight} ${size}px ${family}`;
+  try{c.strokeText(text,x,y)}catch(e){}
+  c.fillText(text,x,y);
+}
 
 function drawStrongHazardBand(c,x,y,w,h,text){
   c.save();
